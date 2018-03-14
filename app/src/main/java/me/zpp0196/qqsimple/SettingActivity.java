@@ -18,6 +18,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.TwoStatePreference;
+import android.util.Log;
 
 import java.io.File;
 
@@ -37,12 +38,12 @@ public class SettingActivity extends Activity {
         getFragmentManager().beginTransaction().replace(getResources().getIdentifier("content", "id", "android"), new SettingFragment()).commit();
     }
 
-    public boolean isModuleActive() {
+    public static boolean isModuleActive() {
+        Log.w(SettingActivity.class.getSimpleName(), "dummy log for hook: " + SettingActivity.class);
         return false;
     }
 
-    @SuppressLint("ValidFragment")
-    public class SettingFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+    public static class SettingFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
         private ToastUtils toastUtils;
 
@@ -58,7 +59,7 @@ public class SettingActivity extends Activity {
 
         private void initData() {
             TwoStatePreference desktopIcon = (TwoStatePreference) getPreferenceScreen().findPreference(KEY_DESKTOP_ICON);
-            desktopIcon.setChecked(getEnable());
+            desktopIcon.setChecked(!getEnable());
             desktopIcon.setOnPreferenceChangeListener(this);
             findPreference(KEY_MARKET_COOLAPK_FEEDBACK).setOnPreferenceClickListener(this);
             findPreference(KEY_GITHUB_SOURCE).setOnPreferenceClickListener(this);
@@ -67,7 +68,7 @@ public class SettingActivity extends Activity {
                 PackageManager manager = getActivity().getPackageManager();
                 PackageInfo info = manager.getPackageInfo("com.tencent.mobileqq", 0);
                 String version = info.versionName;
-                isSupport.setSummary(String.format("当前 QQ版本：%s（%s的版本）", version, (version.compareTo("7.3.2") > 0 ? "支持" : "不支持")));
+                isSupport.setSummary(String.format("当前 QQ 版本：%s（%s的版本）", version, (version.compareTo("7.3.2") > 0 ? "支持" : "不支持")));
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
                 isSupport.setSummary("未安装 QQ！");
@@ -98,7 +99,9 @@ public class SettingActivity extends Activity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             if (preference.getKey().equals(KEY_DESKTOP_ICON)) {
-                getPackageManager().setComponentEnabledSetting(getAlias(), getEnable() ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED : PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+                Activity activity = getActivity();
+                activity.getPackageManager().setComponentEnabledSetting(getAlias(),
+                        getEnable() ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED : PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
             }
             return true;
         }
@@ -107,7 +110,11 @@ public class SettingActivity extends Activity {
         @SuppressLint({"SetWorldReadable", "WorldReadableFiles"})
         private void setWorldReadable() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                File dataDir = new File(getApplicationInfo().dataDir);
+                Activity activity = getActivity();
+                if (activity == null) {
+                    return;
+                }
+                File dataDir = new File(activity.getApplicationInfo().dataDir);
                 File prefsDir = new File(dataDir, "shared_prefs");
                 File prefsFile = new File(prefsDir, getPreferenceManager().getSharedPreferencesName() + ".xml");
                 if (prefsFile.exists()) {
@@ -170,10 +177,18 @@ public class SettingActivity extends Activity {
         }
 
         private void openXposed() {
+            Activity activity = getActivity();
+            if (activity == null) {
+                return;
+            }
             if (isXposedInstalled()) {
                 Intent intent = new Intent("de.robv.android.xposed.installer.OPEN_SECTION");
-                if (getPackageManager().queryIntentActivities(intent, 0).isEmpty()) {
-                    intent = getPackageManager().getLaunchIntentForPackage("de.robv.android.xposed.installer");
+                PackageManager packageManager = activity.getPackageManager();
+                if (packageManager == null) {
+                    return;
+                }
+                if (packageManager.queryIntentActivities(intent, 0).isEmpty()) {
+                    intent = packageManager.getLaunchIntentForPackage("de.robv.android.xposed.installer");
                 }
                 if (intent != null) {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -189,7 +204,11 @@ public class SettingActivity extends Activity {
 
         public boolean isXposedInstalled() {
             try {
-                getPackageManager().getApplicationInfo("de.robv.android.xposed.installer", 0);
+                PackageManager packageManager = getPackageManager();
+                if (packageManager == null) {
+                    return false;
+                }
+                packageManager.getApplicationInfo("de.robv.android.xposed.installer", 0);
                 return true;
             } catch (PackageManager.NameNotFoundException e) {
                 return false;
@@ -201,7 +220,16 @@ public class SettingActivity extends Activity {
         }
 
         private boolean getEnable() {
-            return getPackageManager().getComponentEnabledSetting(getAlias()) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
+            PackageManager packageManager = getPackageManager();
+            return packageManager != null && getPackageManager().getComponentEnabledSetting(getAlias()) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
+        }
+
+        private PackageManager getPackageManager() {
+            Activity activity = getActivity();
+            if (activity == null) {
+                return null;
+            }
+            return activity.getPackageManager();
         }
     }
 }
