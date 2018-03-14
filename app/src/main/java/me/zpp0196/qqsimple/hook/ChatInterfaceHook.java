@@ -162,7 +162,6 @@ public class ChatInterfaceHook {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                XposedBridge.log(String.format("args[0]: %s, args[1]: %s", param.args[0], param.args[1]));
                 Field field = XposedHelpers.findField(ChatMessage, "mNeedTimeStamp");
                 if (field != null) {
                     boolean mNeedTimeStamp = (boolean) field.get(param.args[2]);
