@@ -9,7 +9,6 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import me.zpp0196.qqsimple.util.DeleteFile;
 import me.zpp0196.qqsimple.util.SettingUtils;
 
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
@@ -33,9 +32,9 @@ public class MainHook implements IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        CheckActive.isActive(loadPackageParam);
+        new CheckActive().handleLoadPackage(loadPackageParam);
         if (!loadPackageParam.packageName.equals(PACKAGE_NAME_QQ)) return;
-        if (!SettingUtils.getValueMasterSwitch()) return;
+        if (SettingUtils.getValueCloseAll()) return;
         findAndHookMethod("com.tencent.mobileqq.app.InjectUtils", loadPackageParam.classLoader, "injectExtraDexes",
                 Application.class, boolean.class, new XC_MethodHook() {
                     @Override
@@ -57,22 +56,19 @@ public class MainHook implements IXposedHookLoadPackage {
 
     private void startHook(final ClassLoader classLoader) {
         if (classLoader == null) {
-            XposedBridge.log("can't get classloader");
+            XposedBridge.log(String.format("%s can not get classloader", getQQ_Version()));
             return;
         }
         Class drawable = XposedHelpers.findClass("com.tencent.mobileqq.R$drawable", classLoader);
         Class id = XposedHelpers.findClass("com.tencent.mobileqq.R$id", classLoader);
 
+        RemoveImagine removeImagine = new RemoveImagine(id, drawable);
+        removeImagine.remove();
+        removeImagine.removeDrawable();
         MainUIHook uiHook = new MainUIHook(classLoader, id);
-        ChatInterfaceHook chatInterfaceHook = new ChatInterfaceHook(classLoader, id);
-        SideBarHook sideBarHook = new SideBarHook(id);
-        OtherHook otherHook = new OtherHook(classLoader, drawable, id);
+        ChatInterfaceHook chatInterfaceHook = new ChatInterfaceHook(classLoader);
+        OtherHook otherHook = new OtherHook(classLoader);
         PreventHook preventHook = new PreventHook(classLoader);
-
-        // 隐藏消息界面横幅广告
-        if (SettingUtils.getValueHideChatListHeadAd()) {
-            uiHook.hideChatListHeadAd();
-        }
 
         // 隐藏更新提醒
         if (SettingUtils.getValueHideUpdateReminder()) {
@@ -84,19 +80,16 @@ public class MainHook implements IXposedHookLoadPackage {
             uiHook.hideNationalEntrance();
         }
 
-        // 隐藏消息列表未读消息数量
-        if (SettingUtils.getValueHideUncheckedMsgNum()) {
-            uiHook.hideUncheckedMsgNum();
-        }
+        // 隐藏底部分组
+        uiHook.hideMainFragmentTab();
 
         // 隐藏隐藏联系人分组
         uiHook.hideSlidingIndicator();
 
-        // 隐藏入口
-        uiHook.hideEntry();
-
-        // 隐藏头像提示
-        uiHook.hideAvatarRemind();
+        // 隐藏动态界面更多按钮
+        if (SettingUtils.getValueHideDynamicMore()) {
+            uiHook.hideDynamicMore();
+        }
 
         // 隐藏头像挂件
         if (SettingUtils.getValueHideAvatarPendant()) {
@@ -118,11 +111,6 @@ public class MainHook implements IXposedHookLoadPackage {
             chatInterfaceHook.hideExpressionAssociation();
         }
 
-        // 隐藏聊天界面右上角的 QQ 电话
-        if (SettingUtils.getValueHideChatCall()) {
-            chatInterfaceHook.hideChatCall();
-        }
-
         // 隐藏好友新发的说说
         if (SettingUtils.getValueHideNewFeed()) {
             chatInterfaceHook.hideNewFeed();
@@ -138,19 +126,6 @@ public class MainHook implements IXposedHookLoadPackage {
             chatInterfaceHook.hideChatSougouAd();
         }
 
-        // 聊天界面底部工具栏
-        chatInterfaceHook.hideChatToolbar();
-
-        // 隐藏群头衔
-        if (SettingUtils.getValueHideGroupMemberLevel()) {
-            chatInterfaceHook.hideGroupMemberLevel();
-        }
-
-        // 隐藏魅力等级
-        if (SettingUtils.getValueHideGroupMemberGlamourLevel()) {
-            chatInterfaceHook.hideGroupMemberGlamourLevel();
-        }
-
         // 隐藏礼物动画
         if (SettingUtils.getValueHideGroupGiftAnim()) {
             chatInterfaceHook.hideGroupGiftAnima();
@@ -161,19 +136,6 @@ public class MainHook implements IXposedHookLoadPackage {
             chatInterfaceHook.hideGroupChatAdmissions();
         }
 
-        // 隐藏群消息里的小视频
-        if (SettingUtils.getValueHideGroupSmallVideo()) {
-            chatInterfaceHook.hideGroupSmallVideo();
-        }
-
-        // 隐藏移出群助手提示
-        if (SettingUtils.getValueHideGroupHelperRemoveTips()) {
-            chatInterfaceHook.hideGroupHelperRemoveTips();
-        }
-
-        // 侧滑栏
-        sideBarHook.hideSidebar();
-
         // 完全关闭动画
         if (SettingUtils.getValueCloseAllAnimation()) {
             otherHook.closeAllAnimation();
@@ -181,22 +143,7 @@ public class MainHook implements IXposedHookLoadPackage {
 
         // 隐藏启动图广告
         if (SettingUtils.getValueHideSplashAd()) {
-            DeleteFile.delete("data/data/com.tencent.mobileqq/files/splashpic", "");
-        }
-
-        // 隐藏部分小红点
-        if (SettingUtils.getValueHideSomeRedDot()) {
-            otherHook.hideRedDot();
-        }
-
-        // 隐藏我的文件里的 TIM 推广
-        if (SettingUtils.getValueHideTimInMyFile()) {
-            otherHook.hideTimInMyFile();
-        }
-
-        // 隐藏空间绿厂广告
-        if (SettingUtils.getValueHideQzoneAd()) {
-            otherHook.hideQzoneAd();
+            otherHook.hideSplashAd();
         }
 
         // 防止闪照消失
@@ -213,7 +160,6 @@ public class MainHook implements IXposedHookLoadPackage {
             // 隐藏推荐表情
             if (SettingUtils.getValueHideRecommendedExpression()) {
                 chatInterfaceHook.hideRecommendedExpression();
-                DeleteFile.delete("data/data/com.tencent.mobileqq/files", "recommemd_emotion_file_");
             }
 
             // 隐藏好友获得了新徽章
@@ -226,12 +172,7 @@ public class MainHook implements IXposedHookLoadPackage {
                 otherHook.hideSettingFreeFlow();
             }
             if (getQQ_Version().compareTo("7.3.5") >= 0) {
-                // 隐藏聊天图片旁的笑脸按钮
-                if (SettingUtils.getValueHidePicSmile()) {
-                    chatInterfaceHook.hidePicSmile();
-                }
-
-                // 隐藏大家都在搜
+                // 隐藏动态界面大家都在搜
                 if (SettingUtils.getValueHideEveryoneSearching()) {
                     uiHook.hideEveryoneSearching();
                 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_group_member_level"
+        android:title="隐藏群头衔" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_group_member_glamour_level"
+        android:title="隐藏魅力等级" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_group_gift_anim"
+        android:title="隐藏礼物动画" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_group_chat_admissions"
+        android:title="隐藏群聊入场动画" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_group_small_video"
+        android:title="隐藏群消息里的小视频" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_group_helper_remove_tips"
+        android:title="隐藏移出群助手提示" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_pic_smile"
+        android:title="隐藏聊天图片旁的笑脸按钮" />
+</PreferenceScreen>

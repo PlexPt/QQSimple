@@ -11,9 +11,8 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import me.zpp0196.qqsimple.util.SettingUtils;
 
-import static me.zpp0196.qqsimple.hook.RemoveImagine.remove;
+import static me.zpp0196.qqsimple.hook.MainHook.getQQ_Version;
 
 /**
  * Created by zpp0196 on 2018/3/11.
@@ -22,11 +21,9 @@ import static me.zpp0196.qqsimple.hook.RemoveImagine.remove;
 public class ChatInterfaceHook {
 
     private ClassLoader classLoader;
-    private Class<?> id;
 
-    public ChatInterfaceHook(ClassLoader classLoader, Class id) {
+    public ChatInterfaceHook(ClassLoader classLoader) {
         this.classLoader = classLoader;
-        this.id = id;
     }
 
     /**
@@ -83,20 +80,6 @@ public class ChatInterfaceHook {
     public void hideRecommendedExpression() {
         Class<?> EmoticonHandler = getClass("com.tencent.mobileqq.app.EmoticonHandler");
         findAndHookMethod(EmoticonHandler, "c", int.class, XC_MethodReplacement.returnConstant(null));
-    }
-
-    /**
-     * 隐藏聊天图片旁的笑脸按钮
-     */
-    public void hidePicSmile() {
-        remove(getId("pic_light_emoj"));
-    }
-
-    /**
-     * 隐藏聊天界面右上角的 QQ 电话
-     */
-    public void hideChatCall() {
-        remove(getId("ivTitleBtnRightCall"));
     }
 
     /**
@@ -174,41 +157,6 @@ public class ChatInterfaceHook {
     }
 
     /**
-     * 聊天界面底部工具栏
-     */
-    public void hideChatToolbar() {
-        if (SettingUtils.getValueHideChatToolbarVoice()) {
-            remove(getId("qq_aio_panel_ptt"));
-        }
-        if (SettingUtils.getValueHideChatToolbarCamera()) {
-            remove(getId("qq_aio_panel_ptv"));
-        }
-        if (SettingUtils.getValueHideChatToolbarGif()) {
-            remove(getId("qq_aio_panel_hot_pic"));
-        }
-        if (SettingUtils.getValueHideChatToolbarRedEnvelope()) {
-            remove(getId("qq_aio_panel_hongbao"));
-        }
-        if (SettingUtils.getValueHideChatToolbarPoke()) {
-            remove(getId("qq_aio_panel_poke"));
-        }
-    }
-
-    /**
-     * 隐藏群头衔
-     */
-    public void hideGroupMemberLevel() {
-        remove(getId("chat_item_troop_member_level"));
-    }
-
-    /**
-     * 隐藏魅力等级
-     */
-    public void hideGroupMemberGlamourLevel() {
-        remove(getId("chat_item_troop_member_glamour_level"));
-    }
-
-    /**
      * 隐藏礼物动画
      */
     public void hideGroupGiftAnima() {
@@ -237,29 +185,11 @@ public class ChatInterfaceHook {
         }
     }
 
-    /**
-     * 隐藏群消息里的小视频
-     */
-    public void hideGroupSmallVideo() {
-        remove(getId("troop_assistant_feeds_title_small_video"));
-        remove(getId("troop_assistant_feeds_title_super_owner"));
-    }
-
-    /**
-     * 隐藏移出群助手提示
-     */
-    public void hideGroupHelperRemoveTips() {
-        remove(getId("chat_top_bar"));
-        remove(getId("chat_top_bar_confirm_btn"));
-        remove(getId("chat_top_bar_text"));
-        remove(getId("chat_top_bar_btn"));
-    }
-
     private Class<?> getClass(String className) {
         try {
             return classLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            XposedBridge.log(e);
+            XposedBridge.log(String.format("%s can not get className: %s", getQQ_Version(), className));
         }
         return null;
     }
@@ -273,9 +203,5 @@ public class ChatInterfaceHook {
         } catch (Exception e) {
             XposedBridge.log(e);
         }
-    }
-
-    private int getId(String idName) {
-        return XposedHelpers.getStaticIntField(id, idName);
     }
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_avatar_pendant"
+        android:title="隐藏头像挂件" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_chat_bubble"
+        android:title="隐藏个性气泡" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_font_effects"
+        android:title="隐藏字体特效" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_expression_association"
+        android:title="隐藏表情联想" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_recommended_expression"
+        android:title="隐藏推荐表情" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_chat_call"
+        android:title="隐藏右上角的电话" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_get_new_badge"
+        android:title="隐藏好友获得了新徽章" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_new_feed"
+        android:title="隐藏好友新动态" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_chat_unusual_contacts"
+        android:title="隐藏取消隐藏不常用联系人提示" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_chat_sougou_input"
+        android:title="隐藏搜狗输入法广告" />
+    <PreferenceCategory android:title="底部工具栏">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_chat_toolbar_voice"
+            android:title="隐藏语音按钮" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_chat_toolbar_camera"
+            android:title="隐藏拍照按钮" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_chat_toolbar_poke"
+            android:title="隐藏戳一戳按钮" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_chat_toolbar_red_envelope"
+            android:title="隐藏红包按钮" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_chat_toolbar_gif"
+            android:title="隐藏 GIF 按钮" />
+    </PreferenceCategory>
+</PreferenceScreen>

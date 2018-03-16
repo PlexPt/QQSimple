@@ -3,6 +3,7 @@ package me.zpp0196.qqsimple.hook;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -13,7 +14,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.util.SettingUtils;
 
-import static me.zpp0196.qqsimple.hook.RemoveImagine.remove;
+import static me.zpp0196.qqsimple.hook.MainHook.getQQ_Version;
 
 /**
  * Created by zpp0196 on 2018/3/12.
@@ -27,14 +28,6 @@ public class MainUIHook {
     public MainUIHook(ClassLoader classLoader, Class<?> id) {
         this.classLoader = classLoader;
         this.id = id;
-    }
-
-    /**
-     * 隐藏消息界面横幅广告
-     */
-    public void hideChatListHeadAd() {
-        remove(getId("close"));
-        remove(getId("adview1"));
     }
 
     /**
@@ -66,18 +59,57 @@ public class MainUIHook {
     }
 
     /**
-     * 隐藏消息列表未读消息数量
-     */
-    public void hideUncheckedMsgNum() {
-        remove(getId("unchecked_msg_num"));
-    }
-
-    /**
-     * 隐藏大家都在搜
+     * 隐藏隐藏动态界面大家都在搜
      */
     public void hideEveryoneSearching() {
         Class<?> Leba = getClass("com.tencent.mobileqq.activity.Leba");
         findAndHookMethod(Leba, "a", List.class, XC_MethodReplacement.returnConstant(null));
+    }
+
+    /**
+     * 隐藏动态界面更多按钮
+     */
+    public void hideDynamicMore() {
+        findAndHookMethod(TextView.class, "setText", CharSequence.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                CharSequence sequence = (CharSequence) param.args[0];
+                TextView ivTitleBtnRightText = (TextView) param.thisObject;
+                if (ivTitleBtnRightText.getId() == getId("ivTitleBtnRightText") && sequence.equals("更多")) {
+                    ivTitleBtnRightText.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    /**
+     * 隐藏底部分组
+     */
+    public void hideMainFragmentTab() {
+        Class<?> MainFragment = getClass("com.tencent.mobileqq.activity.MainFragment");
+        findAndHookMethod(MainFragment, "a", View.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if (MainFragment != null) {
+                    Field[] fields = MainFragment.getDeclaredFields();
+                    for (Field field : fields) {
+                        field.setAccessible(true);
+                        if (field.getGenericType().toString().contains("[Landroid.view.View") && field.getName().equals("a")) {
+                            View[] views = (View[]) field.get(param.thisObject);
+                            if (SettingUtils.getValueHideTabContact()) {
+                                views[2].setVisibility(View.GONE);
+                            }
+                            if (SettingUtils.getValueHideTabDynamic()) {
+                                views[3].setVisibility(View.GONE);
+                            }
+                            param.setResult(views);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -89,21 +121,23 @@ public class MainUIHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                Field[] fields = new Field[0];
                 if (ContactsViewController != null) {
-                    fields = ContactsViewController.getDeclaredFields();
-                }
-                for (Field field : fields) {
-                    field.setAccessible(true);
-                    if (field.getGenericType().toString().contains("SimpleSlidingIndicator") && field.getName().equals("a")) {
-                        HorizontalScrollView slidingIndicator = (HorizontalScrollView) field.get(param.thisObject);
-                        if (slidingIndicator != null) {
-                            LinearLayout linearLayout = (LinearLayout) slidingIndicator.getChildAt(0);
-                            if (SettingUtils.getValueHideContactsTabPhone()) {
-                                linearLayout.getChildAt(3).setVisibility(View.GONE);
-                            }
-                            if (SettingUtils.getValueHideContactsTabPubAccount()) {
-                                linearLayout.getChildAt(4).setVisibility(View.GONE);
+                    Field[] fields = ContactsViewController.getDeclaredFields();
+                    for (Field field : fields) {
+                        field.setAccessible(true);
+                        if (field.getGenericType().toString().contains("SimpleSlidingIndicator") && field.getName().equals("a")) {
+                            HorizontalScrollView slidingIndicator = (HorizontalScrollView) field.get(param.thisObject);
+                            if (slidingIndicator != null) {
+                                LinearLayout linearLayout = (LinearLayout) slidingIndicator.getChildAt(0);
+                                if (SettingUtils.getValueHideContactsTabDevice()) {
+                                    linearLayout.getChildAt(2).setVisibility(View.GONE);
+                                }
+                                if (SettingUtils.getValueHideContactsTabPhone()) {
+                                    linearLayout.getChildAt(3).setVisibility(View.GONE);
+                                }
+                                if (SettingUtils.getValueHideContactsTabPubAccount()) {
+                                    linearLayout.getChildAt(4).setVisibility(View.GONE);
+                                }
                             }
                         }
                     }
@@ -112,43 +146,15 @@ public class MainUIHook {
         });
     }
 
-    /**
-     * 隐藏入口
-     */
-    public void hideEntry() {
-        if (SettingUtils.getValueHideNewFriendEntry()) {
-            remove(getId("newFriendEntry"));
+    private int getId(String idName) {
+        if (id == null || idName.equals("")) {
+            return 0;
         }
-        if (SettingUtils.getValueHideCreateTroopEntry()) {
-            remove(getId("createTroopEntry"));
-        }
-        if (SettingUtils.getValueHideUnusualContacts()) {
-            remove(getId("unusual_contacts_footerview"));
-        }
-        if (SettingUtils.getValueHideQzoneEntry()) {
-            remove(getId("qzone_feed_entry"));
-        }
-        if (SettingUtils.getValueHideNearEntry()) {
-            remove(getId("near_people_entry"));
-        }
-        if (SettingUtils.getValueHideTribalEntry()) {
-            remove(getId("xingqu_buluo_entry"));
-        }
-    }
-
-    /**
-     * 隐藏头像提示
-     */
-    public void hideAvatarRemind() {
-        if (SettingUtils.getValueHideQzoneAvatarRemind()) {
-            remove(getId("qzone_feed_reddot"));
-            remove(getId("qzone_feed_entry_sub_iv"));
-        }
-        if (SettingUtils.getValueHideNearAvatarRemind()) {
-            remove(getId("nearby_people_entry_sub_iv"));
-        }
-        if (SettingUtils.getValueHideTribalAvatarRemind()) {
-            remove(getId("buluo_entry_sub_iv"));
+        try {
+            return XposedHelpers.getStaticIntField(id, idName);
+        } catch (Exception e) {
+            XposedBridge.log(String.format("%s not found field: %s", getQQ_Version(), idName));
+            return 0;
         }
     }
 
@@ -156,7 +162,7 @@ public class MainUIHook {
         try {
             return classLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            XposedBridge.log(e);
+            XposedBridge.log(String.format("%s can not get className: %s", getQQ_Version(), className));
         }
         return null;
     }
@@ -170,9 +176,5 @@ public class MainUIHook {
         } catch (Exception e) {
             XposedBridge.log(e);
         }
-    }
-
-    private int getId(String idName) {
-        return XposedHelpers.getStaticIntField(id, idName);
     }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:summary="zpp0196"
+        android:title="作者" />
+    <Preference
+        android:summary="祈无 &amp; weishu"
+        android:title="感谢" />
+    <Preference
+        android:key="instructions"
+        android:title="帮助" />
+    <Preference
+        android:key="github_source"
+        android:summary="欢迎提出建议"
+        android:title="Github" />
+    <Preference
+        android:summary="只作学习交流使用，请勿用于商业或非法用途！未经作者允许请勿私自转载！"
+        android:title="声明" />
+</PreferenceScreen>

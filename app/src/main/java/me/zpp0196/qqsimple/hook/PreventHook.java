@@ -17,6 +17,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookConstructor;
+import static me.zpp0196.qqsimple.hook.MainHook.getQQ_Version;
 
 /**
  * Created by zpp0196 on 2018/3/11.
@@ -141,7 +142,7 @@ public class PreventHook {
         try {
             return classLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            XposedBridge.log(e);
+            XposedBridge.log(String.format("%s can not get className: %s", getQQ_Version(), className));
         }
         return null;
     }

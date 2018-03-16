@@ -25,11 +25,6 @@ public class ToastUtils {
         return toastUtils;
     }
 
-    public void showToast(int toastMsg) {
-        toast.setText(toastMsg);
-        toast.show();
-    }
-
     public void showToast(String toastMsg) {
         toast.setText(toastMsg);
         toast.show();
