@@ -59,8 +59,13 @@ public class MainHook implements IXposedHookLoadPackage {
             XposedBridge.log(String.format("%s can not get classloader", getQQ_Version()));
             return;
         }
+
         Class drawable = XposedHelpers.findClass("com.tencent.mobileqq.R$drawable", classLoader);
         Class id = XposedHelpers.findClass("com.tencent.mobileqq.R$id", classLoader);
+
+        if(drawable == null || id == null){
+            return;
+        }
 
         RemoveImagine removeImagine = new RemoveImagine(id, drawable);
         removeImagine.remove();

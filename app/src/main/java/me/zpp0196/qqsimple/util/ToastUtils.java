@@ -29,12 +29,4 @@ public class ToastUtils {
         toast.setText(toastMsg);
         toast.show();
     }
-
-    public void destory() {
-        if (null != toast) {
-            toast.cancel();
-            toast = null;
-        }
-        toastUtils = null;
-    }
 }

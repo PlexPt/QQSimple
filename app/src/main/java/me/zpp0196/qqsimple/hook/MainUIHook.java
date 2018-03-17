@@ -1,6 +1,7 @@
 package me.zpp0196.qqsimple.hook;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -77,7 +78,10 @@ public class MainUIHook {
                 CharSequence sequence = (CharSequence) param.args[0];
                 TextView ivTitleBtnRightText = (TextView) param.thisObject;
                 if (ivTitleBtnRightText.getId() == getId("ivTitleBtnRightText") && sequence.equals("更多")) {
-                    ivTitleBtnRightText.setVisibility(View.GONE);
+                    ViewGroup viewGroup = (ViewGroup) ivTitleBtnRightText.getParent();
+                    if(viewGroup.getClass().getName().contains("RelativeLayout")){
+                        ivTitleBtnRightText.setVisibility(View.GONE);
+                    }
                 }
             }
         });

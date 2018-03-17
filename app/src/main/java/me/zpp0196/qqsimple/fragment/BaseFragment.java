@@ -26,14 +26,12 @@ public abstract class BaseFragment extends PreferenceFragment implements SharedP
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(setPrefs());
         setWorldReadable();
-        toastUtils = ToastUtils.getInstance(getActivity());
         initData();
     }
 
     protected abstract int setPrefs();
 
-    protected void initData() {
-    }
+    protected void initData() {}
 
     @Override
     public void onPause() {
@@ -45,19 +43,16 @@ public abstract class BaseFragment extends PreferenceFragment implements SharedP
     @Override
     public void onResume() {
         super.onResume();
+        if(toastUtils == null){
+            toastUtils = ToastUtils.getInstance(getActivity());
+        }
         PreferenceManager.getDefaultSharedPreferences(getActivity()).registerOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        toastUtils.destory();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (!key.equals(KEY_DESKTOP_ICON)) {
-            toastUtils.showToast("设置已保存，重启 QQ 生效！");
+            showToast("设置已保存，重启 QQ 生效！");
         }
     }
 
@@ -80,6 +75,8 @@ public abstract class BaseFragment extends PreferenceFragment implements SharedP
     }
 
     protected void showToast(String msg) {
-        toastUtils.showToast(msg);
+        if(toastUtils != null) {
+            toastUtils.showToast(msg);
+        }
     }
 }
