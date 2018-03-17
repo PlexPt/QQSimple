@@ -1,7 +1,6 @@
 package me.zpp0196.qqsimple.hook;
 
 import android.app.Application;
-import android.content.Context;
 import android.os.Build;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -12,36 +11,25 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import me.zpp0196.qqsimple.util.SettingUtils;
 
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
-import static me.zpp0196.qqsimple.Common.getQQVersion;
 
 /**
  * Created by Deng on 2018/1/6.
  */
 
-public class MainHook implements IXposedHookLoadPackage {
-
-    /**
-     * 获取 QQ 版本
-     *
-     * @return
-     */
-    public static String getQQ_Version() {
-        Context context = (Context) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("android.app.ActivityThread", null), "currentActivityThread", new Object[0]), "getSystemContext", new Object[0]);
-        return getQQVersion(context);
-    }
+public class MainHook extends BaseHook implements IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         new CheckActive().handleLoadPackage(loadPackageParam);
         if (!loadPackageParam.packageName.equals(PACKAGE_NAME_QQ)) return;
         if (SettingUtils.getValueCloseAll()) return;
-        findAndHookMethod("com.tencent.mobileqq.app.InjectUtils", loadPackageParam.classLoader, "injectExtraDexes",
+        XposedHelpers.findAndHookMethod("com.tencent.mobileqq.app.InjectUtils", loadPackageParam.classLoader, "injectExtraDexes",
                 Application.class, boolean.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         final Application application = (Application) param.args[0];
                         if (Build.VERSION.SDK_INT < 21) {
-                            findAndHookMethod("com.tencent.common.app.BaseApplicationImpl", application.getClassLoader(), "onCreate", new XC_MethodHook() {
+                            XposedHelpers.findAndHookMethod("com.tencent.common.app.BaseApplicationImpl", application.getClassLoader(), "onCreate", new XC_MethodHook() {
                                 @Override
                                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                                     startHook(application.getClassLoader());
@@ -183,14 +171,6 @@ public class MainHook implements IXposedHookLoadPackage {
                     uiHook.hideEveryoneSearching();
                 }
             }
-        }
-    }
-
-    private void findAndHookMethod(String className, ClassLoader classLoader, String methodName, Object... parameterTypesAndCallback) {
-        try {
-            XposedHelpers.findAndHookMethod(className, classLoader, methodName, parameterTypesAndCallback);
-        } catch (Exception e) {
-            XposedBridge.log(e);
         }
     }
 }

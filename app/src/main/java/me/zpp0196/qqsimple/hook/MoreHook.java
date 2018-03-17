@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -20,21 +19,17 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookConstructor;
-import static me.zpp0196.qqsimple.hook.MainHook.getQQ_Version;
-
 /**
  * Created by zpp0196 on 2018/3/11.
  */
 
-public class MoreHook {
+public class MoreHook extends BaseHook{
 
-    private ClassLoader classLoader;
     private boolean isRevoke = false;
     private ArrayList messageuin = new ArrayList();
 
     public MoreHook(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+        setClassLoader(classLoader);
     }
 
     /**
@@ -129,7 +124,7 @@ public class MoreHook {
             }
         });
         Class<?> UniteGrayTipParam = getClass("com.tencent.mobileqq.graytip.UniteGrayTipParam");
-        findAndHookConstructor(UniteGrayTipParam, String.class, String.class, String.class, int.class, int.class, int.class, long.class, new XC_MethodHook() {
+        XposedHelpers.findAndHookConstructor(UniteGrayTipParam, String.class, String.class, String.class, int.class, int.class, int.class, long.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
@@ -151,46 +146,20 @@ public class MoreHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                if(Conversation != null){
-                    Field[] fields = Conversation.getDeclaredFields();
-                    for(Field field : fields) {
-                        field.setAccessible(true);
-                        if (field.getGenericType().toString().contains("RelativeLayout") && field.getName().equals("b")) {
-                            ViewGroup viewGroup = (ViewGroup) field.get(param.thisObject);
-                            viewGroup.setOnClickListener(v -> {
-                                new Thread(() -> {
-                                    try {
-                                        Instrumentation inst = new Instrumentation();
-                                        inst.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }).start();
-                            });
-                        }
-                    }
+                ViewGroup viewGroup = findField(Conversation, "RelativeLayout", "b", param);
+                if(viewGroup != null){
+                    viewGroup.setOnClickListener(v -> {
+                        new Thread(() -> {
+                            try {
+                                Instrumentation inst = new Instrumentation();
+                                inst.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }).start();
+                    });
                 }
             }
         });
-    }
-
-    private Class<?> getClass(String className) {
-        try {
-            return classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            XposedBridge.log(String.format("%s can not get className: %s", getQQ_Version(), className));
-        }
-        return null;
-    }
-
-    private void findAndHookMethod(Class<?> clazz, String methodName, Object... parameterTypesAndCallback) {
-        if (clazz == null) {
-            return;
-        }
-        try {
-            XposedHelpers.findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
-        } catch (Exception e) {
-            XposedBridge.log(e);
-        }
     }
 }

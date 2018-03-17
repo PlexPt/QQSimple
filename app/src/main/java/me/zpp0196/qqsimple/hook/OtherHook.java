@@ -6,21 +6,16 @@ import android.os.Bundle;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-
-import static me.zpp0196.qqsimple.hook.MainHook.getQQ_Version;
 
 /**
  * Created by zpp0196 on 2018/3/11.
  */
 
-public class OtherHook {
-
-    private ClassLoader classLoader;
+public class OtherHook extends BaseHook{
 
     public OtherHook(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+        setClassLoader(classLoader);
     }
 
     /**
@@ -49,14 +44,5 @@ public class OtherHook {
     public void hideSettingFreeFlow() {
         Class<?> QQSettingSettingActivity = getClass("com.tencent.mobileqq.activity.QQSettingSettingActivity");
         XposedHelpers.findAndHookMethod(QQSettingSettingActivity, "a", XC_MethodReplacement.returnConstant(null));
-    }
-
-    private Class<?> getClass(String className) {
-        try {
-            return classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            XposedBridge.log(String.format("%s can not get className: %s", getQQ_Version(), className));
-        }
-        return null;
     }
 }

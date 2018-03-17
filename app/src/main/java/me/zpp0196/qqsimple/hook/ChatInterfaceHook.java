@@ -9,21 +9,16 @@ import java.lang.reflect.Field;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-
-import static me.zpp0196.qqsimple.hook.MainHook.getQQ_Version;
 
 /**
  * Created by zpp0196 on 2018/3/11.
  */
 
-public class ChatInterfaceHook {
-
-    private ClassLoader classLoader;
+public class ChatInterfaceHook extends BaseHook{
 
     public ChatInterfaceHook(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+        setClassLoader(classLoader);
     }
 
     /**
@@ -182,26 +177,6 @@ public class ChatInterfaceHook {
                     }
                 }
             }
-        }
-    }
-
-    private Class<?> getClass(String className) {
-        try {
-            return classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            XposedBridge.log(String.format("%s can not get className: %s", getQQ_Version(), className));
-        }
-        return null;
-    }
-
-    private void findAndHookMethod(Class<?> clazz, String methodName, Object... parameterTypesAndCallback) {
-        if (clazz == null) {
-            return;
-        }
-        try {
-            XposedHelpers.findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
-        } catch (Exception e) {
-            XposedBridge.log(e);
         }
     }
 }

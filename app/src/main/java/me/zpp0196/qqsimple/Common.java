@@ -100,14 +100,13 @@ public class Common {
     }
 
     public static String getQQVersion(Context context) {
-        String version = "0.0";
         if (context != null) {
             try {
-                version = context.getPackageManager().getPackageInfo(PACKAGE_NAME_QQ, 0).versionName;
+                return context.getPackageManager().getPackageInfo(PACKAGE_NAME_QQ, 0).versionName;
             } catch (Exception e) {
                 XposedBridge.log(e);
             }
         }
-        return version;
+        return "0.0";
     }
 }

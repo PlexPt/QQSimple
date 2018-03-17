@@ -1,45 +1,16 @@
 package me.zpp0196.qqsimple.hook;
 
-import android.content.res.Resources;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.util.SettingUtils;
-
-import static me.zpp0196.qqsimple.hook.MainHook.getQQ_Version;
 
 /**
  * Created by Deng on 2018/2/16.
  */
 
-public class RemoveImagine {
-
-    private Class<?> id;
-    private Class<?> drawable;
+public class RemoveImagine extends BaseHook{
 
     public RemoveImagine(Class<?> id, Class<?> drawable) {
-        this.id = id;
-        this.drawable = drawable;
-    }
-
-    private void remove(int id, boolean isHide) {
-        XposedHelpers.findAndHookMethod(View.class, "setLayoutParams", ViewGroup.LayoutParams.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                View view = (View) param.thisObject;
-                if(isHide && view.getId() == id) {
-                    ViewGroup.LayoutParams layoutParams = (ViewGroup.LayoutParams) param.args[0];
-                    layoutParams.height = 1;
-                    layoutParams.width = 0;
-                    view.setVisibility(View.GONE);
-                }
-            }
-        });
+        setId(id);
+        setDrawable(drawable);
     }
 
     public void hideView() {
@@ -153,27 +124,6 @@ public class RemoveImagine {
         }
     }
 
-    private void removeDrawable(int id, boolean isHide) {
-        XposedHelpers.findAndHookMethod(Resources.class, "getDrawable", int.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if(isHide && (int) param.args[0] == id){
-                    param.args[0] = getDrawableId("skin_searchbar_button_pressed_theme_version2");
-                }
-            }
-        });
-        XposedHelpers.findAndHookMethod(ImageView.class, "setImageResource", int.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if(isHide && (int) param.args[0] == id){
-                    param.args[0] = getDrawableId("skin_searchbar_button_pressed_theme_version2");
-                }
-            }
-        });
-    }
-
     public void hideDrawable() {
         boolean hideRedDot = SettingUtils.getValueHideSomeRedDot();
         removeDrawable(getDrawableId("skin_tips_dot"), hideRedDot);
@@ -181,30 +131,6 @@ public class RemoveImagine {
         removeDrawable(getDrawableId("skin_tips_new"), hideRedDot);
         if(getQQ_Version().compareTo("7.3.5") > 0){
             removeDrawable(getDrawableId("shortvideo_redbag_outicon"), hideRedDot);
-        }
-    }
-
-    private int getId(String idName) {
-        if (id == null || idName.equals("")) {
-            return 0;
-        }
-        try {
-            return XposedHelpers.getStaticIntField(id, idName);
-        } catch (Exception e) {
-            XposedBridge.log(String.format("%s not found field: %s", getQQ_Version(), idName));
-            return 0;
-        }
-    }
-
-    private int getDrawableId(String drawableName) {
-        if (drawable == null || drawableName.equals("")) {
-            return 0;
-        }
-        try {
-            return XposedHelpers.getStaticIntField(drawable, drawableName);
-        } catch (Exception e) {
-            XposedBridge.log(String.format("%s not found field: %s", getQQ_Version(), drawableName));
-            return 0;
         }
     }
 }
