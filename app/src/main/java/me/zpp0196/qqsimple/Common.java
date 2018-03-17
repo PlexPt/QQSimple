@@ -12,7 +12,7 @@ public class Common {
 
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
 
-    public static final String KEY_HIDE_SEARCH_BOX = "hide_search_box";
+    public static final String KEY_HIDE_SEARCH_CONTAINER = "hide_search_container";
     public static final String KEY_HIDE_TAB_CONTACT = "hide_tab_contact";
     public static final String KEY_HIDE_TAB_DYNAMIC = "hide_tab_dynamic";
     public static final String KEY_HIDE_CHAT_LIST_HEAD_AD = "hide_chat_list_head_ad";
@@ -26,6 +26,7 @@ public class Common {
     public static final String KEY_HIDE_CONTACTS_TAB_PUB_ACCOUNT = "hide_contacts_tab_pub_account";
     public static final String KEY_HIDE_UNUSUAL_CONTACTS = "hide_unusual_contacts";
     public static final String KEY_HIDE_EVERYONE_SEARCHING = "hide_everyone_searching";
+    public static final String KEY_HIDE_LEB_SEARCH_ENTRY = "hide_leb_search_entry";
     public static final String KEY_HIDE_DYNAMIC_MORE = "hide_dynamic_more";
     public static final String KEY_HIDE_QZONE_ENTRY = "hide_qzone_entry";
     public static final String KEY_HIDE_NEAR_ENTRY = "hide_near_entry";
@@ -61,6 +62,7 @@ public class Common {
     public static final String KEY_HIDE_CHAT_UNUSUAL_CONTACTS = "hide_chat_unusual_contacts";
     public static final String KEY_HIDE_CHAT_SOUGOU_AD = "hide_chat_sougou_ad";
     public static final String KEY_HIDE_CHAT_TOOLBAR_VOICE = "hide_chat_toolbar_voice";
+    public static final String KEY_HIDE_CHAT_TOOLBAR_PIC = "hide_chat_toolbar_pic";
     public static final String KEY_HIDE_CHAT_TOOLBAR_CAMERA = "hide_chat_toolbar_camera";
     public static final String KEY_HIDE_CHAT_TOOLBAR_POKE = "hide_chat_toolbar_poke";
     public static final String KEY_HIDE_CHAT_TOOLBAR_RED_ENVELOPE = "hide_chat_toolbar_red_envelope";
@@ -85,8 +87,10 @@ public class Common {
 
     public static final String KEY_PREVENT_FLASH_DISAPPEAR = "prevent_flash_disappear";
     public static final String KEY_PREVENT_MESSAGES_WITHDRAWN = "prevent_messages_withdrawn";
+    public static final String KEY_SIMULATE_MENU = "simulate_menu";
     public static final String KEY_CLOSE_ALL = "close_all";
     public static final String KEY_DESKTOP_ICON = "desktop_icon";
+    public static final String KEY_SETTING_QQ = "setting_qq";
 
     public static final String KEY_INSTRUCTIONS = "instructions";
     public static final String KEY_GITHUB_SOURCE = "github_source";

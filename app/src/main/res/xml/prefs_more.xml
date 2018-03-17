@@ -9,6 +9,11 @@
         android:defaultValue="false"
         android:key="prevent_messages_withdrawn"
         android:title="防止消息撤回" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="simulate_menu"
+        android:summary="点击消息列表顶部模拟菜单键（Flyme 用户可以考虑）"
+        android:title="模拟菜单"/>
     <PreferenceCategory android:title="模块设置">
         <CheckBoxPreference
             android:defaultValue="false"
@@ -20,5 +25,11 @@
             android:key="desktop_icon"
             android:summary="隐藏后可以通过 Xposed 框架打开本模块"
             android:title="隐藏桌面图标" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="其他">
+        <Preference
+            android:key="setting_qq"
+            android:summary="一般用于强行停止 QQ 来确保模块更新内容可以生效"
+            android:title="管理 QQ" />
     </PreferenceCategory>
 </PreferenceScreen>

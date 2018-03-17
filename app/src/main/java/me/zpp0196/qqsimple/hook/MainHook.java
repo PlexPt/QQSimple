@@ -68,12 +68,13 @@ public class MainHook implements IXposedHookLoadPackage {
         }
 
         RemoveImagine removeImagine = new RemoveImagine(id, drawable);
-        removeImagine.remove();
-        removeImagine.removeDrawable();
+        removeImagine.hideView();
+        removeImagine.hideDrawable();
+
         MainUIHook uiHook = new MainUIHook(classLoader, id);
         ChatInterfaceHook chatInterfaceHook = new ChatInterfaceHook(classLoader);
         OtherHook otherHook = new OtherHook(classLoader);
-        PreventHook preventHook = new PreventHook(classLoader);
+        MoreHook moreHook = new MoreHook(classLoader);
 
         // 隐藏更新提醒
         if (SettingUtils.getValueHideUpdateReminder()) {
@@ -148,12 +149,17 @@ public class MainHook implements IXposedHookLoadPackage {
 
         // 防止闪照消失
         if (SettingUtils.getValuePreventFlashDisappear()) {
-            preventHook.preventFlashDisappear();
+            moreHook.preventFlashDisappear();
         }
 
         // 防止消息撤回
         if (SettingUtils.getValuePreventMessagesWithdrawn()) {
-            preventHook.preventMessagesWithdrawn();
+            moreHook.preventMessagesWithdrawn();
+        }
+
+        // 模拟菜单
+        if(SettingUtils.getValueSimulateMenu()){
+            moreHook.simulateMenu();
         }
 
         if (getQQ_Version().compareTo("7.3.2") >= 0) {

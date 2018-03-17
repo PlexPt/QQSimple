@@ -14,6 +14,7 @@ import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_LIST_HEAD_AD;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_SOUGOU_AD;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_TOOLBAR_CAMERA;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_TOOLBAR_GIF;
+import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_TOOLBAR_PIC;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_TOOLBAR_POKE;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_TOOLBAR_RED_ENVELOPE;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_TOOLBAR_VOICE;
@@ -43,7 +44,8 @@ import static me.zpp0196.qqsimple.Common.KEY_HIDE_QZONE_AD;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_QZONE_AVATAR_REMIND;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_QZONE_ENTRY;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_RECOMMENDED_EXPRESSION;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SEARCH_BOX;
+import static me.zpp0196.qqsimple.Common.KEY_HIDE_LEB_SEARCH_ENTRY;
+import static me.zpp0196.qqsimple.Common.KEY_HIDE_SEARCH_CONTAINER;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_SETTING_CLEAR;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_SETTING_FREE_FLOW;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_SETTING_PHONE_NUMBER;
@@ -74,6 +76,7 @@ import static me.zpp0196.qqsimple.Common.KEY_HIDE_UNUSUAL_CONTACTS;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_UPDATE_REMINDER;
 import static me.zpp0196.qqsimple.Common.KEY_PREVENT_FLASH_DISAPPEAR;
 import static me.zpp0196.qqsimple.Common.KEY_PREVENT_MESSAGES_WITHDRAWN;
+import static me.zpp0196.qqsimple.Common.KEY_SIMULATE_MENU;
 
 /**
  * Created by Deng on 2018/1/12.
@@ -95,8 +98,8 @@ public class SettingUtils {
         return preferences;
     }
 
-    public static boolean getValueHideSearchBox() {
-        return getValue(KEY_HIDE_SEARCH_BOX);
+    public static boolean getValueHideSearchContainer() {
+        return getValue(KEY_HIDE_SEARCH_CONTAINER);
     }
 
     public static boolean getValueHideTabContact() {
@@ -149,6 +152,10 @@ public class SettingUtils {
 
     public static boolean getValueHideEveryoneSearching() {
         return getValue(KEY_HIDE_EVERYONE_SEARCHING);
+    }
+
+    public static boolean getValueHideLebSearchEntry() {
+        return getValue(KEY_HIDE_LEB_SEARCH_ENTRY);
     }
 
     public static boolean getValueHideDynamicMore() {
@@ -283,6 +290,10 @@ public class SettingUtils {
         return getValue(KEY_HIDE_CHAT_TOOLBAR_VOICE);
     }
 
+    public static boolean getValueHideChatToolbarPic() {
+        return getValue(KEY_HIDE_CHAT_TOOLBAR_PIC);
+    }
+
     public static boolean getValueHideChatToolbarCamera() {
         return getValue(KEY_HIDE_CHAT_TOOLBAR_CAMERA);
     }
@@ -365,6 +376,10 @@ public class SettingUtils {
 
     public static boolean getValuePreventMessagesWithdrawn() {
         return getValue(KEY_PREVENT_MESSAGES_WITHDRAWN);
+    }
+
+    public static boolean getValueSimulateMenu() {
+        return getValue(KEY_SIMULATE_MENU);
     }
 
     public static boolean getValueCloseAll() {

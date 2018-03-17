@@ -2,8 +2,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="hide_search_box"
-        android:title="隐藏搜索框" />
+        android:key="hide_search_container"
+        android:title="隐藏消息和联系人界面搜索框" />
     <PreferenceCategory android:title="底部分组">
         <CheckBoxPreference
             android:defaultValue="false"
@@ -63,6 +63,10 @@
             android:defaultValue="false"
             android:key="hide_everyone_searching"
             android:title="隐藏大家都在搜" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_leb_search_entry"
+            android:title="隐藏搜索框" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_dynamic_more"

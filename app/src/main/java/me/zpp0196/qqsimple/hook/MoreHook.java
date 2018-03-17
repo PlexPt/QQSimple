@@ -1,13 +1,17 @@
 package me.zpp0196.qqsimple.hook;
 
+import android.app.Instrumentation;
 import android.os.Build;
 import android.os.SystemClock;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -23,13 +27,13 @@ import static me.zpp0196.qqsimple.hook.MainHook.getQQ_Version;
  * Created by zpp0196 on 2018/3/11.
  */
 
-public class PreventHook {
+public class MoreHook {
 
     private ClassLoader classLoader;
     private boolean isRevoke = false;
     private ArrayList messageuin = new ArrayList();
 
-    public PreventHook(ClassLoader classLoader) {
+    public MoreHook(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
@@ -134,6 +138,38 @@ public class PreventHook {
                     message = message.replace("撤回了", "尝试撤回");
                 }
                 param.args[2] = message;
+            }
+        });
+    }
+
+    /**
+     * 模拟菜单
+     */
+    public void simulateMenu(){
+        Class<?> Conversation = getClass("com.tencent.mobileqq.activity.Conversation");
+        findAndHookMethod(Conversation, "D", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if(Conversation != null){
+                    Field[] fields = Conversation.getDeclaredFields();
+                    for(Field field : fields) {
+                        field.setAccessible(true);
+                        if (field.getGenericType().toString().contains("RelativeLayout") && field.getName().equals("b")) {
+                            ViewGroup viewGroup = (ViewGroup) field.get(param.thisObject);
+                            viewGroup.setOnClickListener(v -> {
+                                new Thread(() -> {
+                                    try {
+                                        Instrumentation inst = new Instrumentation();
+                                        inst.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }).start();
+                            });
+                        }
+                    }
+                }
             }
         });
     }

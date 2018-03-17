@@ -19,7 +19,7 @@
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="hide_group_small_video"
-        android:title="隐藏群消息里的小视频" />
+        android:title="隐藏群助手里的小视频" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="hide_group_helper_remove_tips"

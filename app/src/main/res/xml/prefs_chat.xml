@@ -47,6 +47,10 @@
             android:title="隐藏语音按钮" />
         <CheckBoxPreference
             android:defaultValue="false"
+            android:key="hide_chat_toolbar_pic"
+            android:title="隐藏图片按钮" />
+        <CheckBoxPreference
+            android:defaultValue="false"
             android:key="hide_chat_toolbar_camera"
             android:title="隐藏拍照按钮" />
         <CheckBoxPreference

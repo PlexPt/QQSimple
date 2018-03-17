@@ -2,20 +2,25 @@ package me.zpp0196.qqsimple.fragment;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.preference.TwoStatePreference;
+import android.provider.Settings;
 
 import me.zpp0196.qqsimple.BuildConfig;
 import me.zpp0196.qqsimple.R;
 
 import static me.zpp0196.qqsimple.Common.KEY_DESKTOP_ICON;
+import static me.zpp0196.qqsimple.Common.KEY_SETTING_QQ;
+import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
 
 /**
  * Created by zpp0196 on 2018/3/15.
  */
 
-public class MoreFragment extends BaseFragment implements Preference.OnPreferenceChangeListener {
+public class MoreFragment extends BaseFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
     @Override
     protected int setPrefs() {
         return R.xml.prefs_more;
@@ -23,9 +28,10 @@ public class MoreFragment extends BaseFragment implements Preference.OnPreferenc
 
     @Override
     protected void initData() {
-        TwoStatePreference desktopIcon = (TwoStatePreference) getPreferenceScreen().findPreference(KEY_DESKTOP_ICON);
+        CheckBoxPreference desktopIcon = (CheckBoxPreference)findPreference(KEY_DESKTOP_ICON);
         desktopIcon.setChecked(!getEnable());
         desktopIcon.setOnPreferenceChangeListener(this);
+        findPreference(KEY_SETTING_QQ).setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -40,6 +46,18 @@ public class MoreFragment extends BaseFragment implements Preference.OnPreferenc
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        if(preference.getKey().equals(KEY_SETTING_QQ)){
+            try {
+                startActivity(new Intent().setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + PACKAGE_NAME_QQ)));
+            }catch (Exception e){
+                showToast(e.getMessage());
+            }
+        }
+        return false;
     }
 
     private ComponentName getAlias() {
