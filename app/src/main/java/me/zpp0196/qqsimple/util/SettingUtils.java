@@ -64,7 +64,6 @@ import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_QQ_INFO;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_THEME_NIGHT;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_VIP;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_SOME_RED_DOT;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SPLASH_AD;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_TAB_CONTACT;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_TAB_DYNAMIC;
 import static me.zpp0196.qqsimple.Common.KEY_HIDE_TIM_IN_MY_FILE;
@@ -330,10 +329,6 @@ public class SettingUtils {
 
     public static boolean getValueCloseAllAnimation() {
         return getValue(KEY_CLOSE_ALL_ANIMATION);
-    }
-
-    public static boolean getValueHideSplashAd() {
-        return getValue(KEY_HIDE_SPLASH_AD);
     }
 
     public static boolean getValueHideSomeRedDot() {

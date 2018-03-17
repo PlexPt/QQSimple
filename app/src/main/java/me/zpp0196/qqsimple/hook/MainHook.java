@@ -141,11 +141,6 @@ public class MainHook implements IXposedHookLoadPackage {
             otherHook.closeAllAnimation();
         }
 
-        // 隐藏启动图广告
-        if (SettingUtils.getValueHideSplashAd()) {
-            otherHook.hideSplashAd();
-        }
-
         // 防止闪照消失
         if (SettingUtils.getValuePreventFlashDisappear()) {
             preventHook.preventFlashDisappear();

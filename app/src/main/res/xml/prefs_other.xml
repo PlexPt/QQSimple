@@ -6,10 +6,6 @@
         android:title="完全关闭动画" />
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="hide_splash_ad"
-        android:title="隐藏启动图广告" />
-    <CheckBoxPreference
-        android:defaultValue="false"
         android:key="hide_some_red_dot"
         android:title="隐藏部分小红点" />
     <CheckBoxPreference

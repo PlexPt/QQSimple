@@ -3,9 +3,6 @@ package me.zpp0196.qqsimple.hook;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
-
-import java.io.File;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -42,21 +39,6 @@ public class OtherHook {
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
                 ((Intent) param.args[0]).putExtra("open_chatfragment_withanim", false);
-            }
-        });
-    }
-
-    /**
-     * 隐藏启动图广告
-     */
-    public void hideSplashAd() {
-        XposedHelpers.findAndHookConstructor(File.class, String.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (param.args[0].toString().contains("com.tencent.mobileqq") && param.args[0].toString().contains("splashpic")) {
-                    param.args[0] = new File(Environment.getExternalStorageDirectory(), "tencent").getAbsolutePath();
-                }
             }
         });
     }

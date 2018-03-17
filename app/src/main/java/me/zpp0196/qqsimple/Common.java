@@ -75,7 +75,6 @@ public class Common {
     public static final String KEY_HIDE_PIC_SMILE = "hide_pic_smile";
 
     public static final String KEY_CLOSE_ALL_ANIMATION = "close_all_animation";
-    public static final String KEY_HIDE_SPLASH_AD = "hide_splash_ad";
     public static final String KEY_HIDE_SOME_RED_DOT = "hide_some_red_dot";
     public static final String KEY_HIDE_TIM_IN_MY_FILE = "hide_tim_in_my_file";
     public static final String KEY_HIDE_QZONE_AD = "hide_qzone_ad";
