@@ -147,7 +147,7 @@ public class RemoveImagine {
         qqsetting2_newXmanLayout = getId("qqsetting2_newXmanLayout");
         qqsetting2_msg_qqclean = getId("qqsetting2_msg_qqclean");
         shuoshuo_ad_upload_quality = getId("shuoshuo_ad_upload_quality");
-        quality_hd_ad = getId("quality_ad");
+        quality_hd_ad = getId("quality_hd_ad");
         quality_ad = getId("quality_ad");
         pic_light_emoj = getId("pic_light_emoj");
         skin_tips_dot = getDrawableId("skin_tips_dot");
