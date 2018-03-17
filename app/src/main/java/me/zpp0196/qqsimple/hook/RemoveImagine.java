@@ -105,7 +105,7 @@ public class RemoveImagine {
         qzone_feed_entry_sub_iv = getId("qzone_feed_entry_sub_iv");
         nearby_people_entry_sub_iv = getId("nearby_people_entry_sub_iv");
         buluo_entry_sub_iv = getId("buluo_entry_sub_iv");
-        ivTitleBtnRightCall = getId("qzone_feed_entry_sub_iv");
+        ivTitleBtnRightCall = getId("ivTitleBtnRightCall");
         mydaily = getId("mydaily");
         qr_code_icon = getId("qr_code_icon");
         nickname_area = getId("nickname_area");

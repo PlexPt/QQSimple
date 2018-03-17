@@ -4,7 +4,7 @@
         android:summary="zpp0196"
         android:title="作者" />
     <Preference
-        android:summary="祈无 &amp; weishu"
+        android:summary="祈无 &amp; weishu &amp; sftmi"
         android:title="感谢" />
     <Preference
         android:key="instructions"
