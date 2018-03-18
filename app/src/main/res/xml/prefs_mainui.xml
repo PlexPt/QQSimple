@@ -13,6 +13,10 @@
             android:defaultValue="false"
             android:key="hide_tab_dynamic"
             android:title="隐藏动态" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_tab_msg_num"
+            android:title="隐藏消息数量" />
     </PreferenceCategory>
     <PreferenceCategory android:title="消息列表界面">
         <CheckBoxPreference
@@ -29,8 +33,8 @@
             android:title="隐藏全民闯关入口" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="hide_unchecked_msg_num"
-            android:title="隐藏未读消息数量" />
+            android:key="hide_unreadmsg"
+            android:title="隐藏右侧未读消息数量" />
     </PreferenceCategory>
     <PreferenceCategory android:title="联系人界面">
         <CheckBoxPreference
@@ -67,10 +71,6 @@
             android:defaultValue="false"
             android:key="hide_leb_search_entry"
             android:title="隐藏搜索框" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="hide_dynamic_more"
-            android:title="隐藏更多" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_qzone_entry"

@@ -15,10 +15,11 @@ public class Common {
     public static final String KEY_HIDE_SEARCH_CONTAINER = "hide_search_container";
     public static final String KEY_HIDE_TAB_CONTACT = "hide_tab_contact";
     public static final String KEY_HIDE_TAB_DYNAMIC = "hide_tab_dynamic";
+    public static final String KEY_HIDE_TAB_MSG_NUM = "hide_tab_msg_num";
     public static final String KEY_HIDE_CHAT_LIST_HEAD_AD = "hide_chat_list_head_ad";
     public static final String KEY_HIDE_UPDATE_REMINDER = "hide_update_reminder";
     public static final String KEY_HIDE_NATIONAL_ENTRANCE = "hide_national_entrance";
-    public static final String KEY_HIDE_UNCHECKED_MSG_NUM = "hide_unchecked_msg_num";
+    public static final String KEY_HIDE_UNREADMSG = "hide_unreadmsg";
     public static final String KEY_HIDE_NEW_FRIEND_ENTRY = "hide_new_friend_entry";
     public static final String KEY_HIDE_CREATE_TROOP_ENTRY = "hide_create_troop_entry";
     public static final String KEY_HIDE_CONTACTS_TAB_DEVICE = "hide_contacts_tab_device";
@@ -27,7 +28,6 @@ public class Common {
     public static final String KEY_HIDE_UNUSUAL_CONTACTS = "hide_unusual_contacts";
     public static final String KEY_HIDE_EVERYONE_SEARCHING = "hide_everyone_searching";
     public static final String KEY_HIDE_LEB_SEARCH_ENTRY = "hide_leb_search_entry";
-    public static final String KEY_HIDE_DYNAMIC_MORE = "hide_dynamic_more";
     public static final String KEY_HIDE_QZONE_ENTRY = "hide_qzone_entry";
     public static final String KEY_HIDE_NEAR_ENTRY = "hide_near_entry";
     public static final String KEY_HIDE_TRIBAL_ENTRY = "hide_tribal_entry";
@@ -59,6 +59,7 @@ public class Common {
     public static final String KEY_HIDE_CHAT_CALL = "hide_chat_call";
     public static final String KEY_HIDE_GET_NEW_BADGE = "hide_get_new_badge";
     public static final String KEY_HIDE_NEW_FEED = "hide_new_feed";
+    public static final String KEY_HIDE_NEW_SIGNATURE = "hide_new_signature";
     public static final String KEY_HIDE_CHAT_UNUSUAL_CONTACTS = "hide_chat_unusual_contacts";
     public static final String KEY_HIDE_CHAT_SOUGOU_AD = "hide_chat_sougou_ad";
     public static final String KEY_HIDE_CHAT_TOOLBAR_VOICE = "hide_chat_toolbar_voice";
@@ -74,7 +75,7 @@ public class Common {
     public static final String KEY_HIDE_GROUP_CHAT_ADMISSIONS = "hide_group_chat_admissions";
     public static final String KEY_HIDE_GROUP_SMALL_VIDEO = "hide_group_small_video";
     public static final String KEY_HIDE_GROUP_HELPER_REMOVE_TIPS = "hide_group_helper_remove_tips";
-    public static final String KEY_HIDE_PIC_SMILE = "hide_pic_smile";
+    public static final String KEY_HIDE_GROUP_STICK_FACE = "hide_group_stick_face";
 
     public static final String KEY_CLOSE_ALL_ANIMATION = "close_all_animation";
     public static final String KEY_HIDE_SOME_RED_DOT = "hide_some_red_dot";
@@ -91,6 +92,8 @@ public class Common {
     public static final String KEY_CLOSE_ALL = "close_all";
     public static final String KEY_DESKTOP_ICON = "desktop_icon";
     public static final String KEY_SETTING_QQ = "setting_qq";
+    public static final String KEY_HIDE_VIEW_DIY = "hide_view_diy";
+    public static final String KEY_TEST_HELP = "test_help";
 
     public static final String KEY_INSTRUCTIONS = "instructions";
     public static final String KEY_GITHUB_SOURCE = "github_source";

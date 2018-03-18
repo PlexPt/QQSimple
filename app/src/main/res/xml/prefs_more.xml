@@ -13,7 +13,7 @@
         android:defaultValue="false"
         android:key="simulate_menu"
         android:summary="点击消息列表顶部模拟菜单键（Flyme 用户可以考虑）"
-        android:title="模拟菜单"/>
+        android:title="模拟菜单" />
     <PreferenceCategory android:title="模块设置">
         <CheckBoxPreference
             android:defaultValue="false"
@@ -31,5 +31,14 @@
             android:key="setting_qq"
             android:summary="一般用于强行停止 QQ 来确保模块更新内容可以生效"
             android:title="管理 QQ" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="测试功能">
+        <EditTextPreference
+            android:dialogTitle="请输入控件ID："
+            android:key="hide_view_diy"
+            android:title="自定义隐藏" />
+        <Preference
+            android:key="test_help"
+            android:title="测试功能介绍" />
     </PreferenceCategory>
 </PreferenceScreen>

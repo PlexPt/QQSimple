@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -21,7 +22,6 @@ import me.zpp0196.qqsimple.fragment.MainUIFragment;
 import me.zpp0196.qqsimple.fragment.MoreFragment;
 import me.zpp0196.qqsimple.fragment.OtherFragment;
 import me.zpp0196.qqsimple.fragment.SidebarFragment;
-import me.zpp0196.qqsimple.util.ToastUtils;
 
 import static me.zpp0196.qqsimple.Common.isModuleActive;
 
@@ -103,7 +103,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                 startActivity(intent);
             }
         } else {
-            ToastUtils.getInstance(this).showToast("未安装 XposedInstaller !");
+            Toast.makeText(this, "未安装 XposedInstaller !", Toast.LENGTH_SHORT).show();
         }
     }
 

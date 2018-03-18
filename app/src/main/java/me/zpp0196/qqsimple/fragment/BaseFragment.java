@@ -2,24 +2,17 @@ package me.zpp0196.qqsimple.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import java.io.File;
-
-import me.zpp0196.qqsimple.util.ToastUtils;
-
-import static me.zpp0196.qqsimple.Common.KEY_DESKTOP_ICON;
 
 /**
  * Created by zpp0196 on 2018/3/16.
  */
 
-public abstract class BaseFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
-
-    protected ToastUtils toastUtils;
+public abstract class BaseFragment extends PreferenceFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,29 +24,13 @@ public abstract class BaseFragment extends PreferenceFragment implements SharedP
 
     protected abstract int setPrefs();
 
-    protected void initData() {}
+    protected void initData() {
+    }
 
     @Override
     public void onPause() {
         super.onPause();
         setWorldReadable();
-        PreferenceManager.getDefaultSharedPreferences(getActivity()).unregisterOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(toastUtils == null){
-            toastUtils = ToastUtils.getInstance(getActivity());
-        }
-        PreferenceManager.getDefaultSharedPreferences(getActivity()).registerOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (!key.equals(KEY_DESKTOP_ICON)) {
-            showToast("设置已保存，重启 QQ 生效！");
-        }
     }
 
     @SuppressWarnings({"deprecation", "ResultOfMethodCallIgnored"})
@@ -75,8 +52,9 @@ public abstract class BaseFragment extends PreferenceFragment implements SharedP
     }
 
     protected void showToast(String msg) {
-        if(toastUtils != null) {
-            toastUtils.showToast(msg);
+        Activity activity = getActivity();
+        if (activity != null) {
+            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
         }
     }
 }

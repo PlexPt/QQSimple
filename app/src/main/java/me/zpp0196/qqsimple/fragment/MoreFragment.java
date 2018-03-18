@@ -8,12 +8,14 @@ import android.net.Uri;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 
 import me.zpp0196.qqsimple.BuildConfig;
 import me.zpp0196.qqsimple.R;
 
 import static me.zpp0196.qqsimple.Common.KEY_DESKTOP_ICON;
 import static me.zpp0196.qqsimple.Common.KEY_SETTING_QQ;
+import static me.zpp0196.qqsimple.Common.KEY_TEST_HELP;
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
 
 /**
@@ -28,10 +30,11 @@ public class MoreFragment extends BaseFragment implements Preference.OnPreferenc
 
     @Override
     protected void initData() {
-        CheckBoxPreference desktopIcon = (CheckBoxPreference)findPreference(KEY_DESKTOP_ICON);
+        CheckBoxPreference desktopIcon = (CheckBoxPreference) findPreference(KEY_DESKTOP_ICON);
         desktopIcon.setChecked(!getEnable());
         desktopIcon.setOnPreferenceChangeListener(this);
         findPreference(KEY_SETTING_QQ).setOnPreferenceClickListener(this);
+        findPreference(KEY_TEST_HELP).setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -50,12 +53,20 @@ public class MoreFragment extends BaseFragment implements Preference.OnPreferenc
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        if(preference.getKey().equals(KEY_SETTING_QQ)){
+        if (preference.getKey().equals(KEY_SETTING_QQ)) {
             try {
                 startActivity(new Intent().setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + PACKAGE_NAME_QQ)));
-            }catch (Exception e){
+            } catch (Exception e) {
                 showToast(e.getMessage());
             }
+        }
+        if (preference.getKey().equals(KEY_TEST_HELP)) {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("测试功能介绍")
+                    .setMessage(R.string.test_help)
+                    .setPositiveButton("关闭", (dialog, which) -> {
+                    })
+                    .show();
         }
         return false;
     }

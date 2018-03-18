@@ -26,6 +26,6 @@
         android:title="隐藏移出群助手提示" />
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="hide_pic_smile"
-        android:title="隐藏聊天图片旁的笑脸按钮" />
+        android:key="hide_group_stick_face"
+        android:title="隐藏贴表情按钮" />
 </PreferenceScreen>

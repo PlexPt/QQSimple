@@ -34,6 +34,10 @@
         android:title="隐藏好友新动态" />
     <CheckBoxPreference
         android:defaultValue="false"
+        android:key="hide_new_signature"
+        android:title="隐藏好友新签名" />
+    <CheckBoxPreference
+        android:defaultValue="false"
         android:key="hide_chat_unusual_contacts"
         android:title="隐藏取消隐藏不常用联系人提示" />
     <CheckBoxPreference
