@@ -1,15 +1,21 @@
 package me.zpp0196.qqsimple.activity;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.List;
 
@@ -82,7 +88,16 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                     .setPositiveButton("激活", (dialog, id) -> openXposed())
                     .setNegativeButton("取消", (dialog, id) -> finish())
                     .show();
+        } else {
+            boolean isUpdate = getPrefs().getInt("app_version_code", 0) < BuildConfig.VERSION_CODE;
+            if (isUpdate) {
+                showInstructions();
+            }
         }
+    }
+
+    public SharedPreferences getPrefs() {
+        return PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     private void openXposed() {
@@ -117,6 +132,64 @@ public class SettingActivity extends AppCompatPreferenceActivity {
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             return false;
+        }
+    }
+
+    public void showInstructions() {
+        new MaterialDialog.Builder(this)
+                .cancelable(false)
+                .title(String.format("QQ 精简模块 %s", BuildConfig.VERSION_NAME))
+                .content(R.string.instructions)
+                .positiveText("捐赠")
+                .negativeText("反馈")
+                .neutralText("关闭")
+                .onAny((dialog, which) -> {
+                    getPrefs().edit().putInt("app_version_code", BuildConfig.VERSION_CODE).apply();
+                    switch (which) {
+                        case POSITIVE:
+                            openAlipay();
+                            break;
+                        case NEGATIVE:
+                            openCoolApk();
+                            break;
+                    }
+                }).build().show();
+    }
+
+    public void openAlipay() {
+        String qrcode = "FKX03149H8YOUWESHOCEC6";
+        try {
+            getPackageManager().getPackageInfo("com.eg.android.AlipayGphone", PackageManager.GET_ACTIVITIES);
+            openUrl("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=https://qr.alipay.com/" + qrcode + "%3F_s%3Dweb-other&_t=");
+        } catch (PackageManager.NameNotFoundException e) {
+            openUrl("https://mobilecodec.alipay.com/client_download.htm?qrcode=" + qrcode);
+        }
+    }
+
+    @SuppressLint("WrongConstant")
+    public void openCoolApk() {
+        try {
+            String str = "market://details?id=" + BuildConfig.APPLICATION_ID;
+            Intent intent = new Intent("android.intent.action.VIEW");
+            intent.setData(Uri.parse(str));
+            intent.setPackage("com.coolapk.market");
+            intent.setFlags(0x10000000);
+            startActivity(intent);
+        } catch (Exception e) {
+            openUrl("http://www.coolapk.com/apk/" + BuildConfig.APPLICATION_ID);
+        }
+    }
+
+    public void openUrl(String url) {
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri content_url = Uri.parse(url);
+        intent.setData(content_url);
+        try {
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -8,11 +8,19 @@
         android:title="感谢" />
     <Preference
         android:key="instructions"
-        android:title="帮助" />
+        android:title="介绍" />
     <Preference
-        android:key="github_source"
+        android:key="donate"
+        android:summary="帮作者渡劫"
+        android:title="捐赠" />
+    <Preference
+        android:key="feedback"
+        android:summary="去酷安反馈"
+        android:title="反馈" />
+    <Preference
+        android:key="github"
         android:summary="欢迎提出建议"
-        android:title="Github" />
+        android:title="GitHub" />
     <Preference
         android:summary="只作学习交流使用，请勿用于商业或非法用途！未经作者允许请勿私自转载！"
         android:title="声明" />

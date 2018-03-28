@@ -8,18 +8,19 @@
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="prevent_messages_withdrawn"
+        android:summary="Bug 较多慎重使用"
         android:title="防止消息撤回" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="simulate_menu"
-        android:summary="点击消息列表顶部模拟菜单键（Flyme 用户可以考虑）"
+        android:summary="点击消息列表顶部弹出菜单选项"
         android:title="模拟菜单" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="disable_coreservice"
+        android:summary="会影响消息的正常接收"
+        android:title="禁用CoreService" />
     <PreferenceCategory android:title="模块设置">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="close_all"
-            android:summary="开启后将停用本模块的所有功能"
-            android:title="关闭所有功能" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="desktop_icon"
@@ -31,14 +32,5 @@
             android:key="setting_qq"
             android:summary="一般用于强行停止 QQ 来确保模块更新内容可以生效"
             android:title="管理 QQ" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="测试功能">
-        <EditTextPreference
-            android:dialogTitle="请输入控件ID："
-            android:key="hide_view_diy"
-            android:title="自定义隐藏" />
-        <Preference
-            android:key="test_help"
-            android:title="测试功能介绍" />
     </PreferenceCategory>
 </PreferenceScreen>

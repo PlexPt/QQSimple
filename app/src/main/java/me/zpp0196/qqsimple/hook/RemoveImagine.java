@@ -1,53 +1,6 @@
 package me.zpp0196.qqsimple.hook;
 
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_CALL;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_LIST_HEAD_AD;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_TOOLBAR_CAMERA;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_TOOLBAR_GIF;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_TOOLBAR_PIC;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_TOOLBAR_POKE;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_TOOLBAR_RED_ENVELOPE;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_CHAT_TOOLBAR_VOICE;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_CREATE_TROOP_ENTRY;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_GROUP_HELPER_REMOVE_TIPS;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_GROUP_MEMBER_GLAMOUR_LEVEL;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_GROUP_MEMBER_LEVEL;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_GROUP_SMALL_VIDEO;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_GROUP_STICK_FACE;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_LEB_SEARCH_ENTRY;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_NEAR_AVATAR_REMIND;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_NEAR_ENTRY;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_NEW_FRIEND_ENTRY;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_QZONE_AD;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_QZONE_AVATAR_REMIND;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_QZONE_ENTRY;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SEARCH_CONTAINER;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SETTING_CLEAR;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SETTING_PHONE_NUMBER;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SETTING_QQ_EXPERT;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_CITY_WEATHER;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_DRESS_UP;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_FREE_FLOW;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_MY_CARDS;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_MY_CITY;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_MY_DAILY;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_MY_FAVORITES;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_MY_FILES;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_MY_PHOTOS;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_MY_QR_CODE;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_MY_VIDEOS;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_POCKET;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_QQ_INFO;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_THEME_NIGHT;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SIDEBAR_VIP;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_SOME_RED_DOT;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_TAB_MSG_NUM;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_TIM_IN_MY_FILE;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_TRIBAL_AVATAR_REMIND;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_TRIBAL_ENTRY;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_UNREADMSG;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_UNUSUAL_CONTACTS;
-import static me.zpp0196.qqsimple.Common.KEY_HIDE_VIEW_DIY;
+import de.robv.android.xposed.XC_MethodHook;
 
 /**
  * Created by Deng on 2018/2/16.
@@ -55,168 +8,179 @@ import static me.zpp0196.qqsimple.Common.KEY_HIDE_VIEW_DIY;
 
 class RemoveImagine extends BaseHook {
 
-    private boolean isHideUnreadmsg = false;
     private boolean isHideReddot = false;
     private boolean isHideSidebarQQInfo = false;
-    private boolean isHideQzneAd = false;
+    private boolean isHideQzoneAd = false;
 
-    RemoveImagine(Class<?> id, Class<?> drawable) {
-        setId(id);
-        setDrawable(drawable);
-        isHideUnreadmsg = getBool(KEY_HIDE_UNREADMSG);
-        isHideReddot = getBool(KEY_HIDE_SOME_RED_DOT);
-        isHideSidebarQQInfo = getBool(KEY_HIDE_SIDEBAR_QQ_INFO);
-        isHideQzneAd = getBool(KEY_HIDE_QZONE_AD);
+    RemoveImagine(ClassLoader classLoader) {
+        super(classLoader);
+        isHideReddot = getBool("hide_some_red_dot");
+        isHideSidebarQQInfo = getBool("hide_sidebar_qq_info");
+        isHideQzoneAd = getBool("hide_qzone_ad");
         hideView();
         hideDrawable();
-        hideDiyView();
-    }
-
-    private void hideDiyView() {
-        String value = getString(KEY_HIDE_VIEW_DIY, "");
-        String[] views = value.split(" ");
-        for (String str : views) {
-            str = str.toLowerCase();
-            if (str.startsWith("0x") || str.startsWith("ox")) {
-                str = str.substring(2);
-            }
-            int id;
-            try {
-                id = Integer.parseInt(str);
-            } catch (Exception e) {
-                try {
-                    id = Integer.parseInt(str, 16);
-                } catch (Exception ex) {
-                    continue;
-                }
-            }
-            if (id > 2131361792 && id < 2131427324) {
-                remove(id, true);
-            } else if (id > 2130837504 && id < 2130903039) {
-                removeDrawable(id, true);
-            }
-        }
     }
 
     private void hideView() {
         // 隐藏消息和联系人界面搜索框
-        remove(getId("search_container"), getBool(KEY_HIDE_SEARCH_CONTAINER));
+        removeView(getId("search_container"), getBool("hide_search_container"));
         // 隐藏消息列表底部未读消息数量
-        remove(getId("unchecked_msg_num"), getBool(KEY_HIDE_TAB_MSG_NUM));
+        removeView(getId("unchecked_msg_num"), getBool("hide_tab_msg_num"));
         // 隐藏消息列表界面横幅广告
-        remove(getId("adviewlayout"), getBool(KEY_HIDE_CHAT_LIST_HEAD_AD));
+        removeView(getId("adviewlayout"), getBool("hide_chat_list_head_ad"));
         // 隐藏消息列表右侧未读消息数量
-        remove(getId("unreadmsg"), isHideUnreadmsg);
-        remove(getId("tvDefaultTitleBtnLeft"), isHideUnreadmsg);
+        removeView(getId("unreadmsg"), getBool("hide_unreadmsg"));
         // 隐藏联系人界面新朋友
-        remove(getId("newFriendEntry"), getBool(KEY_HIDE_NEW_FRIEND_ENTRY));
+        removeView(getId("newFriendEntry"), getBool("hide_new_friend_entry"));
         // 隐藏联系人界面创建群聊
-        remove(getId("createTroopEntry"), getBool(KEY_HIDE_CREATE_TROOP_ENTRY));
+        removeView(getId("createTroopEntry"), getBool("hide_create_troop_entry"));
+        // 隐藏表情联想
+        removeView(getId("emotionLayout"), getBool("hide_expression_association"));
+        // 隐藏表情商城
+        removeView(getId("btn_more_emoticon"), getBool("hide_btn_more_emoticon"));
         // 隐藏联系人界面不常用联系人
-        remove(getId("unusual_contacts_footerview"), getBool(KEY_HIDE_UNUSUAL_CONTACTS));
+        removeView(getId("unusual_contacts_footerview"), getBool("hide_unusual_contacts"));
+        // 隐藏动态界面顶部
+        removeView(getId("laba_entrys_layout"), getBool("hide_laba_entrys_layout"));
         // 隐藏动态界面搜索框
-        remove(getId("leb_search_entry"), getBool(KEY_HIDE_LEB_SEARCH_ENTRY));
+        removeView(getId("leb_search_entry"), getBool("hide_leb_search_entry"));
         // 隐藏动态界面空间入口
-        remove(getId("qzone_feed_entry"), getBool(KEY_HIDE_QZONE_ENTRY));
+        removeView(getId("qzone_feed_entry"), getBool("hide_qzone_entry"));
         // 隐藏动态界面附近的人入口
-        remove(getId("near_people_entry"), getBool(KEY_HIDE_NEAR_ENTRY));
+        removeView(getId("near_people_entry"), getBool("hide_near_entry"));
         // 隐藏动态界面兴趣部落入口
-        remove(getId("xingqu_buluo_entry"), getBool(KEY_HIDE_TRIBAL_ENTRY));
+        removeView(getId("xingqu_buluo_entry"), getBool("hide_tribal_entry"));
         // 隐藏动态界面空间头像提醒
-        remove(getId("qzone_feed_entry_sub_iv"), getBool(KEY_HIDE_QZONE_AVATAR_REMIND));
+        removeView(getId("qzone_feed_entry_sub_iv"), getBool("hide_qzone_avatar_remind"));
         // 隐藏动态界面附近的人头像提醒
-        remove(getId("nearby_people_entry_sub_iv"), getBool(KEY_HIDE_NEAR_AVATAR_REMIND));
+        removeView(getId("nearby_people_entry_sub_iv"), getBool("hide_near_avatar_remind"));
         // 隐藏动态界面兴趣部落头像提醒
-        remove(getId("buluo_entry_sub_iv"), getBool(KEY_HIDE_TRIBAL_AVATAR_REMIND));
+        removeView(getId("buluo_entry_sub_iv"), getBool("hide_tribal_avatar_remind"));
         // 隐藏侧滑栏打卡
-        remove(getId("mydaily"), getBool(KEY_HIDE_SIDEBAR_MY_DAILY));
+        removeView(getId("mydaily"), getBool("hide_sidebar_my_daily"));
         // 隐藏侧滑栏我的二维码
-        remove(getId("qr_code_icon"), getBool(KEY_HIDE_SIDEBAR_MY_QR_CODE));
+        removeView(getId("qr_code_icon"), getBool("hide_sidebar_my_qr_code"));
         // 隐藏侧滑栏 QQ 信息
-        remove(getId("nickname_area"), isHideSidebarQQInfo);
-        remove(getId("richstatus_txt"), isHideSidebarQQInfo);
-        remove(getId("sig_layout"), isHideSidebarQQInfo);
+        removeView(getId("nickname_area"), isHideSidebarQQInfo);
+        removeView(getId("sig_layout"), isHideSidebarQQInfo);
         // 隐藏侧滑栏会员栏
-        remove(getId("myvip"), getBool(KEY_HIDE_SIDEBAR_VIP));
+        removeView(getId("myvip"), getBool("hide_sidebar_vip"));
         // 隐藏侧滑栏 QQ 钱包
-        remove(getId("mypocket"), getBool(KEY_HIDE_SIDEBAR_POCKET));
+        removeView(getId("mypocket"), getBool("hide_sidebar_pocket"));
         // 隐藏侧滑栏个性装扮
-        remove(getId("myDressup"), getBool(KEY_HIDE_SIDEBAR_DRESS_UP));
+        removeView(getId("myDressup"), getBool("hide_sidebar_dress_up"));
         // 隐藏侧滑栏我的收藏
-        remove(getId("myfavorites"), getBool(KEY_HIDE_SIDEBAR_MY_FAVORITES));
+        removeView(getId("myfavorites"), getBool("hide_sidebar_my_favorites"));
         // 隐藏侧滑栏我的相册
-        remove(getId("myphotos"), getBool(KEY_HIDE_SIDEBAR_MY_PHOTOS));
+        removeView(getId("myphotos"), getBool("hide_sidebar_my_photos"));
         // 隐藏侧滑栏我的文件
-        remove(getId("myfiles"), getBool(KEY_HIDE_SIDEBAR_MY_FILES));
+        removeView(getId("myfiles"), getBool("hide_sidebar_my_files"));
         // 隐藏侧滑栏我的视频
-        remove(getId("myvideos"), getBool(KEY_HIDE_SIDEBAR_MY_VIDEOS));
+        removeView(getId("myvideos"), getBool("hide_sidebar_my_videos"));
         // 隐藏侧滑栏我的名片夹
-        remove(getId("mycards"), getBool(KEY_HIDE_SIDEBAR_MY_CARDS));
+        removeView(getId("mycards"), getBool("hide_sidebar_my_cards"));
         // 隐藏侧滑栏免流量特权
-        remove(getId("cuKingCard"), getBool(KEY_HIDE_SIDEBAR_FREE_FLOW));
+        removeView(getId("cuKingCard"), getBool("hide_sidebar_free_flow"));
         // 隐藏侧滑栏夜间模式
-        remove(getId("nightmode"), getBool(KEY_HIDE_SIDEBAR_THEME_NIGHT));
+        removeView(getId("nightmode"), getBool("hide_sidebar_theme_night"));
         // 隐藏侧滑栏城市天气
-        remove(getId("weather_layout"), getBool(KEY_HIDE_SIDEBAR_CITY_WEATHER));
+        removeView(getId("weather_layout"), getBool("hide_sidebar_city_weather"));
         // 隐藏侧滑栏我的城市
-        remove(getId("weather_area"), getBool(KEY_HIDE_SIDEBAR_MY_CITY));
+        removeView(getId("weather_area"), getBool("hide_sidebar_my_city"));
+        // 隐藏头像挂件
+        removeView(getId("chat_item_pendant_image"), getBool("hide_avatar_pendant"));
+        // 隐藏聊天界面左上角的未读消息数量
+        removeView(getId("tvDefaultTitleBtnLeft"), getBool("hide_chat_left_num"));
         // 隐藏聊天界面右上角的 QQ 电话
-        remove(getId("ivTitleBtnRightCall"), getBool(KEY_HIDE_CHAT_CALL));
+        removeView(getId("ivTitleBtnRightCall"), getBool("hide_chat_right_call"));
         // 隐藏聊天界面底部工具栏语音按钮
-        remove(getId("qq_aio_panel_ptt"), getBool(KEY_HIDE_CHAT_TOOLBAR_VOICE));
+        removeView(getId("qq_aio_panel_ptt"), getBool("hide_chat_toolbar_voice"));
+        removeView(getId("qq_aio_panel_ptt_gold_msg"), getBool("hide_chat_toolbar_voice"));
         // 隐藏聊天界面底部工具栏图片按钮
-        remove(getId("qq_aio_panel_image"), getBool(KEY_HIDE_CHAT_TOOLBAR_PIC));
+        removeView(getId("qq_aio_panel_image"), getBool("hide_chat_toolbar_pic"));
+        removeView(getId("qq_aio_panel_image_gold_msg"), getBool("hide_chat_toolbar_pic"));
         // 隐藏聊天界面底部工具栏视频按钮
-        remove(getId("qq_aio_panel_ptv"), getBool(KEY_HIDE_CHAT_TOOLBAR_CAMERA));
+        removeView(getId("qq_aio_panel_camera"), getBool("hide_chat_toolbar_camera"));
+        removeView(getId("qq_aio_panel_ptv"), getBool("hide_chat_toolbar_camera"));
+        removeView(getId("qq_aio_panel_ptv_gold_msg"), getBool("hide_chat_toolbar_camera"));
         // 隐藏聊天界面底部工具栏红包按钮
-        remove(getId("qq_aio_panel_hongbao"), getBool(KEY_HIDE_CHAT_TOOLBAR_RED_ENVELOPE));
+        removeView(getId("qq_aio_panel_hongbao"), getBool("hide_chat_toolbar_red_envelope"));
         // 隐藏聊天界面底部工具栏戳一戳按钮
-        remove(getId("qq_aio_panel_poke"), getBool(KEY_HIDE_CHAT_TOOLBAR_POKE));
+        removeView(getId("qq_aio_panel_poke"), getBool("hide_chat_toolbar_poke"));
         // 隐藏聊天界面底部工具栏 GIF 按钮
-        remove(getId("qq_aio_panel_hot_pic"), getBool(KEY_HIDE_CHAT_TOOLBAR_GIF));
+        removeView(getId("qq_aio_panel_hot_pic"), getBool("hide_chat_toolbar_gif"));
+        removeView(getId("qq_aio_panel_hot_pic_gold_msg"), getBool("hide_chat_toolbar_gif"));
         // 隐藏群头衔
-        remove(getId("chat_item_troop_member_level"), getBool(KEY_HIDE_GROUP_MEMBER_LEVEL));
+        removeView(getId("chat_item_troop_member_level"), getBool("hide_group_member_level"));
         // 隐藏魅力等级
-        remove(getId("chat_item_troop_member_glamour_level"), getBool(KEY_HIDE_GROUP_MEMBER_GLAMOUR_LEVEL));
+        removeView(getId("chat_item_troop_member_glamour_level"), getBool("hide_group_member_glamour_level"));
         // 隐藏群消息里的小视频
-        remove(getId("troop_assistant_feeds_title_small_video"), getBool(KEY_HIDE_GROUP_SMALL_VIDEO));
-        remove(getId("troop_assistant_feeds_title_super_owner"), getBool(KEY_HIDE_GROUP_SMALL_VIDEO));
+        removeView(getId("troop_assistant_feeds_title_small_video"), getBool("hide_group_small_video"));
         // 隐藏移出群助手提示
-        remove(getId("chat_top_bar"), getBool(KEY_HIDE_GROUP_HELPER_REMOVE_TIPS));
-        // 隐藏部分小红点
-        remove(getId("find_reddot"), isHideReddot);
-        remove(getId("item_right_reddot"), isHideReddot);
-        remove(getId("iv_reddot"), isHideReddot);
-        remove(getId("qzone_feed_reddot"), isHideReddot);
-        remove(getId("qzone_mood_reddot"), isHideReddot);
-        remove(getId("qzone_super_font_tab_reddot"), isHideReddot);
-        remove(getId("qzone_uploadphoto_item_reddot"), isHideReddot);
-        remove(getId("tv_reddot"), isHideReddot);
-        remove(getId("xingqu_buluo_reddot"), isHideReddot);
+        removeView(getId("chat_top_bar"), getBool("hide_group_helper_remove_tips"));
+        // 隐藏贴表情
+        removeView(getId("pic_light_emoj"), isMoreThan735() && getBool("hide_group_stick_face"));
         // 隐藏我的文件里的 TIM 推广
-        remove(getId("timtips"), getBool(KEY_HIDE_TIM_IN_MY_FILE));
+        removeView(getId("timtips"), getBool("hide_tim_in_my_file"));
         // 隐藏设置电话号码
-        remove(getId("qqsetting2_phone_unity_info"), getBool(KEY_HIDE_SETTING_PHONE_NUMBER));
+        removeView(getId("qqsetting2_phone_unity_info"), getBool("hide_setting_phone_number"));
         // 隐藏设置 QQ 达人
-        remove(getId("qqsetting2_newXmanLayout"), getBool(KEY_HIDE_SETTING_QQ_EXPERT));
+        removeView(getId("qqsetting2_newXmanLayout"), getBool("hide_setting_qq_expert"));
+        // 隐藏设置消息通知
+        removeView(getId("qqsetting2_msg_notify"), getBool("hide_setting_msg_notify"));
+        // 隐藏设置聊天记录
+        removeView(getId("qqsetting2_msg_history"), getBool("hide_setting_msg_history"));
         // 隐藏设置空间清理
-        remove(getId("qqsetting2_msg_qqclean"), getBool(KEY_HIDE_SETTING_CLEAR));
+        removeView(getId("qqsetting2_msg_qqclean"), getBool("hide_setting_msg_qqclean"));
+        // 隐藏设置账号、设备安全
+        removeView(getId("qqsetting2_device_security"), getBool("hide_setting_device_security"));
+        // 隐藏设置联系人、隐私
+        removeView(getId("qqsetting2_permission_privacy"), getBool("hide_setting_permission_privacy"));
+        // 隐藏设置辅助功能
+        removeView(getId("qqsetting2_assist"), getBool("hide_setting_assist"));
+        // 隐藏设置免流量特权
+        removeView(getId("cu_open_card_guide_entry"), getBool("hide_setting_free_flow"));
+        // 隐藏设置关于QQ与帮助
+        removeView(getId("about"), getBool("hide_setting_about"));
         // 隐藏空间绿厂广告
-        remove(getId("shuoshuo_ad_upload_quality"), isHideQzneAd);
-        remove(getId("quality_hd_ad"), isHideQzneAd);
-        remove(getId("quality_ad"), isHideQzneAd);
-        if (isMoreThan735()) {
-            // 隐藏聊天图片旁的笑脸按钮
-            remove(getId("pic_light_emoj"), getBool(KEY_HIDE_GROUP_STICK_FACE));
-        }
+        removeView(getId("shuoshuo_ad_upload_quality"), isHideQzoneAd);
+        removeView(getId("quality_hd_ad"), isHideQzoneAd);
+        removeView(getId("quality_ad"), isHideQzoneAd);
+        // 隐藏部分小红点
+        removeView(getId("find_reddot"), isHideReddot);
+        removeView(getId("item_right_reddot"), isHideReddot);
+        removeView(getId("iv_reddot"), isHideReddot);
+        removeView(getId("qzone_feed_reddot"), isHideReddot || getBool("hide_qzone_entry") || getBool("hide_qzone_avatar_remind"));
+        removeView(getId("qzone_mood_reddot"), isHideReddot);
+        removeView(getId("qzone_super_font_tab_reddot"), isHideReddot);
+        removeView(getId("qzone_uploadphoto_item_reddot"), isHideReddot);
+        removeView(getId("tv_reddot"), isHideReddot);
+        removeView(getId("xingqu_buluo_reddot"), isHideReddot || getBool("hide_tribal_entry") || getBool("hide_tribal_avatar_remind"));
+        hideRedTouchViewNum();
     }
 
     private void hideDrawable() {
         removeDrawable(getDrawableId("skin_tips_dot"), isHideReddot);
         removeDrawable(getDrawableId("skin_tips_dot_small"), isHideReddot);
         removeDrawable(getDrawableId("skin_tips_new"), isHideReddot);
-        if (isMoreThan735()) {
-            removeDrawable(getDrawableId("shortvideo_redbag_outicon"), isHideReddot);
-        }
+        removeDrawable(getDrawableId("shortvideo_redbag_outicon"), isHideReddot && isMoreThan735());
+    }
+
+    /**
+     * 隐藏底部消息数量
+     */
+    private void hideRedTouchViewNum() {
+        Class<?> MainFragment = findClassInQQ("com.tencent.mobileqq.activity.MainFragment");
+        Class<?> RedTypeInfo = findClassInQQ("com.tencent.pb.getbusiinfo.BusinessInfoCheckUpdate$RedTypeInfo");
+        findAndHookMethod(MainFragment, "a", int.class, RedTypeInfo, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                int i = (int) param.args[0];
+                if ((i == 33 && getBool("hide_new_friend_entry")) || (i == 34 && (getBool("hide_qzone_avatar_remind") || getBool("hide_tribal_entry") || getBool("hide_tribal_avatar_remind")))) {
+                    param.setResult(null);
+                }
+            }
+        });
     }
 }

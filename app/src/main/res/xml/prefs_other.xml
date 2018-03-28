@@ -27,11 +27,35 @@
             android:title="隐藏 QQ 达人" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="hide_setting_clear"
+            android:key="hide_setting_msg_notify"
+            android:title="隐藏消息通知" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_setting_msg_history"
+            android:title="隐藏聊天记录" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_setting_msg_qqclean"
             android:title="隐藏空间清理" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_setting_device_security"
+            android:title="隐藏账号、设备安全" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_setting_permission_privacy"
+            android:title="隐藏联系人、隐私" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_setting_assist"
+            android:title="隐藏辅助功能" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_setting_free_flow"
             android:title="隐藏免流量特权" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_setting_about"
+            android:title="隐藏关于QQ与帮助" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -2,6 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
         android:defaultValue="false"
+        android:key="hide_menu_uaf"
+        android:title="隐藏菜单更新和反馈" />
+    <CheckBoxPreference
+        android:defaultValue="false"
         android:key="hide_search_container"
         android:title="隐藏消息和联系人界面搜索框" />
     <PreferenceCategory android:title="底部分组">
@@ -16,17 +20,13 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_tab_msg_num"
-            android:title="隐藏消息数量" />
+            android:title="隐藏消息底部数量" />
     </PreferenceCategory>
     <PreferenceCategory android:title="消息列表界面">
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_chat_list_head_ad"
             android:title="隐藏横幅广告" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="hide_update_reminder"
-            android:title="隐藏更新提醒" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_national_entrance"
@@ -65,6 +65,10 @@
     <PreferenceCategory android:title="动态界面">
         <CheckBoxPreference
             android:defaultValue="false"
+            android:key="hide_laba_entrys_layout"
+            android:title="隐藏动态界面顶部" />
+        <CheckBoxPreference
+            android:defaultValue="false"
             android:key="hide_everyone_searching"
             android:title="隐藏大家都在搜" />
         <CheckBoxPreference
@@ -86,14 +90,14 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_qzone_avatar_remind"
-            android:title="隐藏空间头像提醒" />
+            android:title="隐藏空间提醒" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_near_avatar_remind"
-            android:title="隐藏附近头像提醒" />
+            android:title="隐藏附近的人提醒" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_tribal_avatar_remind"
-            android:title="隐藏兴趣部落头像提醒" />
+            android:title="隐藏兴趣部落提醒" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -4,9 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import java.io.File;
+
+import me.zpp0196.qqsimple.BuildConfig;
+import me.zpp0196.qqsimple.activity.SettingActivity;
 
 /**
  * Created by zpp0196 on 2018/3/16.
@@ -33,16 +37,18 @@ public abstract class BaseFragment extends PreferenceFragment {
         setWorldReadable();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        setWorldReadable();
+    }
+
     @SuppressWarnings({"deprecation", "ResultOfMethodCallIgnored"})
     @SuppressLint({"SetWorldReadable", "WorldReadableFiles"})
-    private void setWorldReadable() {
-        Activity activity = getActivity();
-        if (activity == null) {
-            return;
-        }
-        File dataDir = new File(activity.getApplicationInfo().dataDir);
+    public void setWorldReadable() {
+        File dataDir = new File(getActivity().getApplicationInfo().dataDir);
         File prefsDir = new File(dataDir, "shared_prefs");
-        File prefsFile = new File(prefsDir, getPreferenceManager().getSharedPreferencesName() + ".xml");
+        File prefsFile = new File(prefsDir, BuildConfig.APPLICATION_ID + "_preferences.xml");
         if (prefsFile.exists()) {
             for (File file : new File[]{dataDir, prefsDir, prefsFile}) {
                 file.setReadable(true, false);
@@ -51,10 +57,14 @@ public abstract class BaseFragment extends PreferenceFragment {
         }
     }
 
-    protected void showToast(String msg) {
+    protected void showToast(@NonNull Object msg) {
         Activity activity = getActivity();
         if (activity != null) {
-            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), msg.toString(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    protected SettingActivity getSettingActivity() {
+        return (SettingActivity) getActivity();
     }
 }

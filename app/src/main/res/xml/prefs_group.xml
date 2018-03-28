@@ -2,6 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
         android:defaultValue="false"
+        android:key="simple_group_sign"
+        android:title="签到文本化" />
+    <CheckBoxPreference
+        android:defaultValue="false"
         android:key="hide_group_member_level"
         android:title="隐藏群头衔" />
     <CheckBoxPreference
@@ -28,4 +32,16 @@
         android:defaultValue="false"
         android:key="hide_group_stick_face"
         android:title="隐藏贴表情按钮" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_group_join_tips"
+        android:title="隐藏加入群提示" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_group_member_level_tips"
+        android:title="隐藏获得新头衔" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_group_gift_tips"
+        android:title="隐藏礼物相关提示" />
 </PreferenceScreen>
