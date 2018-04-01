@@ -24,6 +24,7 @@ public class AboutFragment extends BaseFragment implements Preference.OnPreferen
         findPreference("donate").setOnPreferenceClickListener(this);
         findPreference("feedback").setOnPreferenceClickListener(this);
         findPreference("github").setOnPreferenceClickListener(this);
+        findPreference("license").setOnPreferenceClickListener(this);
     }
 
     @SuppressLint("WrongConstant")
@@ -40,6 +41,9 @@ public class AboutFragment extends BaseFragment implements Preference.OnPreferen
                 getSettingActivity().openCoolApk();
             case "github":
                 getSettingActivity().openUrl("https://github.com/zpp0196/QQSimple");
+                return true;
+            case "license":
+                getSettingActivity().openUrl("https://github.com/afollestad/material-dialogs");
                 return true;
         }
         return true;

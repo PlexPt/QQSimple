@@ -1,11 +1,13 @@
 package me.zpp0196.qqsimple.hook;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -20,6 +22,7 @@ class MainUIHook extends BaseHook {
     MainUIHook(ClassLoader classLoader) {
         super(classLoader);
         hideMenuUAF();
+        hidePopupMenu();
         hideMainFragmentTab();
         hideNationalEntrance();
         hideEveryoneSearching();
@@ -52,6 +55,36 @@ class MainUIHook extends BaseHook {
                 }
             });
         }
+    }
+
+    /**
+     * 隐藏消息列表右上角快捷入口部分内容
+     */
+    private void hidePopupMenu() {
+        Class<?> PopupMenuDialog = findClassInQQ("com.tencent.widget.PopupMenuDialog");
+        Class<?> MenuItem = findClassInQQ("com.tencent.widget.PopupMenuDialog$MenuItem");
+        Class<?> OnClickActionListener = findClassInQQ("com.tencent.widget.PopupMenuDialog$OnClickActionListener");
+        findAndHookMethod(PopupMenuDialog, "a", Activity.class, List.class, OnClickActionListener, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                List list = (List) param.args[1];
+                List needRemove = new ArrayList();
+                for (Object item : list) {
+                    String title = (String) findField(MenuItem, String.class, "a").get(item);
+                    if (title.equals("创建群聊") && getBool("hide_popup_multichat")) {
+                        needRemove.add(item);
+                    }
+                    if (title.equals("付款") && getBool("hide_popup_charge")) {
+                        needRemove.add(item);
+                    }
+                    if (title.equals("高能舞室") && getBool("hide_popup_video_dance")) {
+                        needRemove.add(item);
+                    }
+                }
+                list.removeAll(needRemove);
+            }
+        });
     }
 
     /**
@@ -99,6 +132,10 @@ class MainUIHook extends BaseHook {
                 }
             }
         });
+        if (getBool("hide_tab_readinjoy")) {
+            Class<?> ReadInJoyHelper = findClassInQQ("cooperation.readinjoy.ReadInJoyHelper");
+            findAndHookMethod(ReadInJoyHelper, "d", XC_MethodReplacement.returnConstant(false));
+        }
     }
 
     /**

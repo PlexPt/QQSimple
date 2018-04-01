@@ -167,9 +167,11 @@ class ChatInterfaceHook extends BaseHook {
                     Field field = findField(MessageRecord, "msg");
                     if (field != null) {
                         String msg = (String) field.get(param.args[0]);
-                        for (String str : regex) {
-                            if (Pattern.matches(str, msg)) {
-                                param.setResult(null);
+                        if (msg != null) {
+                            for (String str : regex) {
+                                if (Pattern.matches(str, msg)) {
+                                    param.setResult(null);
+                                }
                             }
                         }
                     }

@@ -11,7 +11,6 @@
         android:title="介绍" />
     <Preference
         android:key="donate"
-        android:summary="帮作者渡劫"
         android:title="捐赠" />
     <Preference
         android:key="feedback"
@@ -21,6 +20,10 @@
         android:key="github"
         android:summary="欢迎提出建议"
         android:title="GitHub" />
+    <Preference
+        android:key="license"
+        android:summary="MaterialDialog"
+        android:title="使用的开源库" />
     <Preference
         android:summary="只作学习交流使用，请勿用于商业或非法用途！未经作者允许请勿私自转载！"
         android:title="声明" />

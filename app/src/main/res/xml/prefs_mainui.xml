@@ -11,18 +11,34 @@
     <PreferenceCategory android:title="底部分组">
         <CheckBoxPreference
             android:defaultValue="false"
+            android:key="hide_tab_msg_num"
+            android:title="隐藏消息底部数量" />
+        <CheckBoxPreference
+            android:defaultValue="false"
             android:key="hide_tab_contact"
             android:title="隐藏联系人" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="hide_tab_dynamic"
-            android:title="隐藏动态" />
+            android:key="hide_tab_readinjoy"
+            android:title="隐藏看点" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="hide_tab_msg_num"
-            android:title="隐藏消息底部数量" />
+            android:key="hide_tab_dynamic"
+            android:title="隐藏动态" />
     </PreferenceCategory>
     <PreferenceCategory android:title="消息列表界面">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_popup_multichat"
+            android:title="隐藏快捷入口创建群聊" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_popup_charge"
+            android:title="隐藏快捷入口付款" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_popup_video_dance"
+            android:title="隐藏快捷入口高能舞室" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_chat_list_head_ad"
