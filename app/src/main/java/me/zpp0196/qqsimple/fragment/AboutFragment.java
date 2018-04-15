@@ -7,6 +7,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import me.zpp0196.qqsimple.BuildConfig;
 import me.zpp0196.qqsimple.R;
+import me.zpp0196.qqsimple.fragment.base.BaseFragment;
 
 /**
  * Created by zpp0196 on 2018/3/15.

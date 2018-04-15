@@ -12,10 +12,6 @@
         android:defaultValue="false"
         android:key="hide_tim_in_my_file"
         android:title="隐藏我的文件里的 TIM 推广" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="hide_qzone_ad"
-        android:title="隐藏空间绿厂广告" />
     <PreferenceCategory android:title="设置界面">
         <CheckBoxPreference
             android:defaultValue="false"

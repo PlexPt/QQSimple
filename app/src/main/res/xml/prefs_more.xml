@@ -26,6 +26,15 @@
             android:key="desktop_icon"
             android:summary="隐藏后可以通过 Xposed 框架打开本模块"
             android:title="隐藏桌面图标" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="switch_all"
+            android:title="关闭所有功能" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="switch_log"
+            android:summary="开启后可在 Xposed 框架里面查看日志"
+            android:title="日志开关" />
     </PreferenceCategory>
     <PreferenceCategory android:title="其他">
         <Preference

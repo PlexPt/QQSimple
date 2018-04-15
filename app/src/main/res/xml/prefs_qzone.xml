@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="菜单内容">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_plus_mood"
+            android:title="隐藏说说" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_plus_album"
+            android:title="隐藏相册" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_plus_shoot"
+            android:title="隐藏拍摄" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_plus_signIn"
+            android:title="隐藏签到" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_plus_redPacket"
+            android:title="隐藏小红包" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_plus_live"
+            android:title="隐藏直播" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="导航栏">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_nav_redDot"
+            android:title="隐藏小红点" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_nav_album"
+            android:title="隐藏相册" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_nav_mood"
+            android:title="隐藏说说" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_nav_dress"
+            android:title="隐藏个性化" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_nav_game"
+            android:title="隐藏小游戏" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_nav_video"
+            android:title="隐藏小视频" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_nav_news"
+            android:title="隐藏消息" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="其他">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_mood_attach"
+            android:title="隐藏说说机型" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_ad"
+            android:title="隐藏绿厂广告" />
+    </PreferenceCategory>
+</PreferenceScreen>

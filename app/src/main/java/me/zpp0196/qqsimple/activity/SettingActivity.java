@@ -27,6 +27,7 @@ import me.zpp0196.qqsimple.fragment.GroupFragment;
 import me.zpp0196.qqsimple.fragment.MainUIFragment;
 import me.zpp0196.qqsimple.fragment.MoreFragment;
 import me.zpp0196.qqsimple.fragment.OtherFragment;
+import me.zpp0196.qqsimple.fragment.QZoneFragment;
 import me.zpp0196.qqsimple.fragment.SidebarFragment;
 
 import static me.zpp0196.qqsimple.Common.isModuleActive;
@@ -56,6 +57,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || MainUIFragment.class.getName().equals(fragmentName)
                 || SidebarFragment.class.getName().equals(fragmentName)
+                || QZoneFragment.class.getName().equals(fragmentName)
                 || ChatFragment.class.getName().equals(fragmentName)
                 || GroupFragment.class.getName().equals(fragmentName)
                 || OtherFragment.class.getName().equals(fragmentName)

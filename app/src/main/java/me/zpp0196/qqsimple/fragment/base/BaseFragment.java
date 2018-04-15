@@ -1,4 +1,4 @@
-package me.zpp0196.qqsimple.fragment;
+package me.zpp0196.qqsimple.fragment.base;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
 
@@ -62,6 +64,10 @@ public abstract class BaseFragment extends PreferenceFragment {
         if (activity != null) {
             Toast.makeText(getActivity(), msg.toString(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    protected void showDialog(String msg) {
+        new MaterialDialog.Builder(getActivity()).title("说明").content(msg).positiveText("关闭").build().show();
     }
 
     protected SettingActivity getSettingActivity() {

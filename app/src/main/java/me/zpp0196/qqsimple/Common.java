@@ -1,8 +1,7 @@
 package me.zpp0196.qqsimple;
 
 import android.content.Context;
-
-import de.robv.android.xposed.XposedBridge;
+import android.util.Log;
 
 /**
  * Created by zpp0196 on 2018/3/11.
@@ -11,6 +10,7 @@ import de.robv.android.xposed.XposedBridge;
 public class Common {
 
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
+    public static ClassLoader qqClassLoader;
 
     public static boolean isModuleActive() {
         return false;
@@ -20,8 +20,8 @@ public class Common {
         if (context != null) {
             try {
                 return context.getPackageManager().getPackageInfo(PACKAGE_NAME_QQ, 0).versionName;
-            } catch (Exception e) {
-                XposedBridge.log(e);
+            } catch (Throwable e) {
+                Log.e("Common", "Can't get the QQ version!");
             }
         }
         return "0.0";

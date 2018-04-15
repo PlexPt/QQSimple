@@ -9,6 +9,10 @@
         android:icon="@drawable/ic_menu_black_24dp"
         android:title="侧滑栏" />
     <header
+        android:fragment="me.zpp0196.qqsimple.fragment.QZoneFragment"
+        android:icon="@drawable/ic_star_black_24dp"
+        android:title="QQ 空间" />
+    <header
         android:fragment="me.zpp0196.qqsimple.fragment.ChatFragment"
         android:icon="@drawable/ic_chat_black_24dp"
         android:title="聊天界面" />

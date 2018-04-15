@@ -29,18 +29,6 @@
     <PreferenceCategory android:title="消息列表界面">
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="hide_popup_multichat"
-            android:title="隐藏快捷入口创建群聊" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="hide_popup_charge"
-            android:title="隐藏快捷入口付款" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="hide_popup_video_dance"
-            android:title="隐藏快捷入口高能舞室" />
-        <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_chat_list_head_ad"
             android:title="隐藏横幅广告" />
         <CheckBoxPreference
@@ -51,6 +39,40 @@
             android:defaultValue="false"
             android:key="hide_unreadmsg"
             android:title="隐藏右侧未读消息数量" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_popup_menu_entry"
+            android:title="隐藏快捷入口" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="快捷入口">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_popup_multiChat"
+            android:title="隐藏创建群聊" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_popup_add"
+            android:title="隐藏加好友/群" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_popup_sweep"
+            android:title="隐藏扫一扫" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_popup_face2face"
+            android:title="隐藏面对面快传" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_popup_pay"
+            android:title="隐藏付款" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_popup_shoot"
+            android:title="隐藏拍摄" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_popup_videoDance"
+            android:title="隐藏高能舞室" />
     </PreferenceCategory>
     <PreferenceCategory android:title="联系人界面">
         <CheckBoxPreference
@@ -85,12 +107,12 @@
             android:title="隐藏动态界面顶部" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="hide_everyone_searching"
-            android:title="隐藏大家都在搜" />
-        <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_leb_search_entry"
             android:title="隐藏搜索框" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_everyone_searching"
+            android:title="隐藏大家都在搜" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_qzone_entry"

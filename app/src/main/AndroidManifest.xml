@@ -33,7 +33,7 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="精简QQ" />
+            android:value="隐藏 QQ 中一些不想看见的视图" />
         <meta-data
             android:name="xposedminversion"
             android:value="54" />

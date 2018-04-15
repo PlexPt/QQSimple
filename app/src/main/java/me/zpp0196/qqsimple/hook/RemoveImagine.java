@@ -1,6 +1,7 @@
 package me.zpp0196.qqsimple.hook;
 
 import de.robv.android.xposed.XC_MethodHook;
+import me.zpp0196.qqsimple.hook.base.BaseHook;
 
 /**
  * Created by Deng on 2018/2/16.
@@ -12,8 +13,7 @@ class RemoveImagine extends BaseHook {
     private boolean isHideSidebarQQInfo = false;
     private boolean isHideQzoneAd = false;
 
-    RemoveImagine(ClassLoader classLoader) {
-        super(classLoader);
+    RemoveImagine() {
         isHideReddot = getBool("hide_some_red_dot");
         isHideSidebarQQInfo = getBool("hide_sidebar_qq_info");
         isHideQzoneAd = getBool("hide_qzone_ad");

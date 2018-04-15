@@ -11,6 +11,7 @@ import android.provider.Settings;
 
 import me.zpp0196.qqsimple.BuildConfig;
 import me.zpp0196.qqsimple.R;
+import me.zpp0196.qqsimple.fragment.base.BaseFragment;
 
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
 
