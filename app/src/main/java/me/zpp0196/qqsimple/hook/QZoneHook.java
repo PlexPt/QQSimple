@@ -25,6 +25,7 @@ class QZoneHook extends BaseHook {
         hidePlusMenuConstants();
         hideNavConstants();
         hideMoodConstants();
+        hideDecorator();
     }
 
     /**
@@ -128,18 +129,31 @@ class QZoneHook extends BaseHook {
      */
     private void hideMoodConstants() {
         // 隐藏机型
-        if (!getBool("hide_qzone_mood_attach")) return;
-        Class<?> FeedOperation = findClassInQzone("com.qzone.module.feedcomponent.ui.FeedOperation");
         Class<?> CanvasAttachView = findClassInQzone("com.qzone.module.feedcomponent.ui.canvasui.CanvasAttachView");
-        findAndHookMethod(FeedOperation, "b", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                if (FeedOperation == null || CanvasAttachView == null) return;
-                View attach = (View) findField(FeedOperation, CanvasAttachView, "a").get(param.thisObject);
-                attach.setVisibility(View.GONE);
-            }
-        });
+        removeView(CanvasAttachView, getBool("hide_qzone_mood_attach"));
+        // 隐藏浏览次数
+        Class<?> VisitView = findClassInQzone("com.qzone.module.feedcomponent.ui.VisitView");
+        removeView(VisitView, getBool("hide_qzone_visitView"));
+        // 隐藏点赞列表
+        Class<?> VisitAndPraiseAvatarsView = findClassInQzone("com.qzone.module.feedcomponent.ui.VisitAndPraiseAvatarsView");
+        removeView(VisitAndPraiseAvatarsView, getBool("hide_qzone_likeList"));
+        Class<?> PraiseListView = findClassInQzone("com.qzone.module.feedcomponent.ui.PraiseListView");
+        removeView(PraiseListView, getBool("hide_qzone_likeList"));
+        // 隐藏评论框
+        Class<?> GuideCommentBar = findClassInQzone("com.qzone.module.feedcomponent.ui.GuideCommentBar");
+        removeView(GuideCommentBar, getBool("hide_qzone_et_comment"));
+        // 隐藏评论内容
+        Class<?> CanvasCellCommentView = findClassInQzone("com.qzone.module.feedcomponent.ui.canvasui.CanvasCellCommentView");
+        removeView(CanvasCellCommentView, getBool("hide_qzone_et_comment_content"));
+    }
+
+    private void hideDecorator() {
+        // 隐藏头像装扮
+        Class<?> QzoneFacadeDecorator = findClassInQzone("com.qzone.cover.ui.QzoneFacadeDecorator");
+        removeView(QzoneFacadeDecorator, getBool("hide_qzone_facadeDecorator"));
+        // 隐藏我的黄钻
+        Class<?> QzoneVipDecorator = findClassInQzone("com.qzone.cover.ui.QzoneVipDecorator");
+        removeView(QzoneVipDecorator, getBool("hide_qzone_vipDecorator"));
     }
 
     @Override

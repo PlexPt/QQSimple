@@ -56,11 +56,37 @@
             android:key="hide_qzone_nav_news"
             android:title="隐藏消息" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="其他">
+    <PreferenceCategory android:title="说说内容">
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_qzone_mood_attach"
-            android:title="隐藏说说机型" />
+            android:title="隐藏机型" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_visitView"
+            android:title="隐藏浏览次数" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_likeList"
+            android:title="隐藏点赞列表" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_et_comment"
+            android:title="隐藏评论框" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_et_comment_content"
+            android:title="隐藏评论内容" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="其他">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_facadeDecorator"
+            android:title="隐藏头像装扮" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_qzone_vipDecorator"
+            android:title="隐藏我的黄钻" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_qzone_ad"

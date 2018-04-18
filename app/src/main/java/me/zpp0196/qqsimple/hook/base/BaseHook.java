@@ -1,6 +1,7 @@
 package me.zpp0196.qqsimple.hook.base;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,6 +108,25 @@ public abstract class BaseHook {
                 if ((int) param.args[0] == id) {
                     param.setResult(null);
                 }
+            }
+        });
+    }
+
+    protected void removeView(Class<?> clazz, boolean isHide){
+        if(clazz == null || !isHide) return;
+        findAndHookMethod(clazz, "onDraw", Canvas.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                View view = (View) param.thisObject;
+                view.setVisibility(View.GONE);
+            }
+        });
+        findAndHookMethod(clazz, "setVisibility", int.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                param.args[0] = View.GONE;
             }
         });
     }
