@@ -67,6 +67,10 @@
             android:title="隐藏浏览次数" />
         <CheckBoxPreference
             android:defaultValue="false"
+            android:key="hide_qzone_btn_like"
+            android:title="隐藏点赞按钮" />
+        <CheckBoxPreference
+            android:defaultValue="false"
             android:key="hide_qzone_likeList"
             android:title="隐藏点赞列表" />
         <CheckBoxPreference

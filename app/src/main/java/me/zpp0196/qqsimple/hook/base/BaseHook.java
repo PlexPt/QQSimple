@@ -122,13 +122,6 @@ public abstract class BaseHook {
                 view.setVisibility(View.GONE);
             }
         });
-        findAndHookMethod(clazz, "setVisibility", int.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                param.args[0] = View.GONE;
-            }
-        });
     }
 
     protected Field findField(@NonNull Class<?> clazz, String name) {
