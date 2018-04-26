@@ -164,19 +164,17 @@ class MoreHook extends BaseHook {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 Field field = findField(Conversation, RelativeLayout.class, "b");
-                if (field != null) {
-                    ViewGroup viewGroup = (ViewGroup) field.get(param.thisObject);
-                    if (viewGroup != null) {
-                        viewGroup.setOnClickListener(v -> new Thread(() -> {
-                            try {
-                                Instrumentation inst = new Instrumentation();
-                                inst.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }).start());
+                if (field == null) return;
+                ViewGroup viewGroup = (ViewGroup) field.get(param.thisObject);
+                if (viewGroup == null) return;
+                viewGroup.setOnClickListener(v -> new Thread(() -> {
+                    try {
+                        Instrumentation inst = new Instrumentation();
+                        inst.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }
+                }).start());
             }
         });
     }

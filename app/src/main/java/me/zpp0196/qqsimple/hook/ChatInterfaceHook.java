@@ -31,8 +31,8 @@ class ChatInterfaceHook extends BaseHook {
      */
     private void hideChatBubble() {
         if (!getBool("hide_chat_bubble")) return;
-        Class<?> BubbleManager = findClassInQQ("com.tencent.mobileqq.bubble.BubbleManager");
-        findAndHookMethod(BubbleManager, "a", XC_MethodReplacement.returnConstant(null));
+        Class<?> BubbleManager = findClassInQQ("com.tencent.mobileqq.bubble.BubbleManager"); // 4
+        findAndHookMethod(BubbleManager, "a", int.class, boolean.class, XC_MethodReplacement.returnConstant(null));
     }
 
     /**
@@ -69,7 +69,7 @@ class ChatInterfaceHook extends BaseHook {
         // 隐藏设置特别消息提示音
         hideGrayTips("VipSpecialCareGrayTips", getBool("hide_chat_special_care"));
         // 隐藏搜狗输入法广告
-        hideGrayTips("SougouInputGrayTips", getBool("hide_chat_sougou_ad"));
+        hideGrayTips("SougouInputGrayTips", getBool("hide_chat_sougou_input"));
         // 隐藏会员相关广告
         hideGrayTipsItem(getBool("hide_chat_vip_ad"), ".+会员.+");
         // 签到文本化
@@ -97,17 +97,17 @@ class ChatInterfaceHook extends BaseHook {
      */
     private void hideGroupChatAdmissions() {
         if (!getBool("hide_group_chat_admissions")) return;
+        hideGrayTipsItem(true, ".+进场.+");
         Class<?> TroopEnterEffectController = findClassInQQ("com.tencent.mobileqq.troop.enterEffect.TroopEnterEffectController");
-        if (TroopEnterEffectController != null) {
-            Field[] fields = TroopEnterEffectController.getDeclaredFields();
-            for (Field field : fields) {
-                if (field.toString().contains("final")) {
-                    field.setAccessible(true);
-                    try {
-                        field.set(null, "");
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
+        if (TroopEnterEffectController == null) return;
+        Field[] fields = TroopEnterEffectController.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.toString().contains("final")) {
+                field.setAccessible(true);
+                try {
+                    field.set(null, "");
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -142,8 +142,8 @@ class ChatInterfaceHook extends BaseHook {
 
     private void hideGrayTips(String className, boolean isHide) {
         if (!isHide) return;
-        Class<?> GatherContactsTips = findClassInQQ("com.tencent.mobileqq.activity.aio.tips." + className);
-        findAndHookMethod(GatherContactsTips, "a", Object[].class, XC_MethodReplacement.returnConstant(null));
+        Class<?> Tips = findClassInQQ("com.tencent.mobileqq.activity.aio.tips." + className);
+        findAndHookMethod(Tips, "a", Object[].class, XC_MethodReplacement.returnConstant(null));
     }
 
     private void hideGrayTipsItem(boolean isHide, String... regex) {

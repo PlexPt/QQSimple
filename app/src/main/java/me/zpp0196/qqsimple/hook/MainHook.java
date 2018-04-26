@@ -29,7 +29,8 @@ public class MainHook implements IXposedHookLoadPackage {
         if (!loadPackageParam.packageName.equals(PACKAGE_NAME_QQ)) return;
         if (XPrefs.getPref().getBoolean("switch_all", false)) return;
         log("loading: " + PACKAGE_NAME_QQ);
-        findAndHookMethod("com.tencent.common.app.QFixApplicationImpl", loadPackageParam.classLoader, "isAndroidNPatchEnable", XC_MethodReplacement.returnConstant(false));
+        if (XPrefs.getPref().getBoolean("hook_hotpatch", false))
+            findAndHookMethod("com.tencent.common.app.QFixApplicationImpl", loadPackageParam.classLoader, "isAndroidNPatchEnable", XC_MethodReplacement.returnConstant(false));
         findAndHookMethod("com.tencent.mobileqq.app.InjectUtils", loadPackageParam.classLoader, "injectExtraDexes",
                 Application.class, boolean.class, new XC_MethodHook() {
                     @Override

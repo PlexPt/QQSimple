@@ -3,7 +3,7 @@
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="prevent_flash_disappear"
-        android:summary="可截图"
+        android:summary="无限时查看闪照并且可以截图"
         android:title="防止闪照消失" />
     <CheckBoxPreference
         android:defaultValue="false"
@@ -19,7 +19,7 @@
         android:defaultValue="false"
         android:key="disable_coreservice"
         android:summary="会影响消息的正常接收"
-        android:title="禁用CoreService" />
+        android:title="禁用 CoreService" />
     <PreferenceCategory android:title="模块设置">
         <CheckBoxPreference
             android:defaultValue="false"
@@ -28,18 +28,20 @@
             android:title="隐藏桌面图标" />
         <CheckBoxPreference
             android:defaultValue="false"
+            android:key="hook_hotpatch"
+            android:summary="如果模块不能用再尝试开启该开关"
+            android:title="拦截热修复（实验）" />
+        <CheckBoxPreference
+            android:defaultValue="false"
             android:key="switch_all"
             android:title="关闭所有功能" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="switch_log"
-            android:summary="开启后可在 Xposed 框架里面查看日志"
+            android:summary="开启后可在 Xposed 框架里面查看模块产生的日志"
             android:title="日志开关" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="其他">
         <Preference
-            android:key="setting_qq"
-            android:summary="一般用于强行停止 QQ 来确保模块更新内容可以生效"
-            android:title="管理 QQ" />
+            android:key="setting_bor"
+            android:title="备份/恢复数据" />
     </PreferenceCategory>
 </PreferenceScreen>

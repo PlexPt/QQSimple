@@ -7,7 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,9 +25,11 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.zpp0196.qqsimple.BuildConfig;
+import me.zpp0196.qqsimple.Common;
 import me.zpp0196.qqsimple.R;
 import me.zpp0196.qqsimple.fragment.AboutFragment;
 import me.zpp0196.qqsimple.fragment.ChatFragment;
@@ -38,6 +48,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkState();
+        initShortCut();
     }
 
     /**
@@ -82,6 +93,62 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
     }
 
+    private void initShortCut() {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return;
+        List<ShortcutInfo> list = new ArrayList<>();
+        String label = getPrefs().getBoolean("auto_start", false) ? "重启 QQ" : "停止 QQ";
+        list.add(new ShortcutInfo.Builder(this, "forceStopQQ")
+                .setShortLabel(label)
+                .setLongLabel(label)
+                .setIcon(getIcon(Common.PACKAGE_NAME_QQ))
+                .setIntent(new Intent(Intent.ACTION_VIEW).setClass(this, CommandActivity.class).putExtra("packageName", Common.PACKAGE_NAME_QQ).putExtra("progressName", " QQ "))
+                .build());
+        list.add(new ShortcutInfo.Builder(this, "openCoolapk")
+                .setShortLabel("酷安")
+                .setLongLabel("酷安")
+                .setIcon(getIcon("com.coolapk.market"))
+                .setIntent(getCoolapkIntent(BuildConfig.APPLICATION_ID))
+                .build());
+        if (Common.isInstalled(this, Common.PACKAGE_NAME_VXP)) {
+            list.add(new ShortcutInfo.Builder(this, "updateModuleInVxp")
+                    .setShortLabel("更新模块")
+                    .setLongLabel("更新 Vxp 中的模块")
+                    .setIcon(getIcon(Common.PACKAGE_NAME_VXP))
+                    .setIntent(new Intent(Intent.ACTION_VIEW).setClass(this, CommandActivity.class).putExtra("packageName", BuildConfig.APPLICATION_ID).putExtra("progressName", "模块").putExtra("vxpCmdType", "update"))
+                    .build());
+            list.add(new ShortcutInfo.Builder(this, "updateQQInVxp")
+                    .setShortLabel(label)
+                    .setLongLabel("重启 Vxp 中的 QQ")
+                    .setIcon(getIcon(Common.PACKAGE_NAME_VXP))
+                    .setIntent(new Intent(Intent.ACTION_VIEW).setClass(this, CommandActivity.class).putExtra("packageName", Common.PACKAGE_NAME_QQ).putExtra("progressName", " QQ ").putExtra("vxpCmdType", "reboot"))
+                    .build());
+        }
+        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+        if (shortcutManager != null) {
+            shortcutManager.setDynamicShortcuts(list);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private Icon getIcon(String packageName) {
+        Icon icon = Icon.createWithResource(this, R.mipmap.ic_launcher);
+        try {
+            Drawable drawable = getPackageManager().getApplicationIcon(packageName);
+            if (drawable instanceof BitmapDrawable) {
+                icon = Icon.createWithBitmap(((BitmapDrawable) drawable).getBitmap());
+            } else if (drawable instanceof AdaptiveIconDrawable) {
+                Bitmap bmp = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bmp);
+                drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                drawable.draw(canvas);
+                icon = Icon.createWithBitmap(bmp);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return icon;
+    }
+
     private void checkState() {
         if (!isModuleActive()) {
             new AlertDialog.Builder(this)
@@ -103,7 +170,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
     }
 
     private void openXposed() {
-        if (isXposedInstalled()) {
+        if (Common.isInstalled(this, "de.robv.android.xposed.installer")) {
             Intent intent = new Intent("de.robv.android.xposed.installer.OPEN_SECTION");
             PackageManager packageManager = getPackageManager();
             if (packageManager == null) {
@@ -121,19 +188,6 @@ public class SettingActivity extends AppCompatPreferenceActivity {
             }
         } else {
             Toast.makeText(this, "未安装 XposedInstaller !", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private boolean isXposedInstalled() {
-        try {
-            PackageManager packageManager = getPackageManager();
-            if (packageManager == null) {
-                return false;
-            }
-            packageManager.getApplicationInfo("de.robv.android.xposed.installer", 0);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
         }
     }
 
@@ -168,18 +222,23 @@ public class SettingActivity extends AppCompatPreferenceActivity {
         }
     }
 
-    @SuppressLint("WrongConstant")
     public void openCoolApk() {
+        String packageName = BuildConfig.APPLICATION_ID;
         try {
-            String str = "market://details?id=" + BuildConfig.APPLICATION_ID;
-            Intent intent = new Intent("android.intent.action.VIEW");
-            intent.setData(Uri.parse(str));
-            intent.setPackage("com.coolapk.market");
-            intent.setFlags(0x10000000);
-            startActivity(intent);
+            startActivity(getCoolapkIntent(packageName));
         } catch (Exception e) {
-            openUrl("http://www.coolapk.com/apk/" + BuildConfig.APPLICATION_ID);
+            openUrl("http://www.coolapk.com/apk/" + packageName);
         }
+    }
+
+    @SuppressLint("WrongConstant")
+    private Intent getCoolapkIntent(String packageName) {
+        String str = "market://details?id=" + packageName;
+        Intent intent = new Intent("android.intent.action.VIEW");
+        intent.setData(Uri.parse(str));
+        intent.setPackage("com.coolapk.market");
+        intent.setFlags(0x10000000);
+        return intent;
     }
 
     public void openUrl(String url) {

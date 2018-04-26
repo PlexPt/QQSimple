@@ -43,17 +43,14 @@ class MainUIHook extends BaseHook {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 Field field = findField(MainFragment, Dialog.class, "b");
-                if (field != null) {
-                    Dialog dialog = (Dialog) field.get(param.thisObject);
-                    if (dialog != null) {
-                        Field field1 = findFirstFieldByExactType(ActionSheet, LinearLayout.class);
-                        if (field1 != null) {
-                            LinearLayout layout = (LinearLayout) field1.get(dialog);
-                            layout.getChildAt(0).setVisibility(View.GONE);
-                            layout.getChildAt(1).setVisibility(View.GONE);
-                        }
-                    }
-                }
+                if (field == null) return;
+                Dialog dialog = (Dialog) field.get(param.thisObject);
+                if (dialog == null) return;
+                Field field1 = findFirstFieldByExactType(ActionSheet, LinearLayout.class);
+                if (field1 == null) return;
+                LinearLayout layout = (LinearLayout) field1.get(dialog);
+                layout.getChildAt(0).setVisibility(View.GONE);
+                layout.getChildAt(1).setVisibility(View.GONE);
             }
         });
     }
@@ -69,6 +66,7 @@ class MainUIHook extends BaseHook {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 ImageView view = (ImageView) findField(Conversation, ImageView.class, "a").get(param.thisObject);
+                if (view == null) return;
                 view.setVisibility(View.GONE);
             }
         });
@@ -78,6 +76,8 @@ class MainUIHook extends BaseHook {
      * 隐藏消息列表右上角快捷入口内容
      */
     private void hidePopupMenuContacts() {
+        if (!getBool("hide_popup_multiChat", "hide_popup_add", "hide_popup_sweep", "hide_popup_face2face", "hide_popup_pay", "hide_popup_shoot", "hide_popup_videoDance"))
+            return;
         Class<?> PopupMenuDialog = findClassInQQ("com.tencent.widget.PopupMenuDialog");
         Class<?> MenuItem = findClassInQQ("com.tencent.widget.PopupMenuDialog$MenuItem");
         Class<?> OnClickActionListener = findClassInQQ("com.tencent.widget.PopupMenuDialog$OnClickActionListener");
@@ -90,27 +90,16 @@ class MainUIHook extends BaseHook {
                 if (MenuItem == null) return;
                 for (Object item : list) {
                     String title = (String) findField(MenuItem, String.class, "a").get(item);
-                    if (title.equals("创建群聊") && getBool("hide_popup_multiChat")) {
+                    if (title.equals("创建群聊") && getBool("hide_popup_multiChat"))
                         needRemove.add(item);
-                    }
-                    if (title.equals("加好友/群") && getBool("hide_popup_add")) {
+                    if (title.equals("加好友/群") && getBool("hide_popup_add")) needRemove.add(item);
+                    if (title.equals("扫一扫") && getBool("hide_popup_sweep")) needRemove.add(item);
+                    if (title.equals("面对面快传") && getBool("hide_popup_face2face"))
                         needRemove.add(item);
-                    }
-                    if (title.equals("扫一扫") && getBool("hide_popup_sweep")) {
+                    if (title.equals("付款") && getBool("hide_popup_pay")) needRemove.add(item);
+                    if (title.equals("拍摄") && getBool("hide_popup_shoot")) needRemove.add(item);
+                    if (title.equals("高能舞室") && getBool("hide_popup_videoDance"))
                         needRemove.add(item);
-                    }
-                    if (title.equals("面对面快传") && getBool("hide_popup_face2face")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("付款") && getBool("hide_popup_pay")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("拍摄") && getBool("hide_popup_shoot")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("高能舞室") && getBool("hide_popup_videoDance")) {
-                        needRemove.add(item);
-                    }
                 }
                 list.removeAll(needRemove);
             }
@@ -122,9 +111,8 @@ class MainUIHook extends BaseHook {
      */
     private void hideNationalEntrance() {
         if (!getBool("hide_national_entrance")) return;
-        Class<?> ConversationNowController = findClassInQQ("com.tencent.mobileqq.now.enter.ConversationNowController");
+        Class<?> ConversationNowController = findClassInQQ("com.tencent.mobileqq.now.enter.ConversationNowController"); // 2
         findAndHookMethod(ConversationNowController, "a", String.class, XC_MethodReplacement.returnConstant(null));
-        findAndHookMethod(ConversationNowController, "e", XC_MethodReplacement.returnConstant(null));
     }
 
     /**
@@ -140,26 +128,22 @@ class MainUIHook extends BaseHook {
      * 隐藏底部分组
      */
     private void hideMainFragmentTab() {
-        Class<?> MainFragment = findClassInQQ("com.tencent.mobileqq.activity.MainFragment");
-        findAndHookMethod(MainFragment, "a", View.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                Field field = findField(MainFragment, View[].class, "a");
-                if (field != null) {
+        if (getBool("hide_tab_contact", "hide_tab_dynamic")) {
+            Class<?> MainFragment = findClassInQQ("com.tencent.mobileqq.activity.MainFragment");
+            findAndHookMethod(MainFragment, "a", View.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    super.afterHookedMethod(param);
+                    Field field = findField(MainFragment, View[].class, "a");
+                    if (field == null) return;
                     View[] views = (View[]) field.get(param.thisObject);
-                    if (views != null) {
-                        if (getBool("hide_tab_contact")) {
-                            views[2].setVisibility(View.GONE);
-                        }
-                        if (getBool("hide_tab_dynamic")) {
-                            views[3].setVisibility(View.GONE);
-                        }
-                        param.setResult(views);
-                    }
+                    if (views == null) return;
+                    if (getBool("hide_tab_contact")) views[2].setVisibility(View.GONE);
+                    if (getBool("hide_tab_dynamic")) views[3].setVisibility(View.GONE);
+                    param.setResult(views);
                 }
-            }
-        });
+            });
+        }
         if (!getBool("hide_tab_readinjoy")) return;
         Class<?> ReadInJoyHelper = findClassInQQ("cooperation.readinjoy.ReadInJoyHelper");
         findAndHookMethod(ReadInJoyHelper, "d", XC_MethodReplacement.returnConstant(false));
@@ -169,6 +153,8 @@ class MainUIHook extends BaseHook {
      * 隐藏联系人分组
      */
     private void hideSlidingIndicator() {
+        if (!getBool("hide_contacts_tab_device", "hide_contacts_tab_phone", "hide_contacts_tab_pub_account"))
+            return;
         Class<?> ContactsViewController = findClassInQQ("com.tencent.mobileqq.activity.contacts.base.ContactsViewController");
         Class<?> SimpleSlidingIndicator = findClassInQQ("com.tencent.mobileqq.activity.contacts.view.SimpleSlidingIndicator");
         findAndHookMethod(ContactsViewController, "a", View.class, new XC_MethodHook() {
@@ -177,18 +163,16 @@ class MainUIHook extends BaseHook {
                 super.afterHookedMethod(param);
                 if (SimpleSlidingIndicator == null) return;
                 Field field = findFirstFieldByExactType(ContactsViewController, SimpleSlidingIndicator);
-                if (field != null) {
-                    HorizontalScrollView slidingIndicator = (HorizontalScrollView) field.get(param.thisObject);
-                    if (slidingIndicator != null) {
-                        LinearLayout linearLayout = (LinearLayout) slidingIndicator.getChildAt(0);
-                        if (getBool("hide_contacts_tab_device"))
-                            linearLayout.getChildAt(2).setVisibility(View.GONE);
-                        if (getBool("hide_contacts_tab_phone"))
-                            linearLayout.getChildAt(3).setVisibility(View.GONE);
-                        if (getBool("hide_contacts_tab_pub_account"))
-                            linearLayout.getChildAt(4).setVisibility(View.GONE);
-                    }
-                }
+                if (field == null) return;
+                HorizontalScrollView slidingIndicator = (HorizontalScrollView) field.get(param.thisObject);
+                if (slidingIndicator == null) return;
+                LinearLayout linearLayout = (LinearLayout) slidingIndicator.getChildAt(0);
+                if (getBool("hide_contacts_tab_device"))
+                    linearLayout.getChildAt(2).setVisibility(View.GONE);
+                if (getBool("hide_contacts_tab_phone"))
+                    linearLayout.getChildAt(3).setVisibility(View.GONE);
+                if (getBool("hide_contacts_tab_pub_account"))
+                    linearLayout.getChildAt(4).setVisibility(View.GONE);
             }
         });
     }

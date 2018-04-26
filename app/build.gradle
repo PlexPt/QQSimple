@@ -6,8 +6,8 @@ android {
         applicationId "me.zpp0196.qqsimple"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 18
-        versionName "1.4.7"
+        versionCode 19
+        versionName "1.4.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -17,8 +17,8 @@ android {
         }
     }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
 }
 

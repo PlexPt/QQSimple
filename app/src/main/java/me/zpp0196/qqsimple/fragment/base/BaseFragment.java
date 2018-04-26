@@ -61,7 +61,7 @@ public abstract class BaseFragment extends PreferenceFragment {
 
     protected void showToast(@NonNull Object msg) {
         Activity activity = getActivity();
-        if (activity != null) {
+        if (activity != null && !msg.toString().isEmpty()) {
             Toast.makeText(getActivity(), msg.toString(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -73,4 +73,5 @@ public abstract class BaseFragment extends PreferenceFragment {
     protected SettingActivity getSettingActivity() {
         return (SettingActivity) getActivity();
     }
+
 }

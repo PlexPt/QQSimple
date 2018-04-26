@@ -1,7 +1,6 @@
 package me.zpp0196.qqsimple.hook.base;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +40,10 @@ public abstract class BaseHook {
         return getQQ_Version().compareTo("7.3.5") >= 0;
     }
 
+    protected boolean isMoreThan758() {
+        return getQQ_Version().compareTo("7.5.8") >= 0;
+    }
+
     protected Class<?> findClassInQQ(String className) {
         if (qqClassLoader == null || className.equals("")) return null;
         try {
@@ -64,7 +67,7 @@ public abstract class BaseHook {
         log(String.format(str, object));
     }
 
-    protected int getId(String name) {
+    protected int getIdInQQ(String name) {
         try {
             return XposedHelpers.getStaticIntField(findClassInQQ("com.tencent.mobileqq.R$id"), name);
         } catch (Throwable e) {
@@ -73,7 +76,7 @@ public abstract class BaseHook {
         return 0;
     }
 
-    protected int getDrawableId(String name) {
+    protected int getDrawableIdInQQ(String name) {
         try {
             return XposedHelpers.getStaticIntField(findClassInQQ("com.tencent.mobileqq.R$drawable"), name);
         } catch (Throwable e) {
@@ -82,8 +85,24 @@ public abstract class BaseHook {
         return 0;
     }
 
-    protected void removeView(int id, boolean isHide) {
-        if (id == 0 || !isHide) return;
+    protected void hideView(String name, String key) {
+        hideView(getIdInQQ(name), getBool(key));
+    }
+
+    protected void hideView(String name, boolean isHide) {
+        hideView(getIdInQQ(name), isHide);
+    }
+
+    protected void hideView(String name) {
+        hideView(getIdInQQ(name));
+    }
+
+    private void hideView(int id, boolean isHide) {
+        if (isHide) hideView(id);
+    }
+
+    private void hideView(int id) {
+        if (id == 0) return;
         findAndHookMethod(View.class, "setLayoutParams", ViewGroup.LayoutParams.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -99,8 +118,24 @@ public abstract class BaseHook {
         });
     }
 
-    protected void removeDrawable(int id, boolean isHide) {
-        if (id == 0 || !isHide) return;
+    protected void hideDrawable(String name, String key) {
+        hideDrawable(getDrawableIdInQQ(name), getBool(key));
+    }
+
+    protected void hideDrawable(String name, boolean isHide) {
+        hideDrawable(getDrawableIdInQQ(name), isHide);
+    }
+
+    protected void hideDrawable(String name) {
+        hideDrawable(getDrawableIdInQQ(name));
+    }
+
+    private void hideDrawable(int id, boolean isHide) {
+        if (isHide) hideDrawable(id);
+    }
+
+    private void hideDrawable(int id) {
+        if (id == 0) return;
         findAndHookMethod(ImageView.class, "setImageResource", int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -108,18 +143,6 @@ public abstract class BaseHook {
                 if ((int) param.args[0] == id) {
                     param.setResult(null);
                 }
-            }
-        });
-    }
-
-    protected void removeView(Class<?> clazz, boolean isHide){
-        if(clazz == null || !isHide) return;
-        findAndHookMethod(clazz, "onDraw", Canvas.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                View view = (View) param.thisObject;
-                view.setVisibility(View.GONE);
             }
         });
     }
@@ -205,5 +228,12 @@ public abstract class BaseHook {
 
     protected boolean getBool(String key) {
         return XPrefs.getPref().getBoolean(key, false);
+    }
+
+    protected boolean getBool(String... keys) {
+        for (String key : keys) {
+            if (getBool(key)) return true;
+        }
+        return false;
     }
 }

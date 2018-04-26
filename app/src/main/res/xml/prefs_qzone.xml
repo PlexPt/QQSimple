@@ -63,10 +63,6 @@
             android:title="隐藏机型" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="hide_qzone_visitView"
-            android:title="隐藏浏览次数" />
-        <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_qzone_btn_like"
             android:title="隐藏点赞按钮" />
         <CheckBoxPreference
@@ -94,6 +90,6 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_qzone_ad"
-            android:title="隐藏绿厂广告" />
+            android:title="隐藏部分广告" />
     </PreferenceCategory>
 </PreferenceScreen>
