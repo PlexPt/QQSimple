@@ -123,9 +123,10 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                     .setIntent(new Intent(Intent.ACTION_VIEW).setClass(this, CommandActivity.class).putExtra("packageName", Common.PACKAGE_NAME_QQ).putExtra("progressName", " QQ ").putExtra("vxpCmdType", "reboot"))
                     .build());
         }
-        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
-        if (shortcutManager != null) {
-            shortcutManager.setDynamicShortcuts(list);
+        try{
+            getSystemService(ShortcutManager.class).setDynamicShortcuts(list);
+        }catch (Exception e){
+            //
         }
     }
 
