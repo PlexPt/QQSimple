@@ -8,6 +8,9 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 
+import static me.zpp0196.qqsimple.hook.comm.Classes.ApolloManager$CheckApolloInfoResult;
+import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingMe;
+
 /**
  * Created by zpp0196 on 2018/3/11.
  */
@@ -44,9 +47,6 @@ class OtherHook extends BaseHook {
      * 隐藏侧滑栏厘米秀
      */
     private void hideSidebarApollo() {
-        if (!getBool("hide_sidebar_apollo")) return;
-        Class<?> QQSettingMe = findClassInQQ("com.tencent.mobileqq.activity.QQSettingMe");
-        Class<?> CheckApolloInfoResult = findClassInQQ("com.tencent.mobileqq.apollo.ApolloManager$CheckApolloInfoResult");
-        findAndHookMethod(QQSettingMe, "a", CheckApolloInfoResult, XC_MethodReplacement.returnConstant(null));
+        if (getBool("hide_sidebar_apollo")) findAndHookMethod(QQSettingMe, "a", ApolloManager$CheckApolloInfoResult, XC_MethodReplacement.returnConstant(null));
     }
 }

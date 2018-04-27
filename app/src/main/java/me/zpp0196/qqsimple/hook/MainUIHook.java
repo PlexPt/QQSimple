@@ -14,6 +14,19 @@ import java.util.List;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
+import me.zpp0196.qqsimple.hook.util.Util;
+
+import static me.zpp0196.qqsimple.hook.comm.Classes.ActionSheet;
+import static me.zpp0196.qqsimple.hook.comm.Classes.ContactsViewController;
+import static me.zpp0196.qqsimple.hook.comm.Classes.Conversation;
+import static me.zpp0196.qqsimple.hook.comm.Classes.ConversationNowController;
+import static me.zpp0196.qqsimple.hook.comm.Classes.Leba;
+import static me.zpp0196.qqsimple.hook.comm.Classes.MainFragment;
+import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog;
+import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$MenuItem;
+import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$OnClickActionListener;
+import static me.zpp0196.qqsimple.hook.comm.Classes.ReadInJoyHelper;
+import static me.zpp0196.qqsimple.hook.comm.Classes.SimpleSlidingIndicator;
 
 /**
  * Created by zpp0196 on 2018/3/12.
@@ -36,8 +49,6 @@ class MainUIHook extends BaseHook {
      */
     private void hideMenuUAF() {
         if (!getBool("hide_menu_uaf")) return;
-        Class<?> MainFragment = findClassInQQ("com.tencent.mobileqq.activity.MainFragment");
-        Class<?> ActionSheet = findClassInQQ("com.tencent.widget.ActionSheet");
         findAndHookMethod(MainFragment, "r", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -60,14 +71,12 @@ class MainUIHook extends BaseHook {
      */
     private void hidePopupMenuEntry() {
         if (!getBool("hide_popup_menu_entry")) return;
-        Class<?> Conversation = findClassInQQ("com.tencent.mobileqq.activity.Conversation");
         findAndHookMethod(Conversation, "D", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 ImageView view = (ImageView) findField(Conversation, ImageView.class, "a").get(param.thisObject);
-                if (view == null) return;
-                view.setVisibility(View.GONE);
+                if(view != null) view.setVisibility(View.GONE);
             }
         });
     }
@@ -75,31 +84,26 @@ class MainUIHook extends BaseHook {
     /**
      * 隐藏消息列表右上角快捷入口内容
      */
+    @SuppressWarnings("unchecked")
     private void hidePopupMenuContacts() {
-        if (!getBool("hide_popup_multiChat", "hide_popup_add", "hide_popup_sweep", "hide_popup_face2face", "hide_popup_pay", "hide_popup_shoot", "hide_popup_videoDance"))
-            return;
-        Class<?> PopupMenuDialog = findClassInQQ("com.tencent.widget.PopupMenuDialog");
-        Class<?> MenuItem = findClassInQQ("com.tencent.widget.PopupMenuDialog$MenuItem");
-        Class<?> OnClickActionListener = findClassInQQ("com.tencent.widget.PopupMenuDialog$OnClickActionListener");
-        findAndHookMethod(PopupMenuDialog, "a", Activity.class, List.class, OnClickActionListener, new XC_MethodHook() {
+        if (getBool("hide_popup_multiChat", "hide_popup_add", "hide_popup_sweep", "hide_popup_face2face", "hide_popup_pay", "hide_popup_shoot", "hide_popup_videoDance"))
+        findAndHookMethod(PopupMenuDialog, "a", Activity.class, List.class, PopupMenuDialog$OnClickActionListener, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
                 List list = (List) param.args[1];
+                if(list == null || list.isEmpty()) return;
                 List needRemove = new ArrayList();
-                if (MenuItem == null) return;
+                if (PopupMenuDialog$MenuItem == null) return;
                 for (Object item : list) {
-                    String title = (String) findField(MenuItem, String.class, "a").get(item);
-                    if (title.equals("创建群聊") && getBool("hide_popup_multiChat"))
-                        needRemove.add(item);
+                    String title = (String) findField(PopupMenuDialog$MenuItem, String.class, "a").get(item);
+                    if (title.equals("创建群聊") && getBool("hide_popup_multiChat")) needRemove.add(item);
                     if (title.equals("加好友/群") && getBool("hide_popup_add")) needRemove.add(item);
                     if (title.equals("扫一扫") && getBool("hide_popup_sweep")) needRemove.add(item);
-                    if (title.equals("面对面快传") && getBool("hide_popup_face2face"))
-                        needRemove.add(item);
+                    if (title.equals("面对面快传") && getBool("hide_popup_face2face")) needRemove.add(item);
                     if (title.equals("付款") && getBool("hide_popup_pay")) needRemove.add(item);
                     if (title.equals("拍摄") && getBool("hide_popup_shoot")) needRemove.add(item);
-                    if (title.equals("高能舞室") && getBool("hide_popup_videoDance"))
-                        needRemove.add(item);
+                    if (title.equals("高能舞室") && getBool("hide_popup_videoDance")) needRemove.add(item);
                 }
                 list.removeAll(needRemove);
             }
@@ -110,18 +114,14 @@ class MainUIHook extends BaseHook {
      * 隐藏全民闯关入口
      */
     private void hideNationalEntrance() {
-        if (!getBool("hide_national_entrance")) return;
-        Class<?> ConversationNowController = findClassInQQ("com.tencent.mobileqq.now.enter.ConversationNowController"); // 2
-        findAndHookMethod(ConversationNowController, "a", String.class, XC_MethodReplacement.returnConstant(null));
+        if (getBool("hide_national_entrance")) findAndHookMethod(ConversationNowController, "a", String.class, XC_MethodReplacement.returnConstant(null));
     }
 
     /**
      * 隐藏隐藏动态界面大家都在搜
      */
     private void hideEveryoneSearching() {
-        if (!isMoreThan735() || !getBool("hide_everyone_searching")) return;
-        Class<?> Leba = findClassInQQ("com.tencent.mobileqq.activity.Leba");
-        findAndHookMethod(Leba, "a", List.class, XC_MethodReplacement.returnConstant(null));
+        if (Util.isMoreThan735() && getBool("hide_everyone_searching")) findAndHookMethod(Leba, "a", List.class, XC_MethodReplacement.returnConstant(null));
     }
 
     /**
@@ -129,7 +129,6 @@ class MainUIHook extends BaseHook {
      */
     private void hideMainFragmentTab() {
         if (getBool("hide_tab_contact", "hide_tab_dynamic")) {
-            Class<?> MainFragment = findClassInQQ("com.tencent.mobileqq.activity.MainFragment");
             findAndHookMethod(MainFragment, "a", View.class, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -145,7 +144,6 @@ class MainUIHook extends BaseHook {
             });
         }
         if (!getBool("hide_tab_readinjoy")) return;
-        Class<?> ReadInJoyHelper = findClassInQQ("cooperation.readinjoy.ReadInJoyHelper");
         findAndHookMethod(ReadInJoyHelper, "d", XC_MethodReplacement.returnConstant(false));
     }
 
@@ -155,8 +153,6 @@ class MainUIHook extends BaseHook {
     private void hideSlidingIndicator() {
         if (!getBool("hide_contacts_tab_device", "hide_contacts_tab_phone", "hide_contacts_tab_pub_account"))
             return;
-        Class<?> ContactsViewController = findClassInQQ("com.tencent.mobileqq.activity.contacts.base.ContactsViewController");
-        Class<?> SimpleSlidingIndicator = findClassInQQ("com.tencent.mobileqq.activity.contacts.view.SimpleSlidingIndicator");
         findAndHookMethod(ContactsViewController, "a", View.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {

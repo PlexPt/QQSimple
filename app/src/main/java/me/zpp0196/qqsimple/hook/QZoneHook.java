@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
+import me.zpp0196.qqsimple.hook.util.Util;
 
 /**
  * Created by zpp0196 on 2018/4/1.
@@ -19,9 +20,17 @@ class QZoneHook extends BaseHook {
     private ClassLoader qqClassLoader;
     private ClassLoader qzoneClassLoader;
 
+    private Class<?> entrance_cfg;
+    private Class<?> NavigatorBar;
+    private Class<?> NavigatorItem;
+    private Class<?> OperationItem;
+    private Class<?> PlusMenuContainer;
+    private Class<?> QZoneFriendFeedFragment;
+
     QZoneHook(ClassLoader qqClassLoader, ClassLoader qzoneClassLoader) {
         this.qqClassLoader = qqClassLoader;
         this.qzoneClassLoader = qzoneClassLoader;
+        initClass();
         hidePlusMenuConstants();
         hideNavConstants();
         hideMoodConstants();
@@ -29,20 +38,27 @@ class QZoneHook extends BaseHook {
         hideAd();
     }
 
+    private void initClass(){
+        if(entrance_cfg == null) entrance_cfg = findClassInQQ("NS_UNDEAL_COUNT.entrance_cfg");
+        if(NavigatorBar == null) NavigatorBar = findClassInQzone("com.qzone.navigationbar.NavigatorBar");
+        if(NavigatorItem == null) NavigatorItem = findClassInQzone("com.qzone.navigationbar.NavigatorItem");
+        if(OperationItem == null) OperationItem = findClassInQzone("com.qzone.plusoperation.OperationItem");
+        if(PlusMenuContainer == null) PlusMenuContainer = findClassInQzone("com.qzone.plusoperation.PlusMenuContainer");
+        if(QZoneFriendFeedFragment == null) QZoneFriendFeedFragment = findClassInQzone("com.qzone.feed.ui.activity.QZoneFriendFeedFragment");
+    }
+
     /**
      * 隐藏加号菜单内容
      */
+    @SuppressWarnings("unchecked")
     private void hidePlusMenuConstants() {
-        if (!getBool("hide_qzone_plus_mood", "hide_qzone_plus_album", "hide_qzone_plus_shoot", "hide_qzone_plus_signIn", "hide_qzone_plus_redPacket", "hide_qzone_plus_live"))
-            return;
-        Class<?> PlusMenuContainer = findClassInQzone("com.qzone.plusoperation.PlusMenuContainer");
-        Class<?> OperationItem = findClassInQzone("com.qzone.plusoperation.OperationItem");
-        findAndHookMethod(PlusMenuContainer, "b", new XC_MethodHook() {
+        if (getBool("hide_qzone_plus_mood", "hide_qzone_plus_album", "hide_qzone_plus_shoot", "hide_qzone_plus_signIn", "hide_qzone_plus_redPacket", "hide_qzone_plus_live")) findAndHookMethod(PlusMenuContainer, "b", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
                 if (PlusMenuContainer == null || OperationItem == null) return;
                 ArrayList arrayList = (ArrayList) findField(PlusMenuContainer, ArrayList.class, "a").get(param.thisObject);
+                if(arrayList == null || arrayList.isEmpty()) return;
                 ArrayList needRemove = new ArrayList();
                 for (Object item : arrayList) {
                     String title = (String) findField(OperationItem, String.class, "a").get(item);
@@ -65,22 +81,20 @@ class QZoneHook extends BaseHook {
     /**
      * 隐藏导航栏
      */
+    @SuppressWarnings("unchecked")
     private void hideNavConstants() {
         // 隐藏小红点
-        if (getBool("hide_qzone_nav_redDot")) {
-            Class<?> NavigatorItem = findClassInQzone("com.qzone.navigationbar.NavigatorItem");
-            findAndHookMethod(NavigatorItem, "b", Context.class, XC_MethodReplacement.returnConstant(null));
-        }
+        if (getBool("hide_qzone_nav_redDot")) findAndHookMethod(NavigatorItem, "b", Context.class, XC_MethodReplacement.returnConstant(null));
+
         // 隐藏导航栏
         if (getBool("hide_qzone_nav_album", "hide_qzone_nav_mood", "hide_qzone_nav_dress", "hide_qzone_nav_game", "hide_qzone_nav_video")) {
-            Class<?> NavigatorBar = findClassInQzone("com.qzone.navigationbar.NavigatorBar");
-            Class<?> entrance_cfg = findClassInQQ("NS_UNDEAL_COUNT.entrance_cfg");
             findAndHookMethod(NavigatorBar, "b", Context.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     super.beforeHookedMethod(param);
                     if (NavigatorBar == null || entrance_cfg == null) return;
                     ArrayList arrayList = (ArrayList) findField(NavigatorBar, ArrayList.class, "a").get(param.thisObject);
+                    if(arrayList == null || arrayList.isEmpty()) return;
                     ArrayList needRemove = new ArrayList();
                     for (Object item : arrayList) {
                         String title = (String) findField(entrance_cfg, String.class, "sEntranceName").get(item);
@@ -101,14 +115,13 @@ class QZoneHook extends BaseHook {
         }
         // 隐藏消息
         if (getBool("hide_qzone_nav_news")) {
-            Class<?> QZoneFriendFeedFragment = findClassInQzone("com.qzone.feed.ui.activity.QZoneFriendFeedFragment");
             findAndHookMethod(QZoneFriendFeedFragment, "t_", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     super.afterHookedMethod(param);
                     if (QZoneFriendFeedFragment == null) return;
                     ImageView imageView = (ImageView) findField(QZoneFriendFeedFragment, ImageView.class, "d").get(param.thisObject);
-                    imageView.setVisibility(View.GONE);
+                    if(imageView != null) imageView.setVisibility(View.GONE);
                 }
             });
         }
@@ -158,12 +171,11 @@ class QZoneHook extends BaseHook {
         hideView("qz_feed_head_container");
     }
 
-    @Override
-    protected Class<?> findClassInQQ(String className) {
+    private Class<?> findClassInQQ(String className) {
         try {
             return qqClassLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            log("%s Can't find the Class of name: %s!", getQQ_Version(), className);
+            log("%s Can't find the Class of name: %s!", Util.getQQVersion(), className);
         }
         return null;
     }
@@ -172,7 +184,7 @@ class QZoneHook extends BaseHook {
         try {
             return qzoneClassLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            log("%s Can't find the Class of name: %s in QzonePlugin!", getQQ_Version(), className);
+            log("%s Can't find the Class of name: %s in QzonePlugin!", Util.getQQVersion(), className);
         }
         return null;
     }

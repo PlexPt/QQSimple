@@ -40,9 +40,11 @@ import me.zpp0196.qqsimple.fragment.OtherFragment;
 import me.zpp0196.qqsimple.fragment.QZoneFragment;
 import me.zpp0196.qqsimple.fragment.SidebarFragment;
 
-import static me.zpp0196.qqsimple.Common.isModuleActive;
-
 public class SettingActivity extends AppCompatPreferenceActivity {
+
+    private boolean isModuleActive() {
+        return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +87,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
     }
 
     /**
-     * Helper method to determine if the device has an extra-large screen. For
+     * Util method to determine if the device has an extra-large screen. For
      * example, 10" tablets are extra-large.
      */
     private boolean isXLargeTablet(Context context) {
@@ -109,7 +111,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                 .setIcon(getIcon("com.coolapk.market"))
                 .setIntent(getCoolapkIntent(BuildConfig.APPLICATION_ID))
                 .build());
-        if (Common.isInstalled(this, Common.PACKAGE_NAME_VXP)) {
+        if (isInstalled(Common.PACKAGE_NAME_VXP)) {
             list.add(new ShortcutInfo.Builder(this, "updateModuleInVxp")
                     .setShortLabel("更新模块")
                     .setLongLabel("更新 Vxp 中的模块")
@@ -171,7 +173,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
     }
 
     private void openXposed() {
-        if (Common.isInstalled(this, "de.robv.android.xposed.installer")) {
+        if (isInstalled("de.robv.android.xposed.installer")) {
             Intent intent = new Intent("de.robv.android.xposed.installer.OPEN_SECTION");
             PackageManager packageManager = getPackageManager();
             if (packageManager == null) {
@@ -252,6 +254,19 @@ public class SettingActivity extends AppCompatPreferenceActivity {
             startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public boolean isInstalled(String packageName) {
+        try {
+            PackageManager packageManager = getPackageManager();
+            if (packageManager == null) {
+                return false;
+            }
+            packageManager.getApplicationInfo(packageName, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
     }
 }

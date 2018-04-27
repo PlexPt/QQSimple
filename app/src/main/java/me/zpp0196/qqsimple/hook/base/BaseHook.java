@@ -1,6 +1,5 @@
 package me.zpp0196.qqsimple.hook.base;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +8,12 @@ import android.widget.ImageView;
 import java.lang.reflect.Field;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import me.zpp0196.qqsimple.hook.util.Util;
 import me.zpp0196.qqsimple.hook.util.XPrefs;
 
-import static me.zpp0196.qqsimple.Common.getQQVersion;
-import static me.zpp0196.qqsimple.Common.qqClassLoader;
+import static me.zpp0196.qqsimple.hook.comm.Classes.R$drawable;
+import static me.zpp0196.qqsimple.hook.comm.Classes.R$id;
 
 /**
  * Created by zpp0196 on 2018/3/18.
@@ -22,65 +21,28 @@ import static me.zpp0196.qqsimple.Common.qqClassLoader;
 
 public abstract class BaseHook {
 
-    private String QQ_VERSION = "";
-
-    protected String getQQ_Version() {
-        if (QQ_VERSION.equals("")) {
-            Context context = (Context) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("android.app.ActivityThread", null), "currentActivityThread", new Object[0]), "getSystemContext", new Object[0]);
-            QQ_VERSION = getQQVersion(context);
-        }
-        return QQ_VERSION;
+    protected void log(String msg){
+        Util.log(getClass(), msg);
     }
 
-    protected boolean isMoreThan732() {
-        return getQQ_Version().compareTo("7.3.2") >= 0;
+    protected void log(String format, Object... args){
+        Util.log(getClass(), format, args);
     }
 
-    protected boolean isMoreThan735() {
-        return getQQ_Version().compareTo("7.3.5") >= 0;
-    }
-
-    protected boolean isMoreThan758() {
-        return getQQ_Version().compareTo("7.5.8") >= 0;
-    }
-
-    protected Class<?> findClassInQQ(String className) {
-        if (qqClassLoader == null || className.equals("")) return null;
+    private int getIdInQQ(String name) {
         try {
-            return qqClassLoader.loadClass(className);
+            return XposedHelpers.getStaticIntField(R$id, name);
         } catch (Throwable e) {
-            log("%s Can't find the Class of name: %s!", getQQ_Version(), className);
-        }
-        return null;
-    }
-
-    protected void log(@NonNull Object object) {
-        if (!XPrefs.isPrintLog()) return;
-        if (object instanceof Throwable) {
-            XposedBridge.log((Throwable) object);
-        } else {
-            XposedBridge.log(getClass().getSimpleName() + " -> " + object.toString());
-        }
-    }
-
-    protected void log(String str, Object... object) {
-        log(String.format(str, object));
-    }
-
-    protected int getIdInQQ(String name) {
-        try {
-            return XposedHelpers.getStaticIntField(findClassInQQ("com.tencent.mobileqq.R$id"), name);
-        } catch (Throwable e) {
-            log("%s Can't find the id of name: %s!", getQQ_Version(), name);
+            log("%s Can't find the id of name: %s!", Util.getQQVersion(), name);
         }
         return 0;
     }
 
-    protected int getDrawableIdInQQ(String name) {
+    private int getDrawableIdInQQ(String name) {
         try {
-            return XposedHelpers.getStaticIntField(findClassInQQ("com.tencent.mobileqq.R$drawable"), name);
+            return XposedHelpers.getStaticIntField(R$drawable, name);
         } catch (Throwable e) {
-            log("%s Can't find the drawable of name: %s!", getQQ_Version(), name);
+            log("%s Can't find the drawable of name: %s!", Util.getQQVersion(), name);
         }
         return 0;
     }
@@ -118,20 +80,13 @@ public abstract class BaseHook {
         });
     }
 
-    protected void hideDrawable(String name, String key) {
-        hideDrawable(getDrawableIdInQQ(name), getBool(key));
-    }
-
-    protected void hideDrawable(String name, boolean isHide) {
-        hideDrawable(getDrawableIdInQQ(name), isHide);
-    }
-
     protected void hideDrawable(String name) {
         hideDrawable(getDrawableIdInQQ(name));
     }
 
-    private void hideDrawable(int id, boolean isHide) {
-        if (isHide) hideDrawable(id);
+    @SuppressWarnings("all")
+    protected void hideDrawable(String name, boolean isHide) {
+        if(isHide) hideDrawable(getDrawableIdInQQ(name));
     }
 
     private void hideDrawable(int id) {
@@ -147,14 +102,6 @@ public abstract class BaseHook {
         });
     }
 
-    protected Field findField(@NonNull Class<?> clazz, String name) {
-        Field field = XposedHelpers.findFieldIfExists(clazz, name);
-        if (field == null) {
-            log("%s Can't find the field of name: %s in class: %s!", getQQ_Version(), name, clazz.getName());
-        }
-        return field;
-    }
-
     protected Field findFirstFieldByExactType(@NonNull Class<?> clazz, Class<?> type) {
         Class<?> clz = clazz;
         do {
@@ -165,7 +112,17 @@ public abstract class BaseHook {
                 }
             }
         } while ((clz = clz.getSuperclass()) != null);
-        log("%s Can't find the field of type: %s in class: %s!", getQQ_Version(), type.getName(), clazz.getName());
+        log("%s Can't find the field of type: %s in class: %s!", Util.getQQVersion(), type.getName(), clazz.getName());
+        return null;
+    }
+
+    @SuppressWarnings("all")
+    protected <T> T findObject(@NonNull Object obj, Class<?> type, String name){
+        try {
+            return (T)findField(obj.getClass(), type, name).get(obj);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -179,17 +136,8 @@ public abstract class BaseHook {
                 }
             }
         } while ((clz = clz.getSuperclass()) != null);
-        log("%s Can't find the field of type: %s and name: %s in class: %s!", getQQ_Version(), type.getName(), name, clazz.getName());
+        log("%s Can't find the field of type: %s and name: %s in class: %s!", Util.getQQVersion(), type.getName(), name, clazz.getName());
         return null;
-    }
-
-    protected Class<?> findClass(String className, ClassLoader classLoader) {
-        try {
-            return XposedHelpers.findClass(className, classLoader);
-        } catch (Throwable e) {
-            log("%s Can't find the Class of name: %s!", getQQ_Version(), className);
-            return null;
-        }
     }
 
     protected void findAndHookMethod(Class<?> clazz, String methodName, Object... parameterTypesAndCallback) {
@@ -201,29 +149,8 @@ public abstract class BaseHook {
         try {
             XposedHelpers.findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
         } catch (Throwable e) {
-            log(e);
+            Util.log(e);
         }
-    }
-
-    protected void findAndHookMethod(String className, ClassLoader classLoader, String methodName, Object... parameterTypesAndCallback) {
-        findAndHookMethod(findClass(className, classLoader), methodName, parameterTypesAndCallback);
-    }
-
-    protected void findAndHookConstructor(Class<?> clazz, Object... parameterTypesAndCallback) {
-        if (clazz == null || parameterTypesAndCallback.length == 0 || !(parameterTypesAndCallback[parameterTypesAndCallback.length - 1] instanceof XC_MethodHook))
-            return;
-        for (Object obj : parameterTypesAndCallback) {
-            if (obj == null) return;
-        }
-        try {
-            XposedHelpers.findAndHookConstructor(clazz, parameterTypesAndCallback);
-        } catch (Throwable e) {
-            log(e);
-        }
-    }
-
-    protected void findAndHookConstructor(String className, ClassLoader classLoader, Object... parameterTypesAndCallback) {
-        findAndHookConstructor(findClass(className, classLoader), parameterTypesAndCallback);
     }
 
     protected boolean getBool(String key) {

@@ -15,20 +15,27 @@ import android.widget.RelativeLayout;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
+import me.zpp0196.qqsimple.hook.util.Util;
+
+import static me.zpp0196.qqsimple.hook.comm.Classes.AIOImageProviderService;
+import static me.zpp0196.qqsimple.hook.comm.Classes.Conversation;
+import static me.zpp0196.qqsimple.hook.comm.Classes.CoreService;
+import static me.zpp0196.qqsimple.hook.comm.Classes.CoreService$KernelService;
+import static me.zpp0196.qqsimple.hook.comm.Classes.CountDownProgressBar;
+import static me.zpp0196.qqsimple.hook.comm.Classes.HotChatFlashPicActivity;
+import static me.zpp0196.qqsimple.hook.comm.Classes.QQMessageFacade;
 
 /**
  * Created by zpp0196 on 2018/3/11.
  */
 
 class MoreHook extends BaseHook {
-
-    private boolean isRevoke = false;
-    private ArrayList<String> messageuin = new ArrayList<>();
 
     MoreHook() {
         preventFlashDisappear();
@@ -42,11 +49,9 @@ class MoreHook extends BaseHook {
      */
     private void disableCoreService() {
         if (!getBool("disable_coreservice")) return;
-        Class<?> CoreService = findClassInQQ("com.tencent.mobileqq.app.CoreService");
-        Class<?> KernelService = findClassInQQ("com.tencent.mobileqq.app.CoreService$KernelService");
         findAndHookMethod(CoreService, "startCoreService", boolean.class, XC_MethodReplacement.returnConstant(null));
         findAndHookMethod(CoreService, "startTempService", XC_MethodReplacement.returnConstant(null));
-        findAndHookMethod(KernelService, "onCreate", XC_MethodReplacement.returnConstant(null));
+        findAndHookMethod(CoreService$KernelService, "onCreate", XC_MethodReplacement.returnConstant(null));
     }
 
     /**
@@ -54,9 +59,7 @@ class MoreHook extends BaseHook {
      */
     private void preventFlashDisappear() {
         if (!getBool("prevent_flash_disappear")) return;
-        Class<?> CountDownProgressBar = findClassInQQ("com.tencent.widget.CountDownProgressBar");
         findAndHookMethod(CountDownProgressBar, "a", XC_MethodReplacement.returnConstant(null));
-        Class<?> HotChatFlashPicActivity = findClassInQQ("com.tencent.mobileqq.dating.HotChatFlashPicActivity");
         findAndHookMethod(HotChatFlashPicActivity, "onTouch", View.class, MotionEvent.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -64,7 +67,6 @@ class MoreHook extends BaseHook {
                 param.args[1] = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0);
             }
         });
-        Class<?> AIOImageProviderService = findClassInQQ("com.tencent.mobileqq.activity.aio.photo.AIOImageProviderService");
         if (AIOImageProviderService != null) {
             Method[] methods = AIOImageProviderService.getDeclaredMethods();
             for (Method method : methods) {
@@ -105,50 +107,15 @@ class MoreHook extends BaseHook {
      * 防止消息撤回
      */
     private void preventMessagesWithdrawn() {
-        if (!getBool("prevent_messages_withdrawn")) return;
-        Class<?> BaseMessageManager = findClassInQQ("com.tencent.mobileqq.app.message.BaseMessageManager");
-        findAndHookMethod(BaseMessageManager, "a", ArrayList.class, new XC_MethodHook() {
+        if (getBool("prevent_messages_withdrawn")) findAndHookMethod(QQMessageFacade, "a", ArrayList.class, boolean.class, new XC_MethodReplacement() {
             @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                isRevoke = false;
-            }
-        });
-        findAndHookMethod(BaseMessageManager, "b", ArrayList.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
+            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
                 ArrayList arrayList = (ArrayList) param.args[0];
-                String a = arrayList.get(0).toString();
-                if (!messageuin.contains(a)) {
-                    messageuin.add(a);
-                    isRevoke = true;
-                } else {
-                    param.args[0] = null;
-                }
-            }
-        });
-        Class<?> QQMessageFacade = findClassInQQ("com.tencent.mobileqq.app.message.QQMessageFacade");
-        findAndHookMethod(QQMessageFacade, "b", String.class, int.class, long.class, boolean.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (isRevoke) {
-                    param.args[2] = 0;
-                }
-
-            }
-        });
-        Class<?> UniteGrayTipParam = findClassInQQ("com.tencent.mobileqq.graytip.UniteGrayTipParam");
-        findAndHookConstructor(UniteGrayTipParam, String.class, String.class, String.class, int.class, int.class, int.class, long.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                String message = (String) param.args[2];
-                if (isRevoke && message.contains("撤回了一条")) {
-                    message = message.replace("撤回了", "尝试撤回");
-                }
-                param.args[2] = message;
+                if(arrayList == null || arrayList.isEmpty()) return null;
+                Object RevokeMsgInfo = arrayList.get(0);
+                String fromuin = findObject(RevokeMsgInfo, String.class, "b");
+                Util.log("QQ Revoke Log","%s revoke a message at %s", fromuin, String.format("%tc", new Date(System.currentTimeMillis())));
+                return null;
             }
         });
     }
@@ -157,9 +124,7 @@ class MoreHook extends BaseHook {
      * 模拟菜单
      */
     private void simulateMenu() {
-        if (!getBool("simulate_menu")) return;
-        Class<?> Conversation = findClassInQQ("com.tencent.mobileqq.activity.Conversation");
-        findAndHookMethod(Conversation, "D", new XC_MethodHook() {
+        if (getBool("simulate_menu")) findAndHookMethod(Conversation, "D", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);

@@ -9,7 +9,30 @@ import java.util.regex.Pattern;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
+import me.zpp0196.qqsimple.hook.util.Util;
+
+import static me.zpp0196.qqsimple.hook.comm.Classes.AbstractChatItemBuilder$ViewHolder;
+import static me.zpp0196.qqsimple.hook.comm.Classes.BaseBubbleBuilder$ViewHolder;
+import static me.zpp0196.qqsimple.hook.comm.Classes.BubbleManager;
+import static me.zpp0196.qqsimple.hook.comm.Classes.ChatMessage;
+import static me.zpp0196.qqsimple.hook.comm.Classes.EmoticonManager;
+import static me.zpp0196.qqsimple.hook.comm.Classes.GatherContactsTips;
+import static me.zpp0196.qqsimple.hook.comm.Classes.GrayTipsItemBuilder;
+import static me.zpp0196.qqsimple.hook.comm.Classes.ItemBuilderFactory;
+import static me.zpp0196.qqsimple.hook.comm.Classes.MedalNewsItemBuilder;
+import static me.zpp0196.qqsimple.hook.comm.Classes.MessageForDeliverGiftTips;
+import static me.zpp0196.qqsimple.hook.comm.Classes.MessageRecord;
+import static me.zpp0196.qqsimple.hook.comm.Classes.OnLongClickAndTouchListener;
+import static me.zpp0196.qqsimple.hook.comm.Classes.QzoneFeedItemBuilder;
+import static me.zpp0196.qqsimple.hook.comm.Classes.RichStatItemBuilder;
+import static me.zpp0196.qqsimple.hook.comm.Classes.SougouInputGrayTips;
+import static me.zpp0196.qqsimple.hook.comm.Classes.TextItemBuilder;
+import static me.zpp0196.qqsimple.hook.comm.Classes.TextPreviewActivity;
+import static me.zpp0196.qqsimple.hook.comm.Classes.TroopEnterEffectController;
+import static me.zpp0196.qqsimple.hook.comm.Classes.TroopGiftAnimationController;
+import static me.zpp0196.qqsimple.hook.comm.Classes.VipSpecialCareGrayTips;
 
 /**
  * Created by zpp0196 on 2018/3/11.
@@ -30,9 +53,7 @@ class ChatInterfaceHook extends BaseHook {
      * 隐藏个性气泡
      */
     private void hideChatBubble() {
-        if (!getBool("hide_chat_bubble")) return;
-        Class<?> BubbleManager = findClassInQQ("com.tencent.mobileqq.bubble.BubbleManager"); // 4
-        findAndHookMethod(BubbleManager, "a", int.class, boolean.class, XC_MethodReplacement.returnConstant(null));
+        if (getBool("hide_chat_bubble")) findAndHookMethod(BubbleManager, "a", int.class, boolean.class, XC_MethodReplacement.returnConstant(null));
     }
 
     /**
@@ -40,11 +61,7 @@ class ChatInterfaceHook extends BaseHook {
      */
     private void hideFontEffects() {
         if (!getBool("hide_font_effects")) return;
-        Class<?> TextItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.TextItemBuilder");
-        Class<?> BaseBubbleBuilder$ViewHolder = findClassInQQ("com.tencent.mobileqq.activity.aio.BaseBubbleBuilder$ViewHolder");
-        Class<?> ChatMessage = findClassInQQ("com.tencent.mobileqq.data.ChatMessage");
         findAndHookMethod(TextItemBuilder, "a", BaseBubbleBuilder$ViewHolder, ChatMessage, XC_MethodReplacement.returnConstant(null));
-        Class<?> TextPreviewActivity = findClassInQQ("com.tencent.mobileqq.activity.TextPreviewActivity");
         findAndHookMethod(TextPreviewActivity, "a", int.class, XC_MethodReplacement.returnConstant(null));
     }
 
@@ -52,24 +69,22 @@ class ChatInterfaceHook extends BaseHook {
      * 隐藏推荐表情
      */
     private void hideRecommendedExpression() {
-        if (!isMoreThan732() || !getBool("hide_recommended_expression")) return;
-        Class<?> EmoticonManager = findClassInQQ("com.tencent.mobileqq.model.EmoticonManager");
-        findAndHookMethod(EmoticonManager, "a", boolean.class, int.class, boolean.class, XC_MethodReplacement.returnConstant(new ArrayList<>()));
+        if (Util.isMoreThan732() && getBool("hide_recommended_expression")) findAndHookMethod(EmoticonManager, "a", boolean.class, int.class, boolean.class, XC_MethodReplacement.returnConstant(new ArrayList<>()));
     }
 
     private void hideTAI() {
         // 隐藏好友获得了新徽章
-        hideItemBuilder("MedalNewsItemBuilder", isMoreThan732() && getBool("hide_get_new_badge"));
+        hideItemBuilder(MedalNewsItemBuilder, Util.isMoreThan732() && getBool("hide_get_new_badge"));
         // 隐藏好友新动态
-        hideItemBuilder("QzoneFeedItemBuilder", getBool("hide_new_feed"));
+        hideItemBuilder(QzoneFeedItemBuilder, getBool("hide_new_feed"));
         // 隐藏好友新签名
-        hideItemBuilder("RichStatItemBuilder", getBool("hide_new_signature"));
+        hideItemBuilder(RichStatItemBuilder, getBool("hide_new_signature"));
         // 隐藏取消隐藏不常用联系人提示
-        hideGrayTips("GatherContactsTips", getBool("hide_chat_unusual_contacts"));
+        hideGrayTips(GatherContactsTips, getBool("hide_chat_unusual_contacts"));
         // 隐藏设置特别消息提示音
-        hideGrayTips("VipSpecialCareGrayTips", getBool("hide_chat_special_care"));
+        hideGrayTips(VipSpecialCareGrayTips, getBool("hide_chat_special_care"));
         // 隐藏搜狗输入法广告
-        hideGrayTips("SougouInputGrayTips", getBool("hide_chat_sougou_input"));
+        hideGrayTips(SougouInputGrayTips, getBool("hide_chat_sougou_input"));
         // 隐藏会员相关广告
         hideGrayTipsItem(getBool("hide_chat_vip_ad"), ".+会员.+");
         // 签到文本化
@@ -86,10 +101,7 @@ class ChatInterfaceHook extends BaseHook {
      * 隐藏礼物动画
      */
     private void hideGroupGiftAnim() {
-        if (!getBool("hide_group_gift_anim")) return;
-        Class<?> TroopGiftAnimationController = findClassInQQ("com.tencent.mobileqq.troopgift.TroopGiftAnimationController");
-        Class<?> MessageForDeliverGiftTips = findClassInQQ("com.tencent.mobileqq.data.MessageForDeliverGiftTips");
-        findAndHookMethod(TroopGiftAnimationController, "a", MessageForDeliverGiftTips, XC_MethodReplacement.returnConstant(null));
+        if (getBool("hide_group_gift_anim")) findAndHookMethod(TroopGiftAnimationController, "a", MessageForDeliverGiftTips, XC_MethodReplacement.returnConstant(null));
     }
 
     /**
@@ -98,7 +110,6 @@ class ChatInterfaceHook extends BaseHook {
     private void hideGroupChatAdmissions() {
         if (!getBool("hide_group_chat_admissions")) return;
         hideGrayTipsItem(true, ".+进场.+");
-        Class<?> TroopEnterEffectController = findClassInQQ("com.tencent.mobileqq.troop.enterEffect.TroopEnterEffectController");
         if (TroopEnterEffectController == null) return;
         Field[] fields = TroopEnterEffectController.getDeclaredFields();
         for (Field field : fields) {
@@ -114,10 +125,7 @@ class ChatInterfaceHook extends BaseHook {
     }
 
     private void simpleItem(boolean isSimple, int... rs) {
-        if (!isSimple) return;
-        Class<?> ItemBuilderFactory = findClassInQQ("com.tencent.mobileqq.activity.aio.item.ItemBuilderFactory");
-        Class<?> ChatMessage = findClassInQQ("com.tencent.mobileqq.data.ChatMessage");
-        findAndHookMethod(ItemBuilderFactory, "a", ChatMessage, new XC_MethodHook() {
+        if (isSimple) findAndHookMethod(ItemBuilderFactory, "a", ChatMessage, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
@@ -131,40 +139,26 @@ class ChatInterfaceHook extends BaseHook {
         });
     }
 
-    private void hideItemBuilder(String className, boolean isHide) {
-        if (!isHide) return;
-        Class<?> ItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item." + className);
-        Class<?> MessageRecord = findClassInQQ("com.tencent.mobileqq.data.MessageRecord");
-        Class<?> AbstractChatItemBuilder$ViewHolder = findClassInQQ("com.tencent.mobileqq.activity.aio.AbstractChatItemBuilder$ViewHolder");
-        Class<?> OnLongClickAndTouchListener = findClassInQQ("com.tencent.mobileqq.activity.aio.OnLongClickAndTouchListener");
-        findAndHookMethod(ItemBuilder, "a", MessageRecord, AbstractChatItemBuilder$ViewHolder, View.class, LinearLayout.class, OnLongClickAndTouchListener, XC_MethodReplacement.returnConstant(null));
+    private void hideItemBuilder(Class<?> ItemBuilder, boolean isHide) {
+        if (!isHide) findAndHookMethod(ItemBuilder, "a", MessageRecord, AbstractChatItemBuilder$ViewHolder, View.class, LinearLayout.class, OnLongClickAndTouchListener, XC_MethodReplacement.returnConstant(null));
     }
 
-    private void hideGrayTips(String className, boolean isHide) {
-        if (!isHide) return;
-        Class<?> Tips = findClassInQQ("com.tencent.mobileqq.activity.aio.tips." + className);
-        findAndHookMethod(Tips, "a", Object[].class, XC_MethodReplacement.returnConstant(null));
+    private void hideGrayTips(Class<?> Tips, boolean isHide) {
+        if (isHide) findAndHookMethod(Tips, "a", Object[].class, XC_MethodReplacement.returnConstant(null));
     }
 
     private void hideGrayTipsItem(boolean isHide, String... regex) {
-        if (!isHide) return;
-        Class<?> GrayTipsItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.GrayTipsItemBuilder");
-        Class<?> MessageRecord = findClassInQQ("com.tencent.mobileqq.data.MessageRecord");
-        Class<?> AbstractChatItemBuilder$ViewHolder = findClassInQQ("com.tencent.mobileqq.activity.aio.AbstractChatItemBuilder$ViewHolder");
-        Class<?> OnLongClickAndTouchListener = findClassInQQ("com.tencent.mobileqq.activity.aio.OnLongClickAndTouchListener");
-        findAndHookMethod(GrayTipsItemBuilder, "a", MessageRecord, AbstractChatItemBuilder$ViewHolder, View.class, LinearLayout.class, OnLongClickAndTouchListener, new XC_MethodHook() {
+        if (isHide) findAndHookMethod(GrayTipsItemBuilder, "a", MessageRecord, AbstractChatItemBuilder$ViewHolder, View.class, LinearLayout.class, OnLongClickAndTouchListener, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                Field field = findField(MessageRecord, "msg");
-                if (field != null) {
-                    String msg = (String) field.get(param.args[0]);
-                    if (msg != null) {
-                        for (String str : regex) {
-                            if (Pattern.matches(str, msg)) {
-                                param.setResult(null);
-                            }
-                        }
+                Field field = XposedHelpers.findFieldIfExists(MessageRecord, "msg");
+                if (field == null) return;
+                String msg = (String) field.get(param.args[0]);
+                if (msg == null) return;
+                for (String str : regex) {
+                    if (Pattern.matches(str, msg)) {
+                        param.setResult(null);
                     }
                 }
             }

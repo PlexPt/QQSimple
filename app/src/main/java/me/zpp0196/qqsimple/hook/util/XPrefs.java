@@ -18,6 +18,7 @@ public class XPrefs {
         if (preferences == null) {
             preferences = new XSharedPreferences(BuildConfig.APPLICATION_ID);
             preferences.makeWorldReadable();
+            preferences.reload();
             xSharedPreferences = new WeakReference<>(preferences);
         } else {
             preferences.reload();
@@ -25,6 +26,7 @@ public class XPrefs {
         return preferences;
     }
 
+    @SuppressWarnings("all")
     public static boolean isPrintLog() {
         return getPref().getBoolean("switch_log", false);
     }

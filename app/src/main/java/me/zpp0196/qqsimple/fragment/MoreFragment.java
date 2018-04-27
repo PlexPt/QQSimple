@@ -64,7 +64,7 @@ public class MoreFragment extends BaseFragment implements Preference.OnPreferenc
         forceStopQQ.setKey("forceStopQQ");
         forceStopQQ.setOnPreferenceClickListener(this);
         preferenceScreen.addPreference(forceStopQQ);
-        if (!Common.isInstalled(getActivity(), Common.PACKAGE_NAME_VXP)) return;
+        if (!getSettingActivity().isInstalled(Common.PACKAGE_NAME_VXP)) return;
         Preference updateModuleInVxp = new Preference(getActivity());
         updateModuleInVxp.setTitle("更新 Vxp 中的模块");
         updateModuleInVxp.setKey("updateModuleInVxp");

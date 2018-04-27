@@ -8,7 +8,7 @@
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="prevent_messages_withdrawn"
-        android:summary="Bug 较多慎重使用"
+        android:summary="不会显示撤回提示"
         android:title="防止消息撤回" />
     <CheckBoxPreference
         android:defaultValue="false"

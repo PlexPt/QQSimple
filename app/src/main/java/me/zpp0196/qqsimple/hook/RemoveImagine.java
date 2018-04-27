@@ -2,6 +2,10 @@ package me.zpp0196.qqsimple.hook;
 
 import de.robv.android.xposed.XC_MethodHook;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
+import me.zpp0196.qqsimple.hook.util.Util;
+
+import static me.zpp0196.qqsimple.hook.comm.Classes.BusinessInfoCheckUpdate$RedTypeInfo;
+import static me.zpp0196.qqsimple.hook.comm.Classes.MainFragment;
 
 /**
  * Created by Deng on 2018/2/16.
@@ -111,7 +115,7 @@ class RemoveImagine extends BaseHook {
         // 隐藏移出群助手提示
         hideView("chat_top_bar", "hide_group_helper_remove_tips");
         // 隐藏贴表情
-        hideView("pic_light_emoj", isMoreThan735() && getBool("hide_group_stick_face"));
+        hideView("pic_light_emoj", Util.isMoreThan735() && getBool("hide_group_stick_face"));
         // 隐藏我的文件里的 TIM 推广
         hideView("timtips", "hide_tim_in_my_file");
         // 隐藏设置电话号码
@@ -139,21 +143,20 @@ class RemoveImagine extends BaseHook {
     }
 
     private void hideRedDot() {
-        if (getBool("hide_some_red_dot")) {
-            hideView("find_reddot");
-            hideView("item_right_reddot");
-            hideView("iv_reddot");
-            hideView("qzone_feed_reddot", getBool("hide_qzone_entry") || getBool("hide_qzone_avatar_remind"));
-            hideView("qzone_mood_reddot");
-            hideView("qzone_super_font_tab_reddot");
-            hideView("qzone_uploadphoto_item_reddot");
-            hideView("tv_reddot");
-            hideView("xingqu_buluo_reddot", getBool("hide_tribal_entry") || getBool("hide_tribal_avatar_remind"));
-            hideDrawable("skin_tips_dot");
-            hideDrawable("skin_tips_dot_small");
-            hideDrawable("skin_tips_new");
-            hideDrawable("shortvideo_redbag_outicon", isMoreThan735());
-        }
+        if (!getBool("hide_some_red_dot")) return;
+        hideView("find_reddot");
+        hideView("item_right_reddot");
+        hideView("iv_reddot");
+        hideView("qzone_feed_reddot", getBool("hide_qzone_entry") || getBool("hide_qzone_avatar_remind"));
+        hideView("qzone_mood_reddot");
+        hideView("qzone_super_font_tab_reddot");
+        hideView("qzone_uploadphoto_item_reddot");
+        hideView("tv_reddot");
+        hideView("xingqu_buluo_reddot", getBool("hide_tribal_entry") || getBool("hide_tribal_avatar_remind"));
+        hideDrawable("skin_tips_dot");
+        hideDrawable("skin_tips_dot_small");
+        hideDrawable("skin_tips_new");
+        hideDrawable("shortvideo_redbag_outicon", Util.isMoreThan735());
         hideRedTouchViewNum();
     }
 
@@ -161,9 +164,7 @@ class RemoveImagine extends BaseHook {
      * 隐藏底部消息数量
      */
     private void hideRedTouchViewNum() {
-        Class<?> MainFragment = findClassInQQ("com.tencent.mobileqq.activity.MainFragment");
-        Class<?> RedTypeInfo = findClassInQQ("com.tencent.pb.getbusiinfo.BusinessInfoCheckUpdate$RedTypeInfo");
-        findAndHookMethod(MainFragment, "a", int.class, RedTypeInfo, new XC_MethodHook() {
+        findAndHookMethod(MainFragment, "a", int.class, BusinessInfoCheckUpdate$RedTypeInfo, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
