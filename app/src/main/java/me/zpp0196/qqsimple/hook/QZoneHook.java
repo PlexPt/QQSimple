@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
+import me.zpp0196.qqsimple.Common;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.Util;
 
@@ -20,7 +20,9 @@ class QZoneHook extends BaseHook {
     private ClassLoader qqClassLoader;
     private ClassLoader qzoneClassLoader;
 
+    private Class<?> DynamicPhotoAdapter;
     private Class<?> entrance_cfg;
+    private Class<?> LocalConfig;
     private Class<?> NavigatorBar;
     private Class<?> NavigatorItem;
     private Class<?> OperationItem;
@@ -33,13 +35,13 @@ class QZoneHook extends BaseHook {
         initClass();
         hidePlusMenuConstants();
         hideNavConstants();
-        hideMoodConstants();
-        hideDecorator();
-        hideAd();
+        hideOther();
     }
 
     private void initClass(){
+        if(DynamicPhotoAdapter == null) DynamicPhotoAdapter = findClassInQzone("com.qzone.publish.ui.adapter.DynamicPhotoAdapter");
         if(entrance_cfg == null) entrance_cfg = findClassInQQ("NS_UNDEAL_COUNT.entrance_cfg");
+        if(LocalConfig == null) LocalConfig = findClassInQzone("com.qzone.config.LocalConfig");
         if(NavigatorBar == null) NavigatorBar = findClassInQzone("com.qzone.navigationbar.NavigatorBar");
         if(NavigatorItem == null) NavigatorItem = findClassInQzone("com.qzone.navigationbar.NavigatorItem");
         if(OperationItem == null) OperationItem = findClassInQzone("com.qzone.plusoperation.OperationItem");
@@ -52,7 +54,7 @@ class QZoneHook extends BaseHook {
      */
     @SuppressWarnings("unchecked")
     private void hidePlusMenuConstants() {
-        if (getBool("hide_qzone_plus_mood", "hide_qzone_plus_album", "hide_qzone_plus_shoot", "hide_qzone_plus_signIn", "hide_qzone_plus_redPacket", "hide_qzone_plus_live")) findAndHookMethod(PlusMenuContainer, "b", new XC_MethodHook() {
+        findAndHookMethod(PlusMenuContainer, "b", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
@@ -84,91 +86,70 @@ class QZoneHook extends BaseHook {
     @SuppressWarnings("unchecked")
     private void hideNavConstants() {
         // 隐藏小红点
-        if (getBool("hide_qzone_nav_redDot")) findAndHookMethod(NavigatorItem, "b", Context.class, XC_MethodReplacement.returnConstant(null));
+        findAndHookMethod(NavigatorItem, "b", Context.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if(getBool("hide_qzone_nav_redDot")) param.setResult(null);
+            }
+        });
 
         // 隐藏导航栏
-        if (getBool("hide_qzone_nav_album", "hide_qzone_nav_mood", "hide_qzone_nav_dress", "hide_qzone_nav_game", "hide_qzone_nav_video")) {
-            findAndHookMethod(NavigatorBar, "b", Context.class, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    super.beforeHookedMethod(param);
-                    if (NavigatorBar == null || entrance_cfg == null) return;
-                    ArrayList arrayList = (ArrayList) findField(NavigatorBar, ArrayList.class, "a").get(param.thisObject);
-                    if(arrayList == null || arrayList.isEmpty()) return;
-                    ArrayList needRemove = new ArrayList();
-                    for (Object item : arrayList) {
-                        String title = (String) findField(entrance_cfg, String.class, "sEntranceName").get(item);
-                        if (title.equals("相册") && getBool("hide_qzone_nav_album"))
-                            needRemove.add(item);
-                        if (title.equals("说说") && getBool("hide_qzone_nav_mood"))
-                            needRemove.add(item);
-                        if (title.equals("个性化") && getBool("hide_qzone_nav_dress"))
-                            needRemove.add(item);
-                        if (title.equals("小游戏") && getBool("hide_qzone_nav_game"))
-                            needRemove.add(item);
-                        if (title.equals("小视频") && getBool("hide_qzone_nav_video"))
-                            needRemove.add(item);
-                    }
-                    arrayList.removeAll(needRemove);
+        findAndHookMethod(NavigatorBar, "b", Context.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (NavigatorBar == null || entrance_cfg == null) return;
+                ArrayList arrayList = (ArrayList) findField(NavigatorBar, ArrayList.class, "a").get(param.thisObject);
+                if(arrayList == null || arrayList.isEmpty()) return;
+                ArrayList needRemove = new ArrayList();
+                for (Object item : arrayList) {
+                    String title = (String) findField(entrance_cfg, String.class, "sEntranceName").get(item);
+                    if (title.equals("相册") && getBool("hide_qzone_nav_album"))
+                        needRemove.add(item);
+                    if (title.equals("说说") && getBool("hide_qzone_nav_mood"))
+                        needRemove.add(item);
+                    if (title.equals("个性化") && getBool("hide_qzone_nav_dress"))
+                        needRemove.add(item);
+                    if (title.equals("小游戏") && getBool("hide_qzone_nav_game"))
+                        needRemove.add(item);
+                    if (title.equals("小视频") && getBool("hide_qzone_nav_video"))
+                        needRemove.add(item);
                 }
-            });
-        }
+                arrayList.removeAll(needRemove);
+            }
+        });
         // 隐藏消息
-        if (getBool("hide_qzone_nav_news")) {
-            findAndHookMethod(QZoneFriendFeedFragment, "t_", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
-                    if (QZoneFriendFeedFragment == null) return;
-                    ImageView imageView = (ImageView) findField(QZoneFriendFeedFragment, ImageView.class, "d").get(param.thisObject);
-                    if(imageView != null) imageView.setVisibility(View.GONE);
+        findAndHookMethod(QZoneFriendFeedFragment, Util.isMoreThan800() ? "n_" : "t_", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if (QZoneFriendFeedFragment == null || !getBool("hide_qzone_nav_news")) return;
+                ImageView imageView = (ImageView) findField(QZoneFriendFeedFragment, ImageView.class, "d").get(param.thisObject);
+                if(imageView != null) imageView.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void hideOther(){
+        // hideView("qzone_super_font_tab_reddot");
+        findAndHookMethod(LocalConfig, "a", String.class, int.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if(getBool(Common.PREFS_KEY_HIDE_SOME_RED_DOT) && param.args[0].toString().contains("SuperFontRedIcon")){
+                    param.setResult(0);
                 }
-            });
-        }
-    }
-
-    /**
-     * 隐藏说说内容
-     */
-    private void hideMoodConstants() {
-        // 隐藏机型
-        hideView("feed_attach_view", "hide_qzone_mood_attach");
-        // 隐藏点赞按钮
-        hideView("operation_like_container", "hide_qzone_btn_like");
-        hideView("operation_like_container2", "hide_qzone_btn_like");
-        // 隐藏点赞列表
-        hideView("feed_praise_avatars_view", "hide_qzone_likeList");
-        // 隐藏评论框
-        hideView("feed_guide_comment_bar", "hide_qzone_et_comment");
-        // 隐藏评论内容
-        hideView("feed_canvas_comment_area_stub", "hide_qzone_et_comment_content");
-    }
-
-    private void hideDecorator() {
-        // 隐藏头像装扮
-        hideView("qzone_cover_avatar_facade", "hide_qzone_facadeDecorator");
-        // 隐藏我的黄钻
-        hideView("qzone_cover_avatar_vip", "hide_qzone_vipDecorator");
-        hideView("qzone_cover_avatar_qboss", "hide_qzone_vipDecorator");
-    }
-
-    /**
-     * 隐藏空间部分广告
-     */
-    private void hideAd() {
-        if (!getBool("hide_qzone_ad")) return;
-        // 隐藏空间绿厂广告
-        hideView("shuoshuo_ad_upload_quality");
-        hideView("quality_hd_ad");
-        hideView("quality_ad");
-        // 隐藏顶部广告
-        hideView("qzone_feed_commwidget_container");
-        hideView("qzone_feed_commwidget_count");
-        hideView("qzone_feed_commwidget_hide_btn");
-        hideView("qzone_feed_commwidget_image");
-        hideView("qzone_feed_commwidget_stub");
-        hideView("qzone_feed_commwidget_text");
-        hideView("qz_feed_head_container");
+            }
+        });
+        // hideView("qzone_uploadphoto_item_reddot");
+        findAndHookMethod(DynamicPhotoAdapter, "c", boolean.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if(getBool(Common.PREFS_KEY_HIDE_SOME_RED_DOT)) param.args[0] = false;
+            }
+        });
     }
 
     private Class<?> findClassInQQ(String className) {

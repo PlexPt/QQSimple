@@ -12,16 +12,23 @@ public class Classes {
 
     private static ClassLoader qqClassLoader;
 
-    public static Class<?> R$id;
+    public static Class<?> R$color;
+    public static Class<?> R$dimen;
     public static Class<?> R$drawable;
+    public static Class<?> R$layout;
+    public static Class<?> R$id;
+    public static Class<?> R$string;
+    public static Class<?> R$style;
 
     public static Class<?> AbstractChatItemBuilder$ViewHolder;
     public static Class<?> ActionSheet;
     public static Class<?> AIOImageProviderService;
     public static Class<?> ApolloManager$CheckApolloInfoResult;
+    public static Class<?> BaseActivity;
     public static Class<?> BaseBubbleBuilder$ViewHolder;
     public static Class<?> BubbleManager;
     public static Class<?> BusinessInfoCheckUpdate$RedTypeInfo;
+    public static Class<?> ChatActivityUtils;
     public static Class<?> ChatMessage;
     public static Class<?> ContactsViewController;
     public static Class<?> Conversation;
@@ -30,6 +37,7 @@ public class Classes {
     public static Class<?> CoreService$KernelService;
     public static Class<?> CountDownProgressBar;
     public static Class<?> EmoticonManager;
+    public static Class<?> FrameHelperActivity;
     public static Class<?> GatherContactsTips;
     public static Class<?> GrayTipsItemBuilder;
     public static Class<?> HotChatFlashPicActivity;
@@ -44,8 +52,10 @@ public class Classes {
     public static Class<?> PopupMenuDialog;
     public static Class<?> PopupMenuDialog$MenuItem;
     public static Class<?> PopupMenuDialog$OnClickActionListener;
+    public static Class<?> QQAppInterface;
     public static Class<?> QQMessageFacade;
     public static Class<?> QQSettingMe;
+    public static Class<?> QQSettingSettingActivity;
     public static Class<?> QzoneFeedItemBuilder;
     public static Class<?> ReadInJoyHelper;
     public static Class<?> RichStatItemBuilder;
@@ -60,16 +70,23 @@ public class Classes {
     public static void initClass(ClassLoader classLoader){
         qqClassLoader = classLoader;
 
-        if(R$id == null) R$id = findClassInQQ("com.tencent.mobileqq.R$id");
+        if(R$color == null) R$color = findClassInQQ("com.tencent.mobileqq.R$color");
+        if(R$dimen == null) R$dimen = findClassInQQ("com.tencent.mobileqq.R$dimen");
         if(R$drawable == null) R$drawable = findClassInQQ("com.tencent.mobileqq.R$drawable");
+        if(R$layout == null) R$layout = findClassInQQ("com.tencent.mobileqq.R$layout");
+        if(R$id == null) R$id = findClassInQQ("com.tencent.mobileqq.R$id");
+        if(R$string == null) R$string = findClassInQQ("com.tencent.mobileqq.R$string");
+        if(R$style == null) R$style = findClassInQQ("com.tencent.mobileqq.R$style");
 
         if(AbstractChatItemBuilder$ViewHolder == null) AbstractChatItemBuilder$ViewHolder = findClassInQQ("com.tencent.mobileqq.activity.aio.AbstractChatItemBuilder$ViewHolder");
         if(ActionSheet == null) ActionSheet = findClassInQQ("com.tencent.widget.ActionSheet");
         if(AIOImageProviderService == null) AIOImageProviderService = findClassInQQ("com.tencent.mobileqq.activity.aio.photo.AIOImageProviderService");
         if(ApolloManager$CheckApolloInfoResult == null) ApolloManager$CheckApolloInfoResult = findClassInQQ("com.tencent.mobileqq.apollo.ApolloManager$CheckApolloInfoResult");
+        if(BaseActivity == null) BaseActivity = findClassInQQ("com.tencent.mobileqq.app.BaseActivity");
         if(BaseBubbleBuilder$ViewHolder == null) BaseBubbleBuilder$ViewHolder = findClassInQQ("com.tencent.mobileqq.activity.aio.BaseBubbleBuilder$ViewHolder");
         if(BubbleManager == null) BubbleManager = findClassInQQ("com.tencent.mobileqq.bubble.BubbleManager");
         if(BusinessInfoCheckUpdate$RedTypeInfo == null) BusinessInfoCheckUpdate$RedTypeInfo = findClassInQQ("com.tencent.pb.getbusiinfo.BusinessInfoCheckUpdate$RedTypeInfo");
+        if(ChatActivityUtils == null) ChatActivityUtils = findClassInQQ("com.tencent.mobileqq.activity.ChatActivityUtils");
         if(ChatMessage == null) ChatMessage = findClassInQQ("com.tencent.mobileqq.data.ChatMessage");
         if(ContactsViewController == null) ContactsViewController = findClassInQQ("com.tencent.mobileqq.activity.contacts.base.ContactsViewController");
         if(Conversation == null) Conversation = findClassInQQ("com.tencent.mobileqq.activity.Conversation");
@@ -78,6 +95,7 @@ public class Classes {
         if(CoreService$KernelService == null) CoreService$KernelService = findClassInQQ("com.tencent.mobileqq.app.CoreService$KernelService");
         if(CountDownProgressBar == null) CountDownProgressBar = findClassInQQ("com.tencent.widget.CountDownProgressBar");
         if(EmoticonManager == null) EmoticonManager = findClassInQQ("com.tencent.mobileqq.model.EmoticonManager");
+        if(FrameHelperActivity == null) FrameHelperActivity = findClassInQQ("com.tencent.mobileqq.app.FrameHelperActivity");
         if(GatherContactsTips == null) GatherContactsTips = findClassInQQ("com.tencent.mobileqq.activity.aio.tips.GatherContactsTips");
         if(GrayTipsItemBuilder == null) GrayTipsItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.GrayTipsItemBuilder");
         if(HotChatFlashPicActivity == null) HotChatFlashPicActivity = findClassInQQ("com.tencent.mobileqq.dating.HotChatFlashPicActivity");
@@ -92,8 +110,10 @@ public class Classes {
         if(PopupMenuDialog == null) PopupMenuDialog = findClassInQQ("com.tencent.widget.PopupMenuDialog");
         if(PopupMenuDialog$MenuItem == null) PopupMenuDialog$MenuItem = findClassInQQ("com.tencent.widget.PopupMenuDialog$MenuItem");
         if(PopupMenuDialog$OnClickActionListener == null) PopupMenuDialog$OnClickActionListener = findClassInQQ("com.tencent.widget.PopupMenuDialog$OnClickActionListener");
+        if(QQAppInterface == null) QQAppInterface = findClassInQQ("com.tencent.mobileqq.app.QQAppInterface");
         if(QQMessageFacade == null) QQMessageFacade = findClassInQQ("com.tencent.mobileqq.app.message.QQMessageFacade");
         if(QQSettingMe == null) QQSettingMe = findClassInQQ("com.tencent.mobileqq.activity.QQSettingMe");
+        if(QQSettingSettingActivity == null) QQSettingSettingActivity = findClassInQQ("com.tencent.mobileqq.activity.QQSettingSettingActivity");
         if(QzoneFeedItemBuilder == null) QzoneFeedItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.QzoneFeedItemBuilder");
         if(ReadInJoyHelper == null) ReadInJoyHelper = findClassInQQ("cooperation.readinjoy.ReadInJoyHelper");
         if(RichStatItemBuilder == null) RichStatItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.RichStatItemBuilder");
@@ -111,7 +131,8 @@ public class Classes {
         try {
             return qqClassLoader.loadClass(className);
         } catch (Throwable e) {
-            Util.log("Classes", String.format("%s Can't find the Class of name: %s!", getQQVersion(), className));
+            if(!className.contains("com.tencent.mobileqq.R$"))
+                Util.log("Classes", String.format("%s Can't find the Class of name: %s!", getQQVersion(), className));
         }
         return null;
     }

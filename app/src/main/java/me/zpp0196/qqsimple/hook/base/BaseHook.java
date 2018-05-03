@@ -1,14 +1,17 @@
 package me.zpp0196.qqsimple.hook.base;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
+import me.zpp0196.qqsimple.hook.comm.Ids;
 import me.zpp0196.qqsimple.hook.util.Util;
 import me.zpp0196.qqsimple.hook.util.XPrefs;
 
@@ -30,6 +33,8 @@ public abstract class BaseHook {
     }
 
     private int getIdInQQ(String name) {
+        Integer id = Ids.getId(name);
+        if(id != null && id != 0) return id;
         try {
             return XposedHelpers.getStaticIntField(R$id, name);
         } catch (Throwable e) {
@@ -39,6 +44,8 @@ public abstract class BaseHook {
     }
 
     private int getDrawableIdInQQ(String name) {
+        Integer id = Ids.getId(name);
+        if(id != null && id != 0) return id;
         try {
             return XposedHelpers.getStaticIntField(R$drawable, name);
         } catch (Throwable e) {
@@ -47,30 +54,27 @@ public abstract class BaseHook {
         return 0;
     }
 
-    protected void hideView(String name, String key) {
-        hideView(getIdInQQ(name), getBool(key));
-    }
-
-    protected void hideView(String name, boolean isHide) {
-        hideView(getIdInQQ(name), isHide);
-    }
-
     protected void hideView(String name) {
-        hideView(getIdInQQ(name));
+        hideView(name, true);
     }
 
-    private void hideView(int id, boolean isHide) {
-        if (isHide) hideView(id);
+    protected void hideView(String name, String... key) {
+        hideView(name, true, key);
     }
 
-    private void hideView(int id) {
+    protected void hideView(String name, boolean b, String... key) {
+        hideView(getIdInQQ(name), b, key);
+    }
+
+    private void hideView(int id, boolean b, String... key){
         if (id == 0) return;
         findAndHookMethod(View.class, "setLayoutParams", ViewGroup.LayoutParams.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 View view = (View) param.thisObject;
-                if (view.getId() == id) {
+                if (view.getId() == id && b) {
+                    if(!(getBool(key))) return;
                     ViewGroup.LayoutParams layoutParams = (ViewGroup.LayoutParams) param.args[0];
                     layoutParams.height = 1;
                     layoutParams.width = 0;
@@ -81,21 +85,25 @@ public abstract class BaseHook {
     }
 
     protected void hideDrawable(String name) {
-        hideDrawable(getDrawableIdInQQ(name));
+        hideDrawable(name, true);
     }
 
-    @SuppressWarnings("all")
-    protected void hideDrawable(String name, boolean isHide) {
-        if(isHide) hideDrawable(getDrawableIdInQQ(name));
+    protected void hideDrawable(String name, String... key) {
+        hideDrawable(name, true, key);
     }
 
-    private void hideDrawable(int id) {
+    protected void hideDrawable(String name, boolean b, String... key) {
+        hideDrawable(getDrawableIdInQQ(name), b, key);
+    }
+
+    private void hideDrawable(int id, boolean b, String... key) {
         if (id == 0) return;
         findAndHookMethod(ImageView.class, "setImageResource", int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                if ((int) param.args[0] == id) {
+                if ((int) param.args[0] == id && b) {
+                    if(!(getBool(key))) return;
                     param.setResult(null);
                 }
             }
@@ -154,10 +162,10 @@ public abstract class BaseHook {
     }
 
     protected boolean getBool(String key) {
-        return XPrefs.getPref().getBoolean(key, false);
+        return XPrefs.getBoolean(key, false);
     }
-
     protected boolean getBool(String... keys) {
+        if(keys == null || keys.length == 0) return true;
         for (String key : keys) {
             if (getBool(key)) return true;
         }

@@ -35,6 +35,10 @@ public class Util {
         return getQQVersion().compareTo("7.3.5") >= 0;
     }
 
+    public static boolean isMoreThan800() {
+        return getQQVersion().compareTo("8.0.0") >= 0;
+    }
+
     public static void log(Throwable throwable) {
         if (!XPrefs.isPrintLog()) XposedBridge.log(throwable);
     }

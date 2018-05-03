@@ -14,10 +14,6 @@
         android:title="隐藏字体特效" />
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="hide_chat_left_num"
-        android:title="隐藏左上角消息数量" />
-    <CheckBoxPreference
-        android:defaultValue="false"
         android:key="hide_chat_right_call"
         android:title="隐藏右上角的电话" />
     <CheckBoxPreference

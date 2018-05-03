@@ -6,10 +6,10 @@ import android.os.Build;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import me.zpp0196.qqsimple.hook.comm.Classes;
+import me.zpp0196.qqsimple.hook.comm.Ids;
 import me.zpp0196.qqsimple.hook.util.Util;
 import me.zpp0196.qqsimple.hook.util.XPrefs;
 
@@ -25,8 +25,8 @@ public class MainHook implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         Util.log(getClass(), "loading: " + PACKAGE_NAME_QQ);
-        if (XPrefs.getPref().getBoolean("hook_hotpatch", false))
-            XposedHelpers.findAndHookMethod("com.tencent.common.app.QFixApplicationImpl", loadPackageParam.classLoader, "isAndroidNPatchEnable", XC_MethodReplacement.returnConstant(false));
+        if(XPrefs.isCloseAll()) return;
+        hookHotPatch(loadPackageParam);
         XposedHelpers.findAndHookMethod("com.tencent.mobileqq.app.InjectUtils", loadPackageParam.classLoader, "injectExtraDexes",
                 Application.class, boolean.class, new XC_MethodHook() {
                     @Override
@@ -47,12 +47,28 @@ public class MainHook implements IXposedHookLoadPackage {
                 });
     }
 
+    /**
+     * 拦截热修复
+     */
+    private void hookHotPatch(XC_LoadPackage.LoadPackageParam loadPackageParam){
+        XposedHelpers.findAndHookMethod("com.tencent.common.app.QFixApplicationImpl", loadPackageParam.classLoader, "isAndroidNPatchEnable", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if(XPrefs.getBoolean("hook_hotpatch", false)){
+                    param.setResult(false);
+                }
+            }
+        });
+    }
+
     private void startHook(ClassLoader classLoader) {
         if (classLoader == null) {
             Util.log(getClass(), String.format("%s Can't get ClassLoader!", Util.getQQVersion()));
             return;
         }
         Classes.initClass(classLoader);
+        Ids.init();
         new RemoveImagine();
         new MainUIHook();
         new ChatInterfaceHook();

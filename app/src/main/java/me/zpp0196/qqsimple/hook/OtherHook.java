@@ -3,12 +3,19 @@ package me.zpp0196.qqsimple.hook;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedHelpers;
+import me.zpp0196.qqsimple.BuildConfig;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
+import me.zpp0196.qqsimple.hook.comm.Ids;
 
 import static me.zpp0196.qqsimple.hook.comm.Classes.ApolloManager$CheckApolloInfoResult;
+import static me.zpp0196.qqsimple.hook.comm.Classes.BaseActivity;
+import static me.zpp0196.qqsimple.hook.comm.Classes.FrameHelperActivity;
+import static me.zpp0196.qqsimple.hook.comm.Classes.QQAppInterface;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingMe;
 
 /**
@@ -20,17 +27,18 @@ class OtherHook extends BaseHook {
     OtherHook() {
         closeAllAnimation();
         hideSidebarApollo();
+        addEntryInSidebar();
     }
 
     /**
      * 完全关闭动画
      */
     private void closeAllAnimation() {
-        if (!getBool("close_all_animation")) return;
         findAndHookMethod(Activity.class, "startActivityForResult", Intent.class, int.class, Bundle.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
+                if (!getBool("close_all_animation")) return;
                 ((Intent) param.args[0]).putExtra("open_chatfragment_withanim", false);
             }
         });
@@ -38,6 +46,7 @@ class OtherHook extends BaseHook {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
+                if (!getBool("close_all_animation")) return;
                 ((Intent) param.args[0]).putExtra("open_chatfragment_withanim", false);
             }
         });
@@ -47,6 +56,31 @@ class OtherHook extends BaseHook {
      * 隐藏侧滑栏厘米秀
      */
     private void hideSidebarApollo() {
-        if (getBool("hide_sidebar_apollo")) findAndHookMethod(QQSettingMe, "a", ApolloManager$CheckApolloInfoResult, XC_MethodReplacement.returnConstant(null));
+        findAndHookMethod(QQSettingMe, "a", ApolloManager$CheckApolloInfoResult, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (getBool("hide_sidebar_apollo")) param.setResult(null);
+            }
+        });
+    }
+
+    /**
+     * 在侧滑栏添加进入模块入口
+     */
+    private void addEntryInSidebar(){
+        XposedHelpers.findAndHookConstructor(QQSettingMe, BaseActivity, QQAppInterface, FrameHelperActivity, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                Activity BaseActivity = (Activity) param.args[0];
+                ViewGroup viewGroup = (ViewGroup) findField(QQSettingMe, ViewGroup.class, "a").get(param.thisObject);
+                View view = viewGroup.findViewById(Ids.getId("settings"));
+                view.setOnLongClickListener(v -> {
+                    BaseActivity.startActivity(BaseActivity.getPackageManager().getLaunchIntentForPackage(BuildConfig.APPLICATION_ID));
+                    return false;
+                });
+            }
+        });
     }
 }

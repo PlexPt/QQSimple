@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.Util;
@@ -48,23 +47,46 @@ class MoreHook extends BaseHook {
      * 禁用 CoreService
      */
     private void disableCoreService() {
-        if (!getBool("disable_coreservice")) return;
-        findAndHookMethod(CoreService, "startCoreService", boolean.class, XC_MethodReplacement.returnConstant(null));
-        findAndHookMethod(CoreService, "startTempService", XC_MethodReplacement.returnConstant(null));
-        findAndHookMethod(CoreService$KernelService, "onCreate", XC_MethodReplacement.returnConstant(null));
+        findAndHookMethod(CoreService, "startCoreService", boolean.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (getBool("disable_coreservice")) param.setResult(null);
+            }
+        });
+        findAndHookMethod(CoreService, "startTempService", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (getBool("disable_coreservice")) param.setResult(null);
+            }
+        });
+        findAndHookMethod(CoreService$KernelService, "onCreate", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (getBool("disable_coreservice")) param.setResult(null);
+            }
+        });
     }
 
     /**
      * 防止闪照消失
      */
     private void preventFlashDisappear() {
-        if (!getBool("prevent_flash_disappear")) return;
-        findAndHookMethod(CountDownProgressBar, "a", XC_MethodReplacement.returnConstant(null));
+        findAndHookMethod(CountDownProgressBar, "a", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (getBool("prevent_flash_disappear")) param.setResult(null);
+            }
+        });
         findAndHookMethod(HotChatFlashPicActivity, "onTouch", View.class, MotionEvent.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                param.args[1] = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0);
+                if (getBool("prevent_flash_disappear"))
+                    param.args[1] = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0);
             }
         });
         if (AIOImageProviderService != null) {
@@ -72,7 +94,13 @@ class MoreHook extends BaseHook {
             for (Method method : methods) {
                 Class<?>[] name = method.getParameterTypes();
                 if (method.getName().equals("a") && method.getGenericReturnType().toString().equals("void") && name.length == 1 && name[0].getName().equals("long")) {
-                    XposedBridge.hookMethod(method, XC_MethodReplacement.returnConstant(null));
+                    XposedBridge.hookMethod(method, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            super.beforeHookedMethod(param);
+                            if (getBool("prevent_flash_disappear")) param.setResult(null);
+                        }
+                    });
                 }
             }
         }
@@ -87,6 +115,7 @@ class MoreHook extends BaseHook {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
+                if (!getBool("prevent_flash_disappear")) return;
                 if (Integer.parseInt(param.args[0].toString()) == WindowManager.LayoutParams.FLAG_SECURE) {
                     param.args[0] = WindowManager.LayoutParams.FLAG_FULLSCREEN;
                 }
@@ -97,7 +126,7 @@ class MoreHook extends BaseHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     super.beforeHookedMethod(param);
-                    param.args[0] = false;
+                    if (getBool("prevent_flash_disappear")) param.args[0] = false;
                 }
             });
         }
@@ -107,15 +136,17 @@ class MoreHook extends BaseHook {
      * 防止消息撤回
      */
     private void preventMessagesWithdrawn() {
-        if (getBool("prevent_messages_withdrawn")) findAndHookMethod(QQMessageFacade, "a", ArrayList.class, boolean.class, new XC_MethodReplacement() {
+        findAndHookMethod(QQMessageFacade, "a", ArrayList.class, boolean.class, new XC_MethodHook() {
             @Override
-            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (!getBool("prevent_messages_withdrawn")) return;
                 ArrayList arrayList = (ArrayList) param.args[0];
-                if(arrayList == null || arrayList.isEmpty()) return null;
+                if (arrayList == null || arrayList.isEmpty()) return;
                 Object RevokeMsgInfo = arrayList.get(0);
                 String fromuin = findObject(RevokeMsgInfo, String.class, "b");
-                Util.log("QQ Revoke Log","%s revoke a message at %s", fromuin, String.format("%tc", new Date(System.currentTimeMillis())));
-                return null;
+                Util.log("QQ Revoke Log", "%s revoke a message at %s", fromuin, String.format("%tc", new Date(System.currentTimeMillis())));
+                param.setResult(null);
             }
         });
     }
@@ -124,10 +155,11 @@ class MoreHook extends BaseHook {
      * 模拟菜单
      */
     private void simulateMenu() {
-        if (getBool("simulate_menu")) findAndHookMethod(Conversation, "D", new XC_MethodHook() {
+        findAndHookMethod(Conversation, "D", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
+                if (!getBool("simulate_menu")) return;
                 Field field = findField(Conversation, RelativeLayout.class, "b");
                 if (field == null) return;
                 ViewGroup viewGroup = (ViewGroup) field.get(param.thisObject);

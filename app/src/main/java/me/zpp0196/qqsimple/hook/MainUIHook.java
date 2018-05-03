@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.Util;
 
@@ -48,7 +47,6 @@ class MainUIHook extends BaseHook {
      * 隐藏菜单更新和反馈
      */
     private void hideMenuUAF() {
-        if (!getBool("hide_menu_uaf")) return;
         findAndHookMethod(MainFragment, "r", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -59,6 +57,7 @@ class MainUIHook extends BaseHook {
                 if (dialog == null) return;
                 Field field1 = findFirstFieldByExactType(ActionSheet, LinearLayout.class);
                 if (field1 == null) return;
+                if (!getBool("hide_menu_uaf")) return;
                 LinearLayout layout = (LinearLayout) field1.get(dialog);
                 layout.getChildAt(0).setVisibility(View.GONE);
                 layout.getChildAt(1).setVisibility(View.GONE);
@@ -70,12 +69,12 @@ class MainUIHook extends BaseHook {
      * 隐藏消息列表右上角快捷入口
      */
     private void hidePopupMenuEntry() {
-        if (!getBool("hide_popup_menu_entry")) return;
         findAndHookMethod(Conversation, "D", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 ImageView view = (ImageView) findField(Conversation, ImageView.class, "a").get(param.thisObject);
+                if (!getBool("hide_popup_menu_entry")) return;
                 if(view != null) view.setVisibility(View.GONE);
             }
         });
@@ -86,7 +85,6 @@ class MainUIHook extends BaseHook {
      */
     @SuppressWarnings("unchecked")
     private void hidePopupMenuContacts() {
-        if (getBool("hide_popup_multiChat", "hide_popup_add", "hide_popup_sweep", "hide_popup_face2face", "hide_popup_pay", "hide_popup_shoot", "hide_popup_videoDance"))
         findAndHookMethod(PopupMenuDialog, "a", Activity.class, List.class, PopupMenuDialog$OnClickActionListener, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -114,45 +112,59 @@ class MainUIHook extends BaseHook {
      * 隐藏全民闯关入口
      */
     private void hideNationalEntrance() {
-        if (getBool("hide_national_entrance")) findAndHookMethod(ConversationNowController, "a", String.class, XC_MethodReplacement.returnConstant(null));
+        findAndHookMethod(ConversationNowController, "a", String.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (getBool("hide_national_entrance")) param.setResult(null);
+            }
+        });
     }
 
     /**
      * 隐藏隐藏动态界面大家都在搜
      */
     private void hideEveryoneSearching() {
-        if (Util.isMoreThan735() && getBool("hide_everyone_searching")) findAndHookMethod(Leba, "a", List.class, XC_MethodReplacement.returnConstant(null));
+        findAndHookMethod(Leba, "a", List.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (Util.isMoreThan735() && getBool("hide_everyone_searching")) param.setResult(null);
+            }
+        });
     }
 
     /**
      * 隐藏底部分组
      */
     private void hideMainFragmentTab() {
-        if (getBool("hide_tab_contact", "hide_tab_dynamic")) {
-            findAndHookMethod(MainFragment, "a", View.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
-                    Field field = findField(MainFragment, View[].class, "a");
-                    if (field == null) return;
-                    View[] views = (View[]) field.get(param.thisObject);
-                    if (views == null) return;
-                    if (getBool("hide_tab_contact")) views[2].setVisibility(View.GONE);
-                    if (getBool("hide_tab_dynamic")) views[3].setVisibility(View.GONE);
-                    param.setResult(views);
-                }
-            });
-        }
-        if (!getBool("hide_tab_readinjoy")) return;
-        findAndHookMethod(ReadInJoyHelper, "d", XC_MethodReplacement.returnConstant(false));
+        findAndHookMethod(MainFragment, "a", View.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                Field field = findField(MainFragment, View[].class, "a");
+                if (field == null) return;
+                View[] views = (View[]) field.get(param.thisObject);
+                if (views == null) return;
+                if (getBool("hide_tab_contact")) views[2].setVisibility(View.GONE);
+                if (getBool("hide_tab_dynamic")) views[3].setVisibility(View.GONE);
+                param.setResult(views);
+            }
+        });
+        // 隐藏看点
+        findAndHookMethod(ReadInJoyHelper, "d", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (getBool("hide_tab_readinjoy")) param.setResult(false);
+            }
+        });
     }
 
     /**
      * 隐藏联系人分组
      */
     private void hideSlidingIndicator() {
-        if (!getBool("hide_contacts_tab_device", "hide_contacts_tab_phone", "hide_contacts_tab_pub_account"))
-            return;
         findAndHookMethod(ContactsViewController, "a", View.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {

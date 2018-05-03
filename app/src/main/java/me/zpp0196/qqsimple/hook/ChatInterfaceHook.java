@@ -1,5 +1,6 @@
 package me.zpp0196.qqsimple.hook;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -8,7 +9,6 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.Util;
@@ -16,6 +16,7 @@ import me.zpp0196.qqsimple.hook.util.Util;
 import static me.zpp0196.qqsimple.hook.comm.Classes.AbstractChatItemBuilder$ViewHolder;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseBubbleBuilder$ViewHolder;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BubbleManager;
+import static me.zpp0196.qqsimple.hook.comm.Classes.ChatActivityUtils;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ChatMessage;
 import static me.zpp0196.qqsimple.hook.comm.Classes.EmoticonManager;
 import static me.zpp0196.qqsimple.hook.comm.Classes.GatherContactsTips;
@@ -53,55 +54,86 @@ class ChatInterfaceHook extends BaseHook {
      * 隐藏个性气泡
      */
     private void hideChatBubble() {
-        if (getBool("hide_chat_bubble")) findAndHookMethod(BubbleManager, "a", int.class, boolean.class, XC_MethodReplacement.returnConstant(null));
+        findAndHookMethod(BubbleManager, "a", int.class, boolean.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (getBool("hide_chat_bubble")) param.setResult(null);
+            }
+        });
     }
 
     /**
      * 隐藏字体特效
      */
     private void hideFontEffects() {
-        if (!getBool("hide_font_effects")) return;
-        findAndHookMethod(TextItemBuilder, "a", BaseBubbleBuilder$ViewHolder, ChatMessage, XC_MethodReplacement.returnConstant(null));
-        findAndHookMethod(TextPreviewActivity, "a", int.class, XC_MethodReplacement.returnConstant(null));
+        findAndHookMethod(TextItemBuilder, "a", BaseBubbleBuilder$ViewHolder, ChatMessage, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (getBool("hide_font_effects")) param.setResult(null);
+            }
+        });
+        findAndHookMethod(TextPreviewActivity, "a", int.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (getBool("hide_font_effects")) param.setResult(null);
+            }
+        });
     }
 
     /**
      * 隐藏推荐表情
      */
     private void hideRecommendedExpression() {
-        if (Util.isMoreThan732() && getBool("hide_recommended_expression")) findAndHookMethod(EmoticonManager, "a", boolean.class, int.class, boolean.class, XC_MethodReplacement.returnConstant(new ArrayList<>()));
+        findAndHookMethod(EmoticonManager, "a", boolean.class, int.class, boolean.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (Util.isMoreThan732() && getBool("hide_recommended_expression")) param.setResult(new ArrayList<>());
+            }
+        });
     }
 
     private void hideTAI() {
         // 隐藏好友获得了新徽章
-        hideItemBuilder(MedalNewsItemBuilder, Util.isMoreThan732() && getBool("hide_get_new_badge"));
+        hideItemBuilder(MedalNewsItemBuilder, Util.isMoreThan732(),"hide_get_new_badge");
         // 隐藏好友新动态
-        hideItemBuilder(QzoneFeedItemBuilder, getBool("hide_new_feed"));
+        hideItemBuilder(QzoneFeedItemBuilder, "hide_new_feed");
         // 隐藏好友新签名
-        hideItemBuilder(RichStatItemBuilder, getBool("hide_new_signature"));
+        hideItemBuilder(RichStatItemBuilder, "hide_new_signature");
         // 隐藏取消隐藏不常用联系人提示
-        hideGrayTips(GatherContactsTips, getBool("hide_chat_unusual_contacts"));
+        hideGrayTips(GatherContactsTips, "hide_chat_unusual_contacts");
         // 隐藏设置特别消息提示音
-        hideGrayTips(VipSpecialCareGrayTips, getBool("hide_chat_special_care"));
+        hideGrayTips(VipSpecialCareGrayTips, "hide_chat_special_care");
         // 隐藏搜狗输入法广告
-        hideGrayTips(SougouInputGrayTips, getBool("hide_chat_sougou_input"));
+        hideGrayTips(SougouInputGrayTips, "hide_chat_sougou_input");
         // 隐藏会员相关广告
-        hideGrayTipsItem(getBool("hide_chat_vip_ad"), ".+会员.+");
+        hideGrayTipsItem("hide_chat_vip_ad", ".+会员.+");
         // 签到文本化
-        simpleItem(getBool("simple_group_sign"), 71, 84);
+        simpleItem("simple_group_sign", 71, 84);
         // 隐藏加入群提示
-        hideGrayTipsItem(getBool("hide_group_join_tips"), ".+加入了本群.+", ".+邀请.+加入.+");
+        hideGrayTipsItem("hide_group_join_tips", ".+加入了本群.+", ".+邀请.+加入.+");
         // 隐藏获得新头衔
-        hideGrayTipsItem(getBool("hide_group_member_level_tips"), ".+获得.+头衔.+");
+        hideGrayTipsItem("hide_group_member_level_tips", ".+获得.+头衔.+");
         // 隐藏礼物相关提示
-        hideGrayTipsItem(getBool("hide_group_gift_tips"), ".+礼物.+成为.+守护.+", ".+成为.+魅力.+", ".+成为.+豪气.+", ".+送给.+朵.+");
+        hideGrayTipsItem("hide_group_gift_tips", ".+礼物.+成为.+守护.+", ".+成为.+魅力.+", ".+成为.+豪气.+", ".+送给.+朵.+");
+        // 隐藏移出群助手提示
+        hideTopBar("移出群助手", "hide_group_helper_remove_tips");
     }
 
     /**
      * 隐藏礼物动画
      */
     private void hideGroupGiftAnim() {
-        if (getBool("hide_group_gift_anim")) findAndHookMethod(TroopGiftAnimationController, "a", MessageForDeliverGiftTips, XC_MethodReplacement.returnConstant(null));
+        findAndHookMethod(TroopGiftAnimationController, "a", MessageForDeliverGiftTips, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (getBool("hide_group_gift_anim")) param.setResult(null);
+            }
+        });
     }
 
     /**
@@ -109,7 +141,7 @@ class ChatInterfaceHook extends BaseHook {
      */
     private void hideGroupChatAdmissions() {
         if (!getBool("hide_group_chat_admissions")) return;
-        hideGrayTipsItem(true, ".+进场.+");
+        hideGrayTipsItem("hide_group_chat_admissions", ".+进场.+");
         if (TroopEnterEffectController == null) return;
         Field[] fields = TroopEnterEffectController.getDeclaredFields();
         for (Field field : fields) {
@@ -124,11 +156,27 @@ class ChatInterfaceHook extends BaseHook {
         }
     }
 
-    private void simpleItem(boolean isSimple, int... rs) {
-        if (isSimple) findAndHookMethod(ItemBuilderFactory, "a", ChatMessage, new XC_MethodHook() {
+    /**
+     * 隐藏顶部提示
+     */
+    private void hideTopBar(String s, String... key){
+        findAndHookMethod(ChatActivityUtils, "a", Context.class, String.class, View.OnClickListener.class, View.OnClickListener.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                String str = param.args[1].toString();
+                if(str.contains(s) && getBool(key))
+                    param.setResult(null);
+            }
+        });
+    }
+
+    private void simpleItem(String key, int... rs) {
+        findAndHookMethod(ItemBuilderFactory, "a", ChatMessage, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
+                if(!getBool(key)) return;
                 int result = (int) param.getResult();
                 for (int i : rs) {
                     if (i == result) {
@@ -139,19 +187,36 @@ class ChatInterfaceHook extends BaseHook {
         });
     }
 
-    private void hideItemBuilder(Class<?> ItemBuilder, boolean isHide) {
-        if (!isHide) findAndHookMethod(ItemBuilder, "a", MessageRecord, AbstractChatItemBuilder$ViewHolder, View.class, LinearLayout.class, OnLongClickAndTouchListener, XC_MethodReplacement.returnConstant(null));
+    private void hideItemBuilder(Class<?> ItemBuilder, String key) {
+        hideItemBuilder(ItemBuilder, true, key);
     }
 
-    private void hideGrayTips(Class<?> Tips, boolean isHide) {
-        if (isHide) findAndHookMethod(Tips, "a", Object[].class, XC_MethodReplacement.returnConstant(null));
-    }
-
-    private void hideGrayTipsItem(boolean isHide, String... regex) {
-        if (isHide) findAndHookMethod(GrayTipsItemBuilder, "a", MessageRecord, AbstractChatItemBuilder$ViewHolder, View.class, LinearLayout.class, OnLongClickAndTouchListener, new XC_MethodHook() {
+    private void hideItemBuilder(Class<?> ItemBuilder, boolean b, String key) {
+        findAndHookMethod(ItemBuilder, "a", MessageRecord, AbstractChatItemBuilder$ViewHolder, View.class, LinearLayout.class, OnLongClickAndTouchListener, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
+                if(b && getBool(key)) param.setResult(null);
+            }
+        });
+    }
+
+    private void hideGrayTips(Class<?> Tips, String key) {
+        findAndHookMethod(Tips, "a", Object[].class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if(getBool(key)) param.setResult(null);
+            }
+        });
+    }
+
+    private void hideGrayTipsItem(String key, String... regex) {
+        findAndHookMethod(GrayTipsItemBuilder, "a", MessageRecord, AbstractChatItemBuilder$ViewHolder, View.class, LinearLayout.class, OnLongClickAndTouchListener, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if(!getBool(key)) return;
                 Field field = XposedHelpers.findFieldIfExists(MessageRecord, "msg");
                 if (field == null) return;
                 String msg = (String) field.get(param.args[0]);

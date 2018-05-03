@@ -1,11 +1,15 @@
 package me.zpp0196.qqsimple.hook;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
+import me.zpp0196.qqsimple.Common;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
+import me.zpp0196.qqsimple.hook.comm.Ids;
 import me.zpp0196.qqsimple.hook.util.Util;
 
 import static me.zpp0196.qqsimple.hook.comm.Classes.BusinessInfoCheckUpdate$RedTypeInfo;
 import static me.zpp0196.qqsimple.hook.comm.Classes.MainFragment;
+import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingSettingActivity;
 
 /**
  * Created by Deng on 2018/2/16.
@@ -15,17 +19,15 @@ class RemoveImagine extends BaseHook {
 
     RemoveImagine() {
         hideView();
+        hideRedDot();
+        hideQzone();
     }
 
     private void hideView() {
-        // 隐藏消息和联系人界面搜索框
-        hideView("search_container", "hide_search_container");
         // 隐藏消息列表底部未读消息数量
         hideView("unchecked_msg_num", "hide_tab_msg_num");
         // 隐藏消息列表界面横幅广告
         hideView("adviewlayout", "hide_chat_list_head_ad");
-        // 隐藏消息列表右侧未读消息数量
-        hideView("unreadmsg", "hide_unreadmsg");
         // 隐藏联系人界面新朋友
         hideView("newFriendEntry", "hide_new_friend_entry");
         // 隐藏联系人界面创建群聊
@@ -36,8 +38,6 @@ class RemoveImagine extends BaseHook {
         hideView("btn_more_emoticon", "hide_btn_more_emoticon");
         // 隐藏联系人界面不常用联系人
         hideView("unusual_contacts_footerview", "hide_unusual_contacts");
-        // 隐藏动态界面顶部
-        hideView("laba_entrys_layout", "hide_laba_entrys_layout");
         // 隐藏动态界面搜索框
         hideView("leb_search_entry", "hide_leb_search_entry");
         // 隐藏动态界面空间入口
@@ -85,8 +85,6 @@ class RemoveImagine extends BaseHook {
         hideView("weather_area", "hide_sidebar_my_city");
         // 隐藏头像挂件
         hideView("chat_item_pendant_image", "hide_avatar_pendant");
-        // 隐藏聊天界面左上角的未读消息数量
-        hideView("tvDefaultTitleBtnLeft", "hide_chat_left_num");
         // 隐藏聊天界面右上角的 QQ 电话
         hideView("ivTitleBtnRightCall", "hide_chat_right_call");
         // 隐藏聊天界面底部工具栏语音按钮
@@ -112,8 +110,6 @@ class RemoveImagine extends BaseHook {
         hideView("chat_item_troop_member_glamour_level", "hide_group_member_glamour_level");
         // 隐藏群消息里的小视频
         hideView("troop_assistant_feeds_title_small_video", "hide_group_small_video");
-        // 隐藏移出群助手提示
-        hideView("chat_top_bar", "hide_group_helper_remove_tips");
         // 隐藏贴表情
         hideView("pic_light_emoj", Util.isMoreThan735() && getBool("hide_group_stick_face"));
         // 隐藏我的文件里的 TIM 推广
@@ -138,26 +134,60 @@ class RemoveImagine extends BaseHook {
         hideView("cu_open_card_guide_entry", "hide_setting_free_flow");
         // 隐藏设置关于QQ与帮助
         hideView("about", "hide_setting_about");
-        // 隐藏部分小红点
-        hideRedDot();
     }
 
+    /**
+     * 隐藏小红点
+     */
     private void hideRedDot() {
-        if (!getBool("hide_some_red_dot")) return;
-        hideView("find_reddot");
-        hideView("item_right_reddot");
-        hideView("iv_reddot");
-        hideView("qzone_feed_reddot", getBool("hide_qzone_entry") || getBool("hide_qzone_avatar_remind"));
-        hideView("qzone_mood_reddot");
-        hideView("qzone_super_font_tab_reddot");
-        hideView("qzone_uploadphoto_item_reddot");
-        hideView("tv_reddot");
-        hideView("xingqu_buluo_reddot", getBool("hide_tribal_entry") || getBool("hide_tribal_avatar_remind"));
+        if (!getBool(Common.PREFS_KEY_HIDE_SOME_RED_DOT)) return;
+        findAndHookMethod(QQSettingSettingActivity, "a", XC_MethodReplacement.returnConstant(false));
+        // hideView("qzone_super_font_tab_reddot");
+        // hideView("qzone_uploadphoto_item_reddot");
+        hideView("qzone_feed_reddot");
+        hideView("xingqu_buluo_reddot");
         hideDrawable("skin_tips_dot");
-        hideDrawable("skin_tips_dot_small");
+        // hideDrawable("skin_tips_dot_small");
         hideDrawable("skin_tips_new");
         hideDrawable("shortvideo_redbag_outicon", Util.isMoreThan735());
-        hideRedTouchViewNum();
+        // hideRedTouchViewNum();
+    }
+
+    /**
+     * 隐藏空间内容
+     */
+    private void hideQzone() {
+        // 隐藏头像装扮
+        hideView("qzone_cover_avatar_facade", "hide_qzone_facadeDecorator");
+        // 隐藏我的黄钻
+        hideView("qzone_cover_avatar_vip", "hide_qzone_vipDecorator");
+        hideView("qzone_cover_avatar_qboss", "hide_qzone_vipDecorator");
+        // 隐藏机型
+        hideView("feed_attach_view", "hide_qzone_mood_attach");
+        // 隐藏点赞按钮
+        hideView("operation_like_container", "hide_qzone_btn_like");
+        hideView("operation_like_container2", "hide_qzone_btn_like");
+        // 隐藏点赞列表
+        hideView("feed_praise_avatars_view", "hide_qzone_likeList");
+        // 隐藏评论框
+        hideView("feed_guide_comment_bar", "hide_qzone_et_comment");
+        // 隐藏评论内容
+        hideView("feed_canvas_comment_area_stub", "hide_qzone_et_comment_content");
+        if (!getBool("hide_qzone_ad")) return;
+        // 隐藏空间绿厂广告
+        hideView("shuoshuo_ad_upload_quality");
+        hideView("quality_hd_ad");
+        hideView("quality_ad");
+        hideView("quality_normal_ad");
+        hideView("quality_original_ad");
+        // 隐藏顶部广告
+        hideView("qzone_feed_commwidget_container");
+        hideView("qzone_feed_commwidget_image");
+        hideView("qzone_feed_commwidget_text");
+        hideView("qzone_feed_commwidget_count");
+        hideView("qzone_feed_commwidget_hide_btn");
+        hideView("qzone_feed_commwidget_stub");
+        hideView("qz_feed_head_container");
     }
 
     /**

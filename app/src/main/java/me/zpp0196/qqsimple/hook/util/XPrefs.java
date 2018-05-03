@@ -13,7 +13,7 @@ public class XPrefs {
 
     private static WeakReference<XSharedPreferences> xSharedPreferences = new WeakReference<>(null);
 
-    public static XSharedPreferences getPref() {
+    private static XSharedPreferences getPref() {
         XSharedPreferences preferences = xSharedPreferences.get();
         if (preferences == null) {
             preferences = new XSharedPreferences(BuildConfig.APPLICATION_ID);
@@ -26,8 +26,17 @@ public class XPrefs {
         return preferences;
     }
 
+    public static boolean getBoolean(String key, boolean defValue){
+        return getPref().getBoolean(key, defValue);
+    }
+
     @SuppressWarnings("all")
     public static boolean isPrintLog() {
         return getPref().getBoolean("switch_log", false);
+    }
+
+    @SuppressWarnings("all")
+    public static boolean isCloseAll() {
+        return getPref().getBoolean("switch_all", false);
     }
 }
