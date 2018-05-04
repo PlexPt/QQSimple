@@ -26,6 +26,7 @@ public class Classes {
     public static Class<?> ApolloManager$CheckApolloInfoResult;
     public static Class<?> BaseActivity;
     public static Class<?> BaseBubbleBuilder$ViewHolder;
+    public static Class<?> BaseMessageManager;
     public static Class<?> BubbleManager;
     public static Class<?> BusinessInfoCheckUpdate$RedTypeInfo;
     public static Class<?> ChatActivityUtils;
@@ -33,6 +34,7 @@ public class Classes {
     public static Class<?> ContactsViewController;
     public static Class<?> Conversation;
     public static Class<?> ConversationNowController;
+    public static Class<?> ContactUtils;
     public static Class<?> CoreService;
     public static Class<?> CoreService$KernelService;
     public static Class<?> CountDownProgressBar;
@@ -47,6 +49,7 @@ public class Classes {
     public static Class<?> MedalNewsItemBuilder;
     public static Class<?> MessageForDeliverGiftTips;
     public static Class<?> MessageRecord;
+    public static Class<?> MessageRecordFactory;
     public static Class<?> OnLongClickAndTouchListener;
     public static Class<?> PluginStatic;
     public static Class<?> PopupMenuDialog;
@@ -58,6 +61,7 @@ public class Classes {
     public static Class<?> QQSettingSettingActivity;
     public static Class<?> QzoneFeedItemBuilder;
     public static Class<?> ReadInJoyHelper;
+    public static Class<?> RevokeMsgInfo;
     public static Class<?> RichStatItemBuilder;
     public static Class<?> SimpleSlidingIndicator;
     public static Class<?> SougouInputGrayTips;
@@ -84,6 +88,7 @@ public class Classes {
         if(ApolloManager$CheckApolloInfoResult == null) ApolloManager$CheckApolloInfoResult = findClassInQQ("com.tencent.mobileqq.apollo.ApolloManager$CheckApolloInfoResult");
         if(BaseActivity == null) BaseActivity = findClassInQQ("com.tencent.mobileqq.app.BaseActivity");
         if(BaseBubbleBuilder$ViewHolder == null) BaseBubbleBuilder$ViewHolder = findClassInQQ("com.tencent.mobileqq.activity.aio.BaseBubbleBuilder$ViewHolder");
+        if(BaseMessageManager == null) BaseMessageManager = findClassInQQ("com.tencent.mobileqq.app.message.BaseMessageManager");
         if(BubbleManager == null) BubbleManager = findClassInQQ("com.tencent.mobileqq.bubble.BubbleManager");
         if(BusinessInfoCheckUpdate$RedTypeInfo == null) BusinessInfoCheckUpdate$RedTypeInfo = findClassInQQ("com.tencent.pb.getbusiinfo.BusinessInfoCheckUpdate$RedTypeInfo");
         if(ChatActivityUtils == null) ChatActivityUtils = findClassInQQ("com.tencent.mobileqq.activity.ChatActivityUtils");
@@ -91,6 +96,7 @@ public class Classes {
         if(ContactsViewController == null) ContactsViewController = findClassInQQ("com.tencent.mobileqq.activity.contacts.base.ContactsViewController");
         if(Conversation == null) Conversation = findClassInQQ("com.tencent.mobileqq.activity.Conversation");
         if(ConversationNowController == null) ConversationNowController = findClassInQQ("com.tencent.mobileqq.now.enter.ConversationNowController");
+        if(ContactUtils == null) ContactUtils = findClassInQQ("com.tencent.mobileqq.utils.ContactUtils");
         if(CoreService == null) CoreService = findClassInQQ("com.tencent.mobileqq.app.CoreService");
         if(CoreService$KernelService == null) CoreService$KernelService = findClassInQQ("com.tencent.mobileqq.app.CoreService$KernelService");
         if(CountDownProgressBar == null) CountDownProgressBar = findClassInQQ("com.tencent.widget.CountDownProgressBar");
@@ -105,6 +111,7 @@ public class Classes {
         if(MedalNewsItemBuilder == null) MedalNewsItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.MedalNewsItemBuilder");
         if(MessageForDeliverGiftTips == null) MessageForDeliverGiftTips = findClassInQQ("com.tencent.mobileqq.data.MessageForDeliverGiftTips");
         if(MessageRecord == null) MessageRecord = findClassInQQ("com.tencent.mobileqq.data.MessageRecord");
+        if(MessageRecordFactory == null) MessageRecordFactory = findClassInQQ("com.tencent.mobileqq.service.message.MessageRecordFactory");
         if(OnLongClickAndTouchListener == null) OnLongClickAndTouchListener = findClassInQQ("com.tencent.mobileqq.activity.aio.OnLongClickAndTouchListener");
         if(PluginStatic == null) PluginStatic = findClassInQQ("com.tencent.mobileqq.pluginsdk.PluginStatic");
         if(PopupMenuDialog == null) PopupMenuDialog = findClassInQQ("com.tencent.widget.PopupMenuDialog");
@@ -116,6 +123,7 @@ public class Classes {
         if(QQSettingSettingActivity == null) QQSettingSettingActivity = findClassInQQ("com.tencent.mobileqq.activity.QQSettingSettingActivity");
         if(QzoneFeedItemBuilder == null) QzoneFeedItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.QzoneFeedItemBuilder");
         if(ReadInJoyHelper == null) ReadInJoyHelper = findClassInQQ("cooperation.readinjoy.ReadInJoyHelper");
+        if(RevokeMsgInfo == null) RevokeMsgInfo = findClassInQQ("com.tencent.mobileqq.revokemsg.RevokeMsgInfo");
         if(RichStatItemBuilder == null) RichStatItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.RichStatItemBuilder");
         if(SimpleSlidingIndicator == null) SimpleSlidingIndicator = findClassInQQ("com.tencent.mobileqq.activity.contacts.view.SimpleSlidingIndicator");
         if(SougouInputGrayTips == null) SougouInputGrayTips = findClassInQQ("com.tencent.mobileqq.activity.aio.tips.SougouInputGrayTips");

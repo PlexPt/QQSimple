@@ -59,4 +59,14 @@ public class Util {
     public static void log(Class clazz, String format, Object... args) {
         log(clazz, String.format(format, args));
     }
+
+    public static boolean isCallingFrom(String className) {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        for (StackTraceElement element : stackTraceElements) {
+            if (element.getClassName().contains(className)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -1,6 +1,7 @@
 package me.zpp0196.qqsimple.hook;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.BuildConfig;
+import me.zpp0196.qqsimple.activity.SettingActivity;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.comm.Ids;
 
@@ -77,7 +79,10 @@ class OtherHook extends BaseHook {
                 ViewGroup viewGroup = (ViewGroup) findField(QQSettingMe, ViewGroup.class, "a").get(param.thisObject);
                 View view = viewGroup.findViewById(Ids.getId("settings"));
                 view.setOnLongClickListener(v -> {
-                    BaseActivity.startActivity(BaseActivity.getPackageManager().getLaunchIntentForPackage(BuildConfig.APPLICATION_ID));
+                    Intent intent = new Intent(BuildConfig.APPLICATION_ID);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+                    intent.setComponent(new ComponentName(BuildConfig.APPLICATION_ID, SettingActivity.class.getName()));
+                    BaseActivity.startActivity(intent);
                     return false;
                 });
             }

@@ -4,7 +4,6 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import me.zpp0196.qqsimple.Common;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
-import me.zpp0196.qqsimple.hook.comm.Ids;
 import me.zpp0196.qqsimple.hook.util.Util;
 
 import static me.zpp0196.qqsimple.hook.comm.Classes.BusinessInfoCheckUpdate$RedTypeInfo;
@@ -54,6 +53,8 @@ class RemoveImagine extends BaseHook {
         hideView("buluo_entry_sub_iv", "hide_tribal_avatar_remind");
         // 隐藏侧滑栏打卡
         hideView("mydaily", "hide_sidebar_my_daily");
+        // 隐藏侧滑栏每日任务
+        hideView("mytask", Util.isMoreThan800(), "hide_sidebar_my_task");
         // 隐藏侧滑栏我的二维码
         hideView("qr_code_icon", "hide_sidebar_my_qr_code");
         // 隐藏侧滑栏 QQ 信息
@@ -111,7 +112,7 @@ class RemoveImagine extends BaseHook {
         // 隐藏群消息里的小视频
         hideView("troop_assistant_feeds_title_small_video", "hide_group_small_video");
         // 隐藏贴表情
-        hideView("pic_light_emoj", Util.isMoreThan735() && getBool("hide_group_stick_face"));
+        hideView("pic_light_emoj", Util.isMoreThan735(), "hide_group_stick_face");
         // 隐藏我的文件里的 TIM 推广
         hideView("timtips", "hide_tim_in_my_file");
         // 隐藏设置电话号码

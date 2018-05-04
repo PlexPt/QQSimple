@@ -63,17 +63,17 @@ public abstract class BaseHook {
     }
 
     protected void hideView(String name, boolean b, String... key) {
-        hideView(getIdInQQ(name), b, key);
+        if(b) hideView(getIdInQQ(name), key);
     }
 
-    private void hideView(int id, boolean b, String... key){
+    private void hideView(int id, String... key){
         if (id == 0) return;
         findAndHookMethod(View.class, "setLayoutParams", ViewGroup.LayoutParams.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 View view = (View) param.thisObject;
-                if (view.getId() == id && b) {
+                if (view.getId() == id) {
                     if(!(getBool(key))) return;
                     ViewGroup.LayoutParams layoutParams = (ViewGroup.LayoutParams) param.args[0];
                     layoutParams.height = 1;
@@ -93,16 +93,16 @@ public abstract class BaseHook {
     }
 
     protected void hideDrawable(String name, boolean b, String... key) {
-        hideDrawable(getDrawableIdInQQ(name), b, key);
+        if(b) hideDrawable(getDrawableIdInQQ(name), key);
     }
 
-    private void hideDrawable(int id, boolean b, String... key) {
+    private void hideDrawable(int id, String... key) {
         if (id == 0) return;
         findAndHookMethod(ImageView.class, "setImageResource", int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                if ((int) param.args[0] == id && b) {
+                if ((int) param.args[0] == id) {
                     if(!(getBool(key))) return;
                     param.setResult(null);
                 }
@@ -125,7 +125,7 @@ public abstract class BaseHook {
     }
 
     @SuppressWarnings("all")
-    protected <T> T findObject(@NonNull Object obj, Class<?> type, String name){
+    protected <T> T getObject(@NonNull Object obj, Class<?> type, String name){
         try {
             return (T)findField(obj.getClass(), type, name).get(obj);
         } catch (IllegalAccessException e) {

@@ -15,19 +15,27 @@ import android.widget.RelativeLayout;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.Util;
+import me.zpp0196.qqsimple.hook.util.XPrefs;
 
 import static me.zpp0196.qqsimple.hook.comm.Classes.AIOImageProviderService;
+import static me.zpp0196.qqsimple.hook.comm.Classes.ContactUtils;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Conversation;
 import static me.zpp0196.qqsimple.hook.comm.Classes.CoreService;
 import static me.zpp0196.qqsimple.hook.comm.Classes.CoreService$KernelService;
 import static me.zpp0196.qqsimple.hook.comm.Classes.CountDownProgressBar;
 import static me.zpp0196.qqsimple.hook.comm.Classes.HotChatFlashPicActivity;
+import static me.zpp0196.qqsimple.hook.comm.Classes.MessageRecord;
+import static me.zpp0196.qqsimple.hook.comm.Classes.MessageRecordFactory;
+import static me.zpp0196.qqsimple.hook.comm.Classes.QQAppInterface;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQMessageFacade;
 
 /**
@@ -136,19 +144,67 @@ class MoreHook extends BaseHook {
      * 防止消息撤回
      */
     private void preventMessagesWithdrawn() {
-        findAndHookMethod(QQMessageFacade, "a", ArrayList.class, boolean.class, new XC_MethodHook() {
+        findAndHookMethod(QQMessageFacade, "a", ArrayList.class, boolean.class, new XC_MethodReplacement() {
             @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (!getBool("prevent_messages_withdrawn")) return;
+            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
                 ArrayList arrayList = (ArrayList) param.args[0];
-                if (arrayList == null || arrayList.isEmpty()) return;
-                Object RevokeMsgInfo = arrayList.get(0);
-                String fromuin = findObject(RevokeMsgInfo, String.class, "b");
-                Util.log("QQ Revoke Log", "%s revoke a message at %s", fromuin, String.format("%tc", new Date(System.currentTimeMillis())));
-                param.setResult(null);
+                if(arrayList == null || arrayList.isEmpty() || Util.isCallingFrom("C2CMessageProcessor")) return null;
+                Object revokeMsgInfo = arrayList.get(0);
+
+                String friendUin = getObject(revokeMsgInfo, String.class, "a");
+                String fromUin = getObject(revokeMsgInfo, String.class, "b");
+                int isTroop = getObject(revokeMsgInfo, int.class, "a");
+                int isAdmin = 0;
+                long msgUid = getObject(revokeMsgInfo, long.class, "b");
+                long shmsgseq = getObject(revokeMsgInfo, long.class, "a");
+                long time = getObject(revokeMsgInfo, long.class, "c");
+
+                Object qqAppInterface = findField(QQMessageFacade, QQAppInterface, "a").get(param.thisObject);
+                String selfUin = (String) XposedHelpers.callMethod(qqAppInterface, "getCurrentAccountUin");
+
+                int msgType = (int)XposedHelpers.getStaticObjectField(MessageRecord, "MSG_TYPE_REVOKE_GRAY_TIPS");
+                List tip = getRevokeTip(qqAppInterface, selfUin, friendUin, fromUin, msgUid, shmsgseq, time + 1, msgType, isTroop, isAdmin);
+                if(tip != null && !tip.isEmpty()) {
+                    try {
+                        XposedHelpers.callMethod(param.thisObject, "a", tip, selfUin);
+                    } catch (Throwable t) {
+                        //
+                    }
+                }
+                return null;
             }
         });
+    }
+
+    /**
+     * 撤回提示
+     * @param selfUin
+     * @param friendUin
+     * @param fromUin
+     * @param time
+     * @param msgType
+     * @param isTroop
+     * @param isAdmin
+     */
+    private List getRevokeTip(Object qqAppInterface, String selfUin, String friendUin, String fromUin, long msgUid, long shmsgseq, long time, int msgType, int isTroop, int isAdmin){
+        Object messageRecord = XposedHelpers.callStaticMethod(MessageRecordFactory, "a", msgType);
+
+        String name;
+        if(isTroop == 0) {
+            name = "对方";
+        }else {
+            name = (String) XposedHelpers.callStaticMethod(ContactUtils, "a",qqAppInterface, fromUin, friendUin, isTroop == 1 ? 1 : 2, 0);
+        }
+
+        XposedHelpers.callMethod(messageRecord, "init", selfUin, isTroop == 0 ? fromUin : friendUin, fromUin, name + "尝试撤回一条消息", time, msgType, isTroop, time);
+
+        XposedHelpers.setObjectField(messageRecord, "msgUid", msgUid == 0 ? 0 : msgUid + new Random().nextInt());
+        XposedHelpers.setObjectField(messageRecord, "shmsgseq", shmsgseq);
+        XposedHelpers.setObjectField(messageRecord, "isread", true);
+
+        List<Object> list = new ArrayList<>();
+        list.add(messageRecord);
+        return list;
     }
 
     /**

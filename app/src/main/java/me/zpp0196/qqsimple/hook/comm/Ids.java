@@ -144,6 +144,7 @@ public class Ids {
         put("nearby_people_entry_sub_iv", 0x7f0a20de); // c6 .activity.Leba u() ImageView OnClick visibility
         put("buluo_entry_sub_iv", 0x7f0a20e2); // c6 .activity.Leba u() a URLImageView
         put("mydaily", 0x7f0a2493); // c6 .activity.QQSettingMe QQSettingMe ImmersiveUtils.isSupporImmersive
+        put("mytask", 0x7f0a2495);
         put("qr_code_icon", 0x7f0a2494); // OnClick reportFla
         put("nickname_area", 0x7f0a2490); // OnClick 0X80072D6
         put("sig_layout", 0x7f0a248b); // OnClick signatureH5Url
