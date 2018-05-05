@@ -1,13 +1,10 @@
 package me.zpp0196.qqsimple.hook;
 
-import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import me.zpp0196.qqsimple.Common;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.Util;
 
-import static me.zpp0196.qqsimple.hook.comm.Classes.BusinessInfoCheckUpdate$RedTypeInfo;
-import static me.zpp0196.qqsimple.hook.comm.Classes.MainFragment;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingSettingActivity;
 
 /**
@@ -54,7 +51,7 @@ class RemoveImagine extends BaseHook {
         // 隐藏侧滑栏打卡
         hideView("mydaily", "hide_sidebar_my_daily");
         // 隐藏侧滑栏每日任务
-        hideView("mytask", Util.isMoreThan800(), "hide_sidebar_my_task");
+        hideView("mytask", Util.isMoreThan760(), "hide_sidebar_my_task");
         // 隐藏侧滑栏我的二维码
         hideView("qr_code_icon", "hide_sidebar_my_qr_code");
         // 隐藏侧滑栏 QQ 信息
@@ -189,21 +186,5 @@ class RemoveImagine extends BaseHook {
         hideView("qzone_feed_commwidget_hide_btn");
         hideView("qzone_feed_commwidget_stub");
         hideView("qz_feed_head_container");
-    }
-
-    /**
-     * 隐藏底部消息数量
-     */
-    private void hideRedTouchViewNum() {
-        findAndHookMethod(MainFragment, "a", int.class, BusinessInfoCheckUpdate$RedTypeInfo, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                int i = (int) param.args[0];
-                if ((i == 33 && getBool("hide_new_friend_entry")) || (i == 34 && (getBool("hide_qzone_avatar_remind") || getBool("hide_tribal_entry") || getBool("hide_tribal_avatar_remind")))) {
-                    param.setResult(null);
-                }
-            }
-        });
     }
 }

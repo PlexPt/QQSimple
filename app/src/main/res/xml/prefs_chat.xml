@@ -31,6 +31,10 @@
     <PreferenceCategory android:title="表情">
         <CheckBoxPreference
             android:defaultValue="false"
+            android:key="hide_expression_drop"
+            android:title="隐藏表情掉落" />
+        <CheckBoxPreference
+            android:defaultValue="false"
             android:key="hide_expression_association"
             android:title="隐藏表情联想" />
         <CheckBoxPreference

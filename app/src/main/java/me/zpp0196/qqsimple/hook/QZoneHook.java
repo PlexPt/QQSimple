@@ -120,7 +120,7 @@ class QZoneHook extends BaseHook {
             }
         });
         // 隐藏消息
-        findAndHookMethod(QZoneFriendFeedFragment, Util.isMoreThan800() ? "n_" : "t_", new XC_MethodHook() {
+        findAndHookMethod(QZoneFriendFeedFragment, Util.isMoreThan760() ? "n_" : "t_", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);

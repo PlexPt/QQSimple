@@ -7,10 +7,6 @@
     <PreferenceCategory android:title="底部分组">
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="hide_tab_msg_num"
-            android:title="隐藏消息底部数量" />
-        <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_tab_contact"
             android:title="隐藏联系人" />
         <CheckBoxPreference
@@ -21,6 +17,20 @@
             android:defaultValue="false"
             android:key="hide_tab_dynamic"
             android:title="隐藏动态" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="底部分组未读消息数量">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_tab_msg_num"
+            android:title="隐藏消息数量" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_tab_contact_num"
+            android:title="隐藏联系人数量" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_tab_dynamic_num"
+            android:title="隐藏动态数量" />
     </PreferenceCategory>
     <PreferenceCategory android:title="消息列表界面">
         <CheckBoxPreference

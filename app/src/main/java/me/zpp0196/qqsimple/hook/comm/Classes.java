@@ -22,6 +22,7 @@ public class Classes {
 
     public static Class<?> AbstractChatItemBuilder$ViewHolder;
     public static Class<?> ActionSheet;
+    public static Class<?> AioAnimationConfigHelper;
     public static Class<?> AIOImageProviderService;
     public static Class<?> ApolloManager$CheckApolloInfoResult;
     public static Class<?> BaseActivity;
@@ -84,6 +85,7 @@ public class Classes {
 
         if(AbstractChatItemBuilder$ViewHolder == null) AbstractChatItemBuilder$ViewHolder = findClassInQQ("com.tencent.mobileqq.activity.aio.AbstractChatItemBuilder$ViewHolder");
         if(ActionSheet == null) ActionSheet = findClassInQQ("com.tencent.widget.ActionSheet");
+        if(AioAnimationConfigHelper == null) AioAnimationConfigHelper = findClassInQQ("com.tencent.mobileqq.activity.aio.anim.AioAnimationConfigHelper");
         if(AIOImageProviderService == null) AIOImageProviderService = findClassInQQ("com.tencent.mobileqq.activity.aio.photo.AIOImageProviderService");
         if(ApolloManager$CheckApolloInfoResult == null) ApolloManager$CheckApolloInfoResult = findClassInQQ("com.tencent.mobileqq.apollo.ApolloManager$CheckApolloInfoResult");
         if(BaseActivity == null) BaseActivity = findClassInQQ("com.tencent.mobileqq.app.BaseActivity");

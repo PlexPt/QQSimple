@@ -16,6 +16,7 @@ import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.Util;
 
 import static me.zpp0196.qqsimple.hook.comm.Classes.ActionSheet;
+import static me.zpp0196.qqsimple.hook.comm.Classes.BusinessInfoCheckUpdate$RedTypeInfo;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ContactsViewController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Conversation;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ConversationNowController;
@@ -142,21 +143,31 @@ class MainUIHook extends BaseHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                Field field = findField(MainFragment, View[].class, "a");
-                if (field == null) return;
-                View[] views = (View[]) field.get(param.thisObject);
+                View[] views = getObject(param.thisObject, View[].class, "a");
                 if (views == null) return;
                 if (getBool("hide_tab_contact")) views[2].setVisibility(View.GONE);
                 if (getBool("hide_tab_dynamic")) views[3].setVisibility(View.GONE);
-                param.setResult(views);
             }
         });
+
         // 隐藏看点
         findAndHookMethod(ReadInJoyHelper, "d", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
                 if (getBool("hide_tab_readinjoy")) param.setResult(false);
+            }
+        });
+
+        // 隐藏底部消息数量
+        findAndHookMethod(MainFragment, "a", int.class, BusinessInfoCheckUpdate$RedTypeInfo, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                int i = (int) param.args[0];
+                if ((i == 33 && getBool("hide_tab_contact_num")) || (i == 34 && (getBool("hide_tab_dynamic_num")))) {
+                    param.setResult(null);
+                }
             }
         });
     }

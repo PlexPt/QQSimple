@@ -32,7 +32,7 @@ public abstract class BaseHook {
         Util.log(getClass(), format, args);
     }
 
-    private int getIdInQQ(String name) {
+    protected int getIdInQQ(String name) {
         Integer id = Ids.getId(name);
         if(id != null && id != 0) return id;
         try {

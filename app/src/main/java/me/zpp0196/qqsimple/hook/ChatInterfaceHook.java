@@ -14,6 +14,7 @@ import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.Util;
 
 import static me.zpp0196.qqsimple.hook.comm.Classes.AbstractChatItemBuilder$ViewHolder;
+import static me.zpp0196.qqsimple.hook.comm.Classes.AioAnimationConfigHelper;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseBubbleBuilder$ViewHolder;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BubbleManager;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ChatActivityUtils;
@@ -45,6 +46,7 @@ class ChatInterfaceHook extends BaseHook {
         hideChatBubble();
         hideFontEffects();
         hideRecommendedExpression();
+        hideEmotionDrop();
         hideTAI();
         hideGroupGiftAnim();
         hideGroupChatAdmissions();
@@ -92,6 +94,19 @@ class ChatInterfaceHook extends BaseHook {
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
                 if (Util.isMoreThan732() && getBool("hide_recommended_expression")) param.setResult(new ArrayList<>());
+            }
+        });
+    }
+
+    /**
+     * 隐藏表情掉落
+     */
+    private void hideEmotionDrop(){
+        findAndHookMethod(AioAnimationConfigHelper, "a", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if(getBool("hide_expression_drop")) param.setResult(null);
             }
         });
     }
