@@ -2,6 +2,7 @@ package me.zpp0196.qqsimple.hook.comm;
 
 import me.zpp0196.qqsimple.hook.util.Util;
 
+import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
 import static me.zpp0196.qqsimple.hook.util.Util.getQQVersion;
 
 /**
@@ -61,6 +62,7 @@ public class Classes {
     public static Class<?> QQSettingMe;
     public static Class<?> QQSettingSettingActivity;
     public static Class<?> QzoneFeedItemBuilder;
+    public static Class<?> QzonePluginProxyActivity;
     public static Class<?> ReadInJoyHelper;
     public static Class<?> RevokeMsgInfo;
     public static Class<?> RichStatItemBuilder;
@@ -75,69 +77,71 @@ public class Classes {
     public static void initClass(ClassLoader classLoader){
         qqClassLoader = classLoader;
 
-        if(R$color == null) R$color = findClassInQQ("com.tencent.mobileqq.R$color");
-        if(R$dimen == null) R$dimen = findClassInQQ("com.tencent.mobileqq.R$dimen");
-        if(R$drawable == null) R$drawable = findClassInQQ("com.tencent.mobileqq.R$drawable");
-        if(R$layout == null) R$layout = findClassInQQ("com.tencent.mobileqq.R$layout");
-        if(R$id == null) R$id = findClassInQQ("com.tencent.mobileqq.R$id");
-        if(R$string == null) R$string = findClassInQQ("com.tencent.mobileqq.R$string");
-        if(R$style == null) R$style = findClassInQQ("com.tencent.mobileqq.R$style");
+        if(R$color == null) R$color = findClassInQQ(".R$color");
+        if(R$dimen == null) R$dimen = findClassInQQ(".R$dimen");
+        if(R$drawable == null) R$drawable = findClassInQQ(".R$drawable");
+        if(R$layout == null) R$layout = findClassInQQ(".R$layout");
+        if(R$id == null) R$id = findClassInQQ(".R$id");
+        if(R$string == null) R$string = findClassInQQ(".R$string");
+        if(R$style == null) R$style = findClassInQQ(".R$style");
 
-        if(AbstractChatItemBuilder$ViewHolder == null) AbstractChatItemBuilder$ViewHolder = findClassInQQ("com.tencent.mobileqq.activity.aio.AbstractChatItemBuilder$ViewHolder");
+        if(AbstractChatItemBuilder$ViewHolder == null) AbstractChatItemBuilder$ViewHolder = findClassInQQ(".activity.aio.AbstractChatItemBuilder$ViewHolder");
         if(ActionSheet == null) ActionSheet = findClassInQQ("com.tencent.widget.ActionSheet");
-        if(AioAnimationConfigHelper == null) AioAnimationConfigHelper = findClassInQQ("com.tencent.mobileqq.activity.aio.anim.AioAnimationConfigHelper");
-        if(AIOImageProviderService == null) AIOImageProviderService = findClassInQQ("com.tencent.mobileqq.activity.aio.photo.AIOImageProviderService");
-        if(ApolloManager$CheckApolloInfoResult == null) ApolloManager$CheckApolloInfoResult = findClassInQQ("com.tencent.mobileqq.apollo.ApolloManager$CheckApolloInfoResult");
-        if(BaseActivity == null) BaseActivity = findClassInQQ("com.tencent.mobileqq.app.BaseActivity");
-        if(BaseBubbleBuilder$ViewHolder == null) BaseBubbleBuilder$ViewHolder = findClassInQQ("com.tencent.mobileqq.activity.aio.BaseBubbleBuilder$ViewHolder");
-        if(BaseMessageManager == null) BaseMessageManager = findClassInQQ("com.tencent.mobileqq.app.message.BaseMessageManager");
-        if(BubbleManager == null) BubbleManager = findClassInQQ("com.tencent.mobileqq.bubble.BubbleManager");
+        if(AioAnimationConfigHelper == null) AioAnimationConfigHelper = findClassInQQ(".activity.aio.anim.AioAnimationConfigHelper");
+        if(AIOImageProviderService == null) AIOImageProviderService = findClassInQQ(".activity.aio.photo.AIOImageProviderService");
+        if(ApolloManager$CheckApolloInfoResult == null) ApolloManager$CheckApolloInfoResult = findClassInQQ(".apollo.ApolloManager$CheckApolloInfoResult");
+        if(BaseActivity == null) BaseActivity = findClassInQQ(".app.BaseActivity");
+        if(BaseBubbleBuilder$ViewHolder == null) BaseBubbleBuilder$ViewHolder = findClassInQQ(".activity.aio.BaseBubbleBuilder$ViewHolder");
+        if(BaseMessageManager == null) BaseMessageManager = findClassInQQ(".app.message.BaseMessageManager");
+        if(BubbleManager == null) BubbleManager = findClassInQQ(".bubble.BubbleManager");
         if(BusinessInfoCheckUpdate$RedTypeInfo == null) BusinessInfoCheckUpdate$RedTypeInfo = findClassInQQ("com.tencent.pb.getbusiinfo.BusinessInfoCheckUpdate$RedTypeInfo");
-        if(ChatActivityUtils == null) ChatActivityUtils = findClassInQQ("com.tencent.mobileqq.activity.ChatActivityUtils");
-        if(ChatMessage == null) ChatMessage = findClassInQQ("com.tencent.mobileqq.data.ChatMessage");
-        if(ContactsViewController == null) ContactsViewController = findClassInQQ("com.tencent.mobileqq.activity.contacts.base.ContactsViewController");
-        if(Conversation == null) Conversation = findClassInQQ("com.tencent.mobileqq.activity.Conversation");
-        if(ConversationNowController == null) ConversationNowController = findClassInQQ("com.tencent.mobileqq.now.enter.ConversationNowController");
-        if(ContactUtils == null) ContactUtils = findClassInQQ("com.tencent.mobileqq.utils.ContactUtils");
-        if(CoreService == null) CoreService = findClassInQQ("com.tencent.mobileqq.app.CoreService");
-        if(CoreService$KernelService == null) CoreService$KernelService = findClassInQQ("com.tencent.mobileqq.app.CoreService$KernelService");
+        if(ChatActivityUtils == null) ChatActivityUtils = findClassInQQ(".activity.ChatActivityUtils");
+        if(ChatMessage == null) ChatMessage = findClassInQQ(".data.ChatMessage");
+        if(ContactsViewController == null) ContactsViewController = findClassInQQ(".activity.contacts.base.ContactsViewController");
+        if(Conversation == null) Conversation = findClassInQQ(".activity.Conversation");
+        if(ConversationNowController == null) ConversationNowController = findClassInQQ(".now.enter.ConversationNowController");
+        if(ContactUtils == null) ContactUtils = findClassInQQ(".utils.ContactUtils");
+        if(CoreService == null) CoreService = findClassInQQ(".app.CoreService");
+        if(CoreService$KernelService == null) CoreService$KernelService = findClassInQQ(".app.CoreService$KernelService");
         if(CountDownProgressBar == null) CountDownProgressBar = findClassInQQ("com.tencent.widget.CountDownProgressBar");
-        if(EmoticonManager == null) EmoticonManager = findClassInQQ("com.tencent.mobileqq.model.EmoticonManager");
-        if(FrameHelperActivity == null) FrameHelperActivity = findClassInQQ("com.tencent.mobileqq.app.FrameHelperActivity");
-        if(GatherContactsTips == null) GatherContactsTips = findClassInQQ("com.tencent.mobileqq.activity.aio.tips.GatherContactsTips");
-        if(GrayTipsItemBuilder == null) GrayTipsItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.GrayTipsItemBuilder");
-        if(HotChatFlashPicActivity == null) HotChatFlashPicActivity = findClassInQQ("com.tencent.mobileqq.dating.HotChatFlashPicActivity");
-        if(ItemBuilderFactory == null) ItemBuilderFactory = findClassInQQ("com.tencent.mobileqq.activity.aio.item.ItemBuilderFactory");
-        if(Leba == null) Leba = findClassInQQ("com.tencent.mobileqq.activity.Leba");
-        if(MainFragment == null) MainFragment = findClassInQQ("com.tencent.mobileqq.activity.MainFragment");
-        if(MedalNewsItemBuilder == null) MedalNewsItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.MedalNewsItemBuilder");
-        if(MessageForDeliverGiftTips == null) MessageForDeliverGiftTips = findClassInQQ("com.tencent.mobileqq.data.MessageForDeliverGiftTips");
-        if(MessageRecord == null) MessageRecord = findClassInQQ("com.tencent.mobileqq.data.MessageRecord");
-        if(MessageRecordFactory == null) MessageRecordFactory = findClassInQQ("com.tencent.mobileqq.service.message.MessageRecordFactory");
-        if(OnLongClickAndTouchListener == null) OnLongClickAndTouchListener = findClassInQQ("com.tencent.mobileqq.activity.aio.OnLongClickAndTouchListener");
-        if(PluginStatic == null) PluginStatic = findClassInQQ("com.tencent.mobileqq.pluginsdk.PluginStatic");
+        if(EmoticonManager == null) EmoticonManager = findClassInQQ(".model.EmoticonManager");
+        if(FrameHelperActivity == null) FrameHelperActivity = findClassInQQ(".app.FrameHelperActivity");
+        if(GatherContactsTips == null) GatherContactsTips = findClassInQQ(".activity.aio.tips.GatherContactsTips");
+        if(GrayTipsItemBuilder == null) GrayTipsItemBuilder = findClassInQQ(".activity.aio.item.GrayTipsItemBuilder");
+        if(HotChatFlashPicActivity == null) HotChatFlashPicActivity = findClassInQQ(".dating.HotChatFlashPicActivity");
+        if(ItemBuilderFactory == null) ItemBuilderFactory = findClassInQQ(".activity.aio.item.ItemBuilderFactory");
+        if(Leba == null) Leba = findClassInQQ(".activity.Leba");
+        if(MainFragment == null) MainFragment = findClassInQQ(".activity.MainFragment");
+        if(MedalNewsItemBuilder == null) MedalNewsItemBuilder = findClassInQQ(".activity.aio.item.MedalNewsItemBuilder");
+        if(MessageForDeliverGiftTips == null) MessageForDeliverGiftTips = findClassInQQ(".data.MessageForDeliverGiftTips");
+        if(MessageRecord == null) MessageRecord = findClassInQQ(".data.MessageRecord");
+        if(MessageRecordFactory == null) MessageRecordFactory = findClassInQQ(".service.message.MessageRecordFactory");
+        if(OnLongClickAndTouchListener == null) OnLongClickAndTouchListener = findClassInQQ(".activity.aio.OnLongClickAndTouchListener");
+        if(PluginStatic == null) PluginStatic = findClassInQQ(".pluginsdk.PluginStatic");
         if(PopupMenuDialog == null) PopupMenuDialog = findClassInQQ("com.tencent.widget.PopupMenuDialog");
         if(PopupMenuDialog$MenuItem == null) PopupMenuDialog$MenuItem = findClassInQQ("com.tencent.widget.PopupMenuDialog$MenuItem");
         if(PopupMenuDialog$OnClickActionListener == null) PopupMenuDialog$OnClickActionListener = findClassInQQ("com.tencent.widget.PopupMenuDialog$OnClickActionListener");
-        if(QQAppInterface == null) QQAppInterface = findClassInQQ("com.tencent.mobileqq.app.QQAppInterface");
-        if(QQMessageFacade == null) QQMessageFacade = findClassInQQ("com.tencent.mobileqq.app.message.QQMessageFacade");
-        if(QQSettingMe == null) QQSettingMe = findClassInQQ("com.tencent.mobileqq.activity.QQSettingMe");
-        if(QQSettingSettingActivity == null) QQSettingSettingActivity = findClassInQQ("com.tencent.mobileqq.activity.QQSettingSettingActivity");
-        if(QzoneFeedItemBuilder == null) QzoneFeedItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.QzoneFeedItemBuilder");
+        if(QQAppInterface == null) QQAppInterface = findClassInQQ(".app.QQAppInterface");
+        if(QQMessageFacade == null) QQMessageFacade = findClassInQQ(".app.message.QQMessageFacade");
+        if(QQSettingMe == null) QQSettingMe = findClassInQQ(".activity.QQSettingMe");
+        if(QQSettingSettingActivity == null) QQSettingSettingActivity = findClassInQQ(".activity.QQSettingSettingActivity");
+        if(QzoneFeedItemBuilder == null) QzoneFeedItemBuilder = findClassInQQ(".activity.aio.item.QzoneFeedItemBuilder");
+        if(QzonePluginProxyActivity == null) QzonePluginProxyActivity = findClassInQQ("cooperation.qzone.QzonePluginProxyActivity");
         if(ReadInJoyHelper == null) ReadInJoyHelper = findClassInQQ("cooperation.readinjoy.ReadInJoyHelper");
-        if(RevokeMsgInfo == null) RevokeMsgInfo = findClassInQQ("com.tencent.mobileqq.revokemsg.RevokeMsgInfo");
-        if(RichStatItemBuilder == null) RichStatItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.RichStatItemBuilder");
-        if(SimpleSlidingIndicator == null) SimpleSlidingIndicator = findClassInQQ("com.tencent.mobileqq.activity.contacts.view.SimpleSlidingIndicator");
-        if(SougouInputGrayTips == null) SougouInputGrayTips = findClassInQQ("com.tencent.mobileqq.activity.aio.tips.SougouInputGrayTips");
-        if(TextItemBuilder == null) TextItemBuilder = findClassInQQ("com.tencent.mobileqq.activity.aio.item.TextItemBuilder");
-        if(TextPreviewActivity == null) TextPreviewActivity = findClassInQQ("com.tencent.mobileqq.activity.TextPreviewActivity");
-        if(TroopEnterEffectController == null) TroopEnterEffectController = findClassInQQ("com.tencent.mobileqq.troop.enterEffect.TroopEnterEffectController");
-        if(TroopGiftAnimationController == null) TroopGiftAnimationController = findClassInQQ("com.tencent.mobileqq.troopgift.TroopGiftAnimationController");
-        if(VipSpecialCareGrayTips == null) VipSpecialCareGrayTips = findClassInQQ("com.tencent.mobileqq.activity.aio.tips.VipSpecialCareGrayTips");
+        if(RevokeMsgInfo == null) RevokeMsgInfo = findClassInQQ(".revokemsg.RevokeMsgInfo");
+        if(RichStatItemBuilder == null) RichStatItemBuilder = findClassInQQ(".activity.aio.item.RichStatItemBuilder");
+        if(SimpleSlidingIndicator == null) SimpleSlidingIndicator = findClassInQQ(".activity.contacts.view.SimpleSlidingIndicator");
+        if(SougouInputGrayTips == null) SougouInputGrayTips = findClassInQQ(".activity.aio.tips.SougouInputGrayTips");
+        if(TextItemBuilder == null) TextItemBuilder = findClassInQQ(".activity.aio.item.TextItemBuilder");
+        if(TextPreviewActivity == null) TextPreviewActivity = findClassInQQ(".activity.TextPreviewActivity");
+        if(TroopEnterEffectController == null) TroopEnterEffectController = findClassInQQ(".troop.enterEffect.TroopEnterEffectController");
+        if(TroopGiftAnimationController == null) TroopGiftAnimationController = findClassInQQ(".troopgift.TroopGiftAnimationController");
+        if(VipSpecialCareGrayTips == null) VipSpecialCareGrayTips = findClassInQQ(".activity.aio.tips.VipSpecialCareGrayTips");
     }
 
     private static Class<?> findClassInQQ(String className) {
         if (qqClassLoader == null || className.equals("")) return null;
+        if(className.startsWith(".")) className = PACKAGE_NAME_QQ + className;
         try {
             return qqClassLoader.loadClass(className);
         } catch (Throwable e) {

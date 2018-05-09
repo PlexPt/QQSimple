@@ -52,8 +52,8 @@ public class Ids {
         put("qzone_feed_entry_sub_iv", 0x7f0a1e38);
         put("nearby_people_entry_sub_iv", 0x7f0a1e3e);
         put("buluo_entry_sub_iv", 0x7f0a1e42);
-        put("mydaily", 0x7f0a21f0);
         put("qr_code_icon", 0x7f0a21ef);
+        put("mydaily", 0x7f0a21f0);
         put("nickname_area", 0x7f0a21eb);
         put("sig_layout", 0x7f0a21e6);
         put("myvip", 0x7f0a21f6);
@@ -146,9 +146,8 @@ public class Ids {
         put("qzone_feed_entry_sub_iv", 0x7f0a20db); // c6 .activity.Leba u() ImageView
         put("nearby_people_entry_sub_iv", 0x7f0a20de); // c6 .activity.Leba u() ImageView OnClick visibility
         put("buluo_entry_sub_iv", 0x7f0a20e2); // c6 .activity.Leba u() a URLImageView
-        put("mydaily", 0x7f0a2493); // c6 .activity.QQSettingMe QQSettingMe ImmersiveUtils.isSupporImmersive
-        put("qr_code_icon", 0x7f0a2494); // OnClick reportFla
-        put("mytask", 0x7f0a2495);
+        put("qr_code_icon", 0x7f0a2494); // .activity.QQSettingMe OnClick reportFla
+        put("mydaily", 0x7f0a2495); // +1
         put("nickname_area", 0x7f0a2490); // OnClick 0X80072D6
         put("sig_layout", 0x7f0a248b); // OnClick signatureH5Url
         put("myvip", 0x7f0a249b); // OnClick enter vip
@@ -241,9 +240,8 @@ public class Ids {
         put("qzone_feed_entry_sub_iv", 0x7f0a20dc); // c6 .activity.Leba u() ImageView
         put("nearby_people_entry_sub_iv", 0x7f0a20df); // c6 .activity.Leba u() ImageView OnClick visibility
         put("buluo_entry_sub_iv", 0x7f0a20e3); // c6 .activity.Leba u() a URLImageView
-        put("mydaily", 0x7f0a2494); // c6 .activity.QQSettingMe QQSettingMe ImmersiveUtils.isSupporImmersive - 1
-        put("qr_code_icon", 0x7f0a2495); // OnClick reportFla
-        put("mytask", 0x7f0a2496); // OnClick task_entry_config
+        put("qr_code_icon", 0x7f0a2495); // c6 .activity.QQSettingMe OnClick reportFla
+        put("mydaily", 0x7f0a2496); // OnClick task_entry_config
         put("nickname_area", 0x7f0a2491); // OnClick 0X80072D6
         put("sig_layout", 0x7f0a248c); // OnClick signatureH5Url
         put("myvip", 0x7f0a249c); // OnClick enter vip
@@ -287,8 +285,8 @@ public class Ids {
         put("qqsetting2_assist", 0x7f0a1c94); // OnClick AssistantSettingActivity
         put("cu_open_card_guide_entry", 0x7f0a24ee); // OnClick click cu_open_card_guide url: %s
         put("about", 0x7f0a1c98); // OnClick AboutActivity
-        put("qzone_feed_reddot", 0x7f0a20d9); // c6 .activity.Leba lebaViewItem.a.uiResId == 0
-        put("xingqu_buluo_reddot", 0x7f0a20e3); // c6 .activity.Leba lebaViewItem.a.uiResId == 0
+        put("qzone_feed_reddot", 0x7f0a20da); // c6 .activity.Leba lebaViewItem.a.uiResId == 0
+        put("xingqu_buluo_reddot", 0x7f0a20e4); // c6 .activity.Leba lebaViewItem.a.uiResId == 0
 
         // drawable
         put("skin_tips_dot", 0x7f0220e3); // c3 .redtouch.RedTouch a(int i)

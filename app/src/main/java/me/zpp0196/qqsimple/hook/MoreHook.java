@@ -20,12 +20,11 @@ import java.util.Random;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.Util;
-import me.zpp0196.qqsimple.hook.util.XPrefs;
 
+import static de.robv.android.xposed.XposedBridge.hookMethod;
 import static me.zpp0196.qqsimple.hook.comm.Classes.AIOImageProviderService;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ContactUtils;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Conversation;
@@ -44,51 +43,22 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.QQMessageFacade;
 
 class MoreHook extends BaseHook {
 
-    MoreHook() {
+    @Override
+    public void init() {
+        // 禁用 CoreService
+        findAndHookMethod(CoreService, "startCoreService", boolean.class, replaceNull("disable_coreservice"));
+        findAndHookMethod(CoreService, "startTempService", replaceNull("disable_coreservice"));
+        findAndHookMethod(CoreService$KernelService, "onCreate", replaceNull("disable_coreservice"));
         preventFlashDisappear();
         preventMessagesWithdrawn();
         simulateMenu();
-        disableCoreService();
-    }
-
-    /**
-     * 禁用 CoreService
-     */
-    private void disableCoreService() {
-        findAndHookMethod(CoreService, "startCoreService", boolean.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (getBool("disable_coreservice")) param.setResult(null);
-            }
-        });
-        findAndHookMethod(CoreService, "startTempService", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (getBool("disable_coreservice")) param.setResult(null);
-            }
-        });
-        findAndHookMethod(CoreService$KernelService, "onCreate", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (getBool("disable_coreservice")) param.setResult(null);
-            }
-        });
     }
 
     /**
      * 防止闪照消失
      */
     private void preventFlashDisappear() {
-        findAndHookMethod(CountDownProgressBar, "a", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (getBool("prevent_flash_disappear")) param.setResult(null);
-            }
-        });
+        findAndHookMethod(CountDownProgressBar, "a", replaceNull("prevent_flash_disappear"));
         findAndHookMethod(HotChatFlashPicActivity, "onTouch", View.class, MotionEvent.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -102,13 +72,7 @@ class MoreHook extends BaseHook {
             for (Method method : methods) {
                 Class<?>[] name = method.getParameterTypes();
                 if (method.getName().equals("a") && method.getGenericReturnType().toString().equals("void") && name.length == 1 && name[0].getName().equals("long")) {
-                    XposedBridge.hookMethod(method, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            super.beforeHookedMethod(param);
-                            if (getBool("prevent_flash_disappear")) param.setResult(null);
-                        }
-                    });
+                    hookMethod(method, replaceNull("prevent_flash_disappear"));
                 }
             }
         }

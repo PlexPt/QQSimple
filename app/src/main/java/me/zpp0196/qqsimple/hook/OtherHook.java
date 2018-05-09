@@ -26,9 +26,11 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingMe;
 
 class OtherHook extends BaseHook {
 
-    OtherHook() {
+    @Override
+    public void init(){
+        // 隐藏侧滑栏厘米秀
+        findAndHookMethod(QQSettingMe, "a", ApolloManager$CheckApolloInfoResult, replaceNull("hide_sidebar_apollo"));
         closeAllAnimation();
-        hideSidebarApollo();
         addEntryInSidebar();
     }
 
@@ -50,19 +52,6 @@ class OtherHook extends BaseHook {
                 super.beforeHookedMethod(param);
                 if (!getBool("close_all_animation")) return;
                 ((Intent) param.args[0]).putExtra("open_chatfragment_withanim", false);
-            }
-        });
-    }
-
-    /**
-     * 隐藏侧滑栏厘米秀
-     */
-    private void hideSidebarApollo() {
-        findAndHookMethod(QQSettingMe, "a", ApolloManager$CheckApolloInfoResult, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (getBool("hide_sidebar_apollo")) param.setResult(null);
             }
         });
     }

@@ -25,7 +25,6 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.MainFragment;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$MenuItem;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$OnClickActionListener;
-import static me.zpp0196.qqsimple.hook.comm.Classes.ReadInJoyHelper;
 import static me.zpp0196.qqsimple.hook.comm.Classes.SimpleSlidingIndicator;
 
 /**
@@ -34,14 +33,17 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.SimpleSlidingIndicator;
 
 class MainUIHook extends BaseHook {
 
-    MainUIHook() {
+    @Override
+    public void init(){
         hideMenuUAF();
         hidePopupMenuEntry();
         hidePopupMenuContacts();
         hideMainFragmentTab();
-        hideNationalEntrance();
-        hideEveryoneSearching();
         hideSlidingIndicator();
+        // 隐藏消息界面全民闯关入口
+        findAndHookMethod(ConversationNowController, "a", String.class, replaceNull("hide_national_entrance"));
+        // 隐藏动态界面大家都在搜
+        findAndHookMethod(Leba, "a", List.class, replaceObj(null, Util.isMoreThan735(), "hide_everyone_searching"));
     }
 
     /**
@@ -110,32 +112,6 @@ class MainUIHook extends BaseHook {
     }
 
     /**
-     * 隐藏全民闯关入口
-     */
-    private void hideNationalEntrance() {
-        findAndHookMethod(ConversationNowController, "a", String.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (getBool("hide_national_entrance")) param.setResult(null);
-            }
-        });
-    }
-
-    /**
-     * 隐藏隐藏动态界面大家都在搜
-     */
-    private void hideEveryoneSearching() {
-        findAndHookMethod(Leba, "a", List.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (Util.isMoreThan735() && getBool("hide_everyone_searching")) param.setResult(null);
-            }
-        });
-    }
-
-    /**
      * 隐藏底部分组
      */
     private void hideMainFragmentTab() {
@@ -147,15 +123,7 @@ class MainUIHook extends BaseHook {
                 if (views == null) return;
                 if (getBool("hide_tab_contact")) views[2].setVisibility(View.GONE);
                 if (getBool("hide_tab_dynamic")) views[3].setVisibility(View.GONE);
-            }
-        });
-
-        // 隐藏看点
-        findAndHookMethod(ReadInJoyHelper, "d", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (getBool("hide_tab_readinjoy")) param.setResult(false);
+                if (getBool("hide_tab_readinjoy")) views[6].setVisibility(View.GONE);
             }
         });
 

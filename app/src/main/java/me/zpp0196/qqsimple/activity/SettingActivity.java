@@ -153,7 +153,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
     }
 
     private void checkState() {
-        if (!isModuleActive()) {
+        if (!isModuleActive() && !BuildConfig.DEBUG) {
             new AlertDialog.Builder(this)
                     .setCancelable(false)
                     .setMessage("模块未激活，请先激活模块并重启手机！")
@@ -190,8 +190,17 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                 startActivity(intent);
             }
         } else {
-            Toast.makeText(this, "未安装 XposedInstaller !", Toast.LENGTH_SHORT).show();
+            showXposedTip();
         }
+    }
+
+    private void showXposedTip(){
+        new MaterialDialog.Builder(this)
+                .cancelable(false)
+                .title("提示")
+                .content("该设备未安装 Xposed 框架所以该模块将无法使用！")
+                .positiveText("退出")
+                .onPositive(((dialog, which) -> finish())).build().show();
     }
 
     public void showInstructions() {
@@ -199,20 +208,11 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                 .cancelable(false)
                 .title(String.format("QQ 精简模块 %s", BuildConfig.VERSION_NAME))
                 .content(R.string.instructions)
-                .positiveText("捐赠")
-                .negativeText("反馈")
+                .positiveText("更多")
+                .negativeText("捐赠")
                 .neutralText("关闭")
-                .onAny((dialog, which) -> {
-                    getPrefs().edit().putInt("app_version_code", BuildConfig.VERSION_CODE).apply();
-                    switch (which) {
-                        case POSITIVE:
-                            openAlipay();
-                            break;
-                        case NEGATIVE:
-                            openCoolApk();
-                            break;
-                    }
-                }).build().show();
+                .onPositive(((dialog, which) -> openGitHub()))
+                .onNegative((dialog, which) -> openAlipay()).build().show();
     }
 
     public void openAlipay() {
@@ -242,6 +242,10 @@ public class SettingActivity extends AppCompatPreferenceActivity {
         intent.setPackage("com.coolapk.market");
         intent.setFlags(0x10000000);
         return intent;
+    }
+
+    public void openGitHub(){
+        openUrl("https://github.com/zpp0196/QQSimple");
     }
 
     public void openUrl(String url) {

@@ -3,11 +3,7 @@
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="hide_sidebar_my_daily"
-        android:title="隐藏打卡" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="hide_sidebar_my_task"
-        android:title="隐藏每日任务" />
+        android:title="隐藏打卡/每日任务" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="hide_sidebar_my_qr_code"

@@ -13,7 +13,8 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingSettingActivity;
 
 class RemoveImagine extends BaseHook {
 
-    RemoveImagine() {
+    @Override
+    public void init() {
         hideView();
         hideRedDot();
         hideQzone();
@@ -48,12 +49,10 @@ class RemoveImagine extends BaseHook {
         hideView("nearby_people_entry_sub_iv", "hide_near_avatar_remind");
         // 隐藏动态界面兴趣部落头像提醒
         hideView("buluo_entry_sub_iv", "hide_tribal_avatar_remind");
-        // 隐藏侧滑栏打卡
-        hideView("mydaily", "hide_sidebar_my_daily");
-        // 隐藏侧滑栏每日任务
-        hideView("mytask", Util.isMoreThan760(), "hide_sidebar_my_task");
         // 隐藏侧滑栏我的二维码
         hideView("qr_code_icon", "hide_sidebar_my_qr_code");
+        // 隐藏侧滑栏打卡/每日任务
+        hideView("mydaily", "hide_sidebar_my_daily");
         // 隐藏侧滑栏 QQ 信息
         hideView("nickname_area", "hide_sidebar_qq_info");
         hideView("sig_layout", "hide_sidebar_qq_info");

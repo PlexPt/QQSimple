@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
-import me.zpp0196.qqsimple.hook.util.Util;
 
 import static me.zpp0196.qqsimple.hook.comm.Classes.AbstractChatItemBuilder$ViewHolder;
 import static me.zpp0196.qqsimple.hook.comm.Classes.AioAnimationConfigHelper;
@@ -35,6 +34,7 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.TextPreviewActivity;
 import static me.zpp0196.qqsimple.hook.comm.Classes.TroopEnterEffectController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.TroopGiftAnimationController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.VipSpecialCareGrayTips;
+import static me.zpp0196.qqsimple.hook.util.Util.isMoreThan732;
 
 /**
  * Created by zpp0196 on 2018/3/11.
@@ -42,78 +42,21 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.VipSpecialCareGrayTips;
 
 class ChatInterfaceHook extends BaseHook {
 
-    ChatInterfaceHook() {
-        hideChatBubble();
-        hideFontEffects();
-        hideRecommendedExpression();
-        hideEmotionDrop();
-        hideTAI();
-        hideGroupGiftAnim();
-        hideGroupChatAdmissions();
-    }
-
-    /**
-     * 隐藏个性气泡
-     */
-    private void hideChatBubble() {
-        findAndHookMethod(BubbleManager, "a", int.class, boolean.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (getBool("hide_chat_bubble")) param.setResult(null);
-            }
-        });
-    }
-
-    /**
-     * 隐藏字体特效
-     */
-    private void hideFontEffects() {
-        findAndHookMethod(TextItemBuilder, "a", BaseBubbleBuilder$ViewHolder, ChatMessage, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (getBool("hide_font_effects")) param.setResult(null);
-            }
-        });
-        findAndHookMethod(TextPreviewActivity, "a", int.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (getBool("hide_font_effects")) param.setResult(null);
-            }
-        });
-    }
-
-    /**
-     * 隐藏推荐表情
-     */
-    private void hideRecommendedExpression() {
-        findAndHookMethod(EmoticonManager, "a", boolean.class, int.class, boolean.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (Util.isMoreThan732() && getBool("hide_recommended_expression")) param.setResult(new ArrayList<>());
-            }
-        });
-    }
-
-    /**
-     * 隐藏表情掉落
-     */
-    private void hideEmotionDrop(){
-        findAndHookMethod(AioAnimationConfigHelper, "a", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if(getBool("hide_expression_drop")) param.setResult(null);
-            }
-        });
-    }
-
-    private void hideTAI() {
+    @Override
+    public void init(){
+        // 隐藏个性气泡
+        findAndHookMethod(BubbleManager, "a", int.class, boolean.class, replaceNull("hide_chat_bubble"));
+        // 隐藏字体特效
+        findAndHookMethod(TextItemBuilder, "a", BaseBubbleBuilder$ViewHolder, ChatMessage, replaceNull("hide_font_effects"));
+        findAndHookMethod(TextPreviewActivity, "a", int.class, replaceNull("hide_font_effects"));
+        // 隐藏推荐表情
+        findAndHookMethod(EmoticonManager, "a", boolean.class, int.class, boolean.class, replaceObj(new ArrayList<>(), isMoreThan732(), "hide_recommended_expression"));
+        // 隐藏表情掉落
+        findAndHookMethod(AioAnimationConfigHelper, "a", replaceNull("hide_expression_drop"));
+        // 隐藏礼物动画
+        findAndHookMethod(TroopGiftAnimationController, "a", MessageForDeliverGiftTips, replaceNull("hide_group_gift_anim"));
         // 隐藏好友获得了新徽章
-        hideItemBuilder(MedalNewsItemBuilder, Util.isMoreThan732(),"hide_get_new_badge");
+        hideItemBuilder(MedalNewsItemBuilder, isMoreThan732(),"hide_get_new_badge");
         // 隐藏好友新动态
         hideItemBuilder(QzoneFeedItemBuilder, "hide_new_feed");
         // 隐藏好友新签名
@@ -126,6 +69,8 @@ class ChatInterfaceHook extends BaseHook {
         hideGrayTips(SougouInputGrayTips, "hide_chat_sougou_input");
         // 隐藏会员相关广告
         hideGrayTipsItem("hide_chat_vip_ad", ".+会员.+");
+        // 隐藏进场动画提示
+        hideGrayTipsItem("hide_group_chat_admissions", ".+进场.+");
         // 签到文本化
         simpleItem("simple_group_sign", 71, 84);
         // 隐藏加入群提示
@@ -136,27 +81,15 @@ class ChatInterfaceHook extends BaseHook {
         hideGrayTipsItem("hide_group_gift_tips", ".+礼物.+成为.+守护.+", ".+成为.+魅力.+", ".+成为.+豪气.+", ".+送给.+朵.+");
         // 隐藏移出群助手提示
         hideTopBar("移出群助手", "hide_group_helper_remove_tips");
+        hideGroupChatAdmissions();
     }
 
-    /**
-     * 隐藏礼物动画
-     */
-    private void hideGroupGiftAnim() {
-        findAndHookMethod(TroopGiftAnimationController, "a", MessageForDeliverGiftTips, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (getBool("hide_group_gift_anim")) param.setResult(null);
-            }
-        });
-    }
 
     /**
      * 隐藏群聊入场动画
      */
     private void hideGroupChatAdmissions() {
         if (!getBool("hide_group_chat_admissions")) return;
-        hideGrayTipsItem("hide_group_chat_admissions", ".+进场.+");
         if (TroopEnterEffectController == null) return;
         Field[] fields = TroopEnterEffectController.getDeclaredFields();
         for (Field field : fields) {
@@ -217,13 +150,7 @@ class ChatInterfaceHook extends BaseHook {
     }
 
     private void hideGrayTips(Class<?> Tips, String key) {
-        findAndHookMethod(Tips, "a", Object[].class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if(getBool(key)) param.setResult(null);
-            }
-        });
+        findAndHookMethod(Tips, "a", Object[].class, replaceNull(key));
     }
 
     private void hideGrayTipsItem(String key, String... regex) {

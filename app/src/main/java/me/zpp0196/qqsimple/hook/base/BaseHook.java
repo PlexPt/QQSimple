@@ -1,13 +1,11 @@
 package me.zpp0196.qqsimple.hook.base;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
@@ -15,6 +13,7 @@ import me.zpp0196.qqsimple.hook.comm.Ids;
 import me.zpp0196.qqsimple.hook.util.Util;
 import me.zpp0196.qqsimple.hook.util.XPrefs;
 
+import static de.robv.android.xposed.XposedHelpers.getStaticIntField;
 import static me.zpp0196.qqsimple.hook.comm.Classes.R$drawable;
 import static me.zpp0196.qqsimple.hook.comm.Classes.R$id;
 
@@ -24,6 +23,8 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.R$id;
 
 public abstract class BaseHook {
 
+    public abstract void init();
+
     protected void log(String msg){
         Util.log(getClass(), msg);
     }
@@ -32,11 +33,11 @@ public abstract class BaseHook {
         Util.log(getClass(), format, args);
     }
 
-    protected int getIdInQQ(String name) {
+    private int getIdInQQ(String name) {
         Integer id = Ids.getId(name);
         if(id != null && id != 0) return id;
         try {
-            return XposedHelpers.getStaticIntField(R$id, name);
+            return getStaticIntField(R$id, name);
         } catch (Throwable e) {
             log("%s Can't find the id of name: %s!", Util.getQQVersion(), name);
         }
@@ -47,7 +48,7 @@ public abstract class BaseHook {
         Integer id = Ids.getId(name);
         if(id != null && id != 0) return id;
         try {
-            return XposedHelpers.getStaticIntField(R$drawable, name);
+            return getStaticIntField(R$drawable, name);
         } catch (Throwable e) {
             log("%s Can't find the drawable of name: %s!", Util.getQQVersion(), name);
         }
@@ -161,9 +162,34 @@ public abstract class BaseHook {
         }
     }
 
+    protected XC_MethodHook replaceNull(String... key){
+        return replaceObj(null, key);
+    }
+
+    protected XC_MethodHook replaceFalse(String... key){
+        return replaceObj(false, key);
+    }
+
+    protected XC_MethodHook replaceObj(Object result, String... key){
+        return replaceObj(result, true, key);
+    }
+
+    protected XC_MethodHook replaceObj(Object result, boolean z, String... key){
+        return new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if(z && getBool(key)){
+                    param.setResult(result);
+                }
+            }
+        };
+    }
+
     protected boolean getBool(String key) {
         return XPrefs.getBoolean(key, false);
     }
+
     protected boolean getBool(String... keys) {
         if(keys == null || keys.length == 0) return true;
         for (String key : keys) {
