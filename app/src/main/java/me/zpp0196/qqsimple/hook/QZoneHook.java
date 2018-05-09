@@ -11,6 +11,8 @@ import me.zpp0196.qqsimple.Common;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.Util;
 
+import static me.zpp0196.qqsimple.hook.util.Util.isMoreThan760;
+
 /**
  * Created by zpp0196 on 2018/4/1.
  */
@@ -156,7 +158,7 @@ class QZoneHook extends BaseHook {
         });
         // 隐藏消息
         findAndHookMethod(QZoneFriendFeedFragment,
-                Util.isMoreThan760() ? "n_" : "t_", new XC_MethodHook() {
+                isMoreThan760() ? "n_" : "t_", new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         super.afterHookedMethod(param);

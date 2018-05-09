@@ -6,6 +6,7 @@ import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.Util;
 
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingSettingActivity;
+import static me.zpp0196.qqsimple.hook.util.Util.isMoreThan735;
 
 /**
  * Created by Deng on 2018/2/16.
@@ -107,8 +108,6 @@ class RemoveImagine extends BaseHook {
         hideView("chat_item_troop_member_glamour_level", "hide_group_member_glamour_level");
         // 隐藏群消息里的小视频
         hideView("troop_assistant_feeds_title_small_video", "hide_group_small_video");
-        // 隐藏贴表情
-        hideView("pic_light_emoj", Util.isMoreThan735(), "hide_group_stick_face");
         // 隐藏我的文件里的 TIM 推广
         hideView("timtips", "hide_tim_in_my_file");
         // 隐藏设置电话号码
@@ -131,6 +130,10 @@ class RemoveImagine extends BaseHook {
         hideView("cu_open_card_guide_entry", "hide_setting_free_flow");
         // 隐藏设置关于QQ与帮助
         hideView("about", "hide_setting_about");
+        if(isMoreThan735()){
+            // 隐藏贴表情
+            hideView("pic_light_emoj", "hide_group_stick_face");
+        }
     }
 
     /**
@@ -146,8 +149,9 @@ class RemoveImagine extends BaseHook {
         hideDrawable("skin_tips_dot");
         // hideDrawable("skin_tips_dot_small");
         hideDrawable("skin_tips_new");
-        hideDrawable("shortvideo_redbag_outicon", Util.isMoreThan735());
-        // hideRedTouchViewNum();
+        if(isMoreThan735()) {
+            hideDrawable("shortvideo_redbag_outicon");
+        }
     }
 
     /**

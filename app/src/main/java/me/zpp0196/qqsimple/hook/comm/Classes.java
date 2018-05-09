@@ -41,6 +41,7 @@ public class Classes {
     public static Class<?> CoreService$KernelService;
     public static Class<?> CountDownProgressBar;
     public static Class<?> EmoticonManager;
+    public static Class<?> FontManager;
     public static Class<?> FrameHelperActivity;
     public static Class<?> GatherContactsTips;
     public static Class<?> GrayTipsItemBuilder;
@@ -105,6 +106,7 @@ public class Classes {
         if(CoreService$KernelService == null) CoreService$KernelService = findClassInQQ(".app.CoreService$KernelService");
         if(CountDownProgressBar == null) CountDownProgressBar = findClassInQQ("com.tencent.widget.CountDownProgressBar");
         if(EmoticonManager == null) EmoticonManager = findClassInQQ(".model.EmoticonManager");
+        if(FontManager == null) FontManager = findClassInQQ("com.etrump.mixlayout.FontManager");
         if(FrameHelperActivity == null) FrameHelperActivity = findClassInQQ(".app.FrameHelperActivity");
         if(GatherContactsTips == null) GatherContactsTips = findClassInQQ(".activity.aio.tips.GatherContactsTips");
         if(GrayTipsItemBuilder == null) GrayTipsItemBuilder = findClassInQQ(".activity.aio.item.GrayTipsItemBuilder");

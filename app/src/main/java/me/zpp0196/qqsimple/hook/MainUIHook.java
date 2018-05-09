@@ -42,8 +42,10 @@ class MainUIHook extends BaseHook {
         hideSlidingIndicator();
         // 隐藏消息界面全民闯关入口
         findAndHookMethod(ConversationNowController, "a", String.class, replaceNull("hide_national_entrance"));
-        // 隐藏动态界面大家都在搜
-        findAndHookMethod(Leba, "a", List.class, replaceObj(null, Util.isMoreThan735(), "hide_everyone_searching"));
+        if(Util.isMoreThan735()){
+            // 隐藏动态界面大家都在搜
+            findAndHookMethod(Leba, "a", List.class, replaceObj("hide_everyone_searching"));
+        }
     }
 
     /**

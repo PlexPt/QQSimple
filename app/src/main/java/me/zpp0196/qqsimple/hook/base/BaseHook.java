@@ -56,15 +56,11 @@ public abstract class BaseHook {
     }
 
     protected void hideView(String name) {
-        hideView(name, true);
+        hideView(name);
     }
 
     protected void hideView(String name, String... key) {
-        hideView(name, true, key);
-    }
-
-    protected void hideView(String name, boolean b, String... key) {
-        if(b) hideView(getIdInQQ(name), key);
+        hideView(getIdInQQ(name), key);
     }
 
     private void hideView(int id, String... key){
@@ -86,15 +82,11 @@ public abstract class BaseHook {
     }
 
     protected void hideDrawable(String name) {
-        hideDrawable(name, true);
+        hideDrawable(name);
     }
 
     protected void hideDrawable(String name, String... key) {
-        hideDrawable(name, true, key);
-    }
-
-    protected void hideDrawable(String name, boolean b, String... key) {
-        if(b) hideDrawable(getDrawableIdInQQ(name), key);
+        hideDrawable(getDrawableIdInQQ(name), key);
     }
 
     private void hideDrawable(int id, String... key) {
@@ -171,15 +163,11 @@ public abstract class BaseHook {
     }
 
     protected XC_MethodHook replaceObj(Object result, String... key){
-        return replaceObj(result, true, key);
-    }
-
-    protected XC_MethodHook replaceObj(Object result, boolean z, String... key){
         return new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                if(z && getBool(key)){
+                if(getBool(key)){
                     param.setResult(result);
                 }
             }

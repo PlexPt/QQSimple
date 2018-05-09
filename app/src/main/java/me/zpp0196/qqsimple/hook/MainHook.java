@@ -94,7 +94,7 @@ public class MainHook implements IXposedHookLoadPackage {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     super.afterHookedMethod(param);
-                    new QZoneHook(classLoader, (ClassLoader) param.getResult());
+                    new QZoneHook(classLoader, (ClassLoader) param.getResult()).init();
                 }
             });
         } catch (Throwable t) {
