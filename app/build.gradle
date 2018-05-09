@@ -6,7 +6,7 @@ android {
         applicationId "me.zpp0196.qqsimple"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 26
+        versionCode 27
         versionName "1.5.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

@@ -21,8 +21,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
@@ -211,8 +213,9 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                 .positiveText("更多")
                 .negativeText("捐赠")
                 .neutralText("关闭")
-                .onPositive(((dialog, which) -> openGitHub()))
-                .onNegative((dialog, which) -> openAlipay()).build().show();
+                .onPositive(((dialog, which) -> openReadme()))
+                .onNegative((dialog, which) -> openAlipay())
+                .onNeutral((dialog, which) -> getPrefs().edit().putInt("app_version_code", BuildConfig.VERSION_CODE).apply()).build().show();
     }
 
     public void openAlipay() {
@@ -246,6 +249,10 @@ public class SettingActivity extends AppCompatPreferenceActivity {
 
     public void openGitHub(){
         openUrl("https://github.com/zpp0196/QQSimple");
+    }
+
+    public void openReadme(){
+        openUrl("https://github.com/zpp0196/QQSimple/blob/master/README.md");
     }
 
     public void openUrl(String url) {
