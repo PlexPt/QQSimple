@@ -56,7 +56,7 @@ public abstract class BaseHook {
     }
 
     protected void hideView(String name) {
-        hideView(name);
+        hideView(getIdInQQ(name));
     }
 
     protected void hideView(String name, String... key) {
@@ -82,7 +82,7 @@ public abstract class BaseHook {
     }
 
     protected void hideDrawable(String name) {
-        hideDrawable(name);
+        hideDrawable(getDrawableIdInQQ(name));
     }
 
     protected void hideDrawable(String name, String... key) {

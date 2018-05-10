@@ -1,5 +1,6 @@
 package me.zpp0196.qqsimple.hook;
 
+import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 
@@ -15,9 +16,7 @@ import me.zpp0196.qqsimple.hook.comm.Ids;
 import me.zpp0196.qqsimple.hook.util.Util;
 import me.zpp0196.qqsimple.hook.util.XPrefs;
 
-import static de.robv.android.xposed.XposedHelpers.callMethod;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static de.robv.android.xposed.XposedHelpers.getObjectField;
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QzonePluginProxyActivity;
 
@@ -32,12 +31,11 @@ public class MainHook implements IXposedHookLoadPackage {
         Util.log(getClass(), String.format("loading %s(%s)", PACKAGE_NAME_QQ, loadPackageParam.appInfo.uid));
         if(XPrefs.isCloseAll()) return;
         hookHotPatch(loadPackageParam);
-        findAndHookMethod("com.tencent.mobileqq.qfix.QFixApplication", loadPackageParam.classLoader, "attachBaseContext", Context.class, new XC_MethodHook() {
+        findAndHookMethod(Application.class.getName(), loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                Object applicationLike = getObjectField(param.thisObject, "applicationLike");
-                final ClassLoader classLoader = (ClassLoader) callMethod(applicationLike, "getClassLoader");
+                final ClassLoader classLoader = ((Context)param.args[0]).getClassLoader();
                 if (Build.VERSION.SDK_INT < 21) {
                     findAndHookMethod("com.tencent.common.app.BaseApplicationImpl", classLoader, "onCreate", new XC_MethodHook() {
                         @Override
