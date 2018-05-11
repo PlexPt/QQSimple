@@ -40,6 +40,8 @@ public class Ids {
     private static void init758(){
         put("unchecked_msg_num", 0x7f0a0b4f);
         put("adviewlayout", 0x7f0a0e37);
+        put("contactHeader", 0x7f0a07e4);
+        put("search_container", 0x7f0a1fa2);
         put("newFriendEntry", 0x7f0a07e1);
         put("createTroopEntry", 0x7f0a07e2);
         put("emotionLayout", 0x7f0a045b);
@@ -134,6 +136,8 @@ public class Ids {
     private static void init800(){
         put("unchecked_msg_num", 0x7f0a0c34); // c6 .activity.MainFragment a(View view) _num
         put("adviewlayout", 0x7f0a0f1f); // c6 .activity.recent.BannerManager e(View view) relativelayout
+        put("contactHeader", 0x7f0a07e3); // c6 .activity.Contact o() findViewById
+        put("search_container", 0x7f0a1fa1); // c6 .activity.Contact o() findViewById2
         put("newFriendEntry", 0x7f0a0838); // c6 .activity.Contacts o() f1a
         put("createTroopEntry", 0x7f0a0839); // c6 .activity.Contacts o() b
         put("emotionLayout", 0x7f0a0493); // c6 .activity.BaseChatPie EmotionKeywordHorizonListView
@@ -228,6 +232,8 @@ public class Ids {
     private static void init760(){
         put("unchecked_msg_num", 0x7f0a0c35); // c6 .activity.MainFragment a(View view) _num
         put("adviewlayout", 0x7f0a0f20); // c6 .activity.recent.BannerManager e(View view) relativelayout
+        put("contactHeader", 0x7f0a07e4); // c6 .activity.Contact o() findViewById
+        put("search_container", 0x7f0a1fa2); // c6 .activity.Contact o() findViewById2
         put("newFriendEntry", 0x7f0a0839); // c6 .activity.Contacts o() f1a
         put("createTroopEntry", 0x7f0a083a); // c6 .activity.Contacts o() b
         put("emotionLayout", 0x7f0a0494); // c6 .activity.BaseChatPie EmotionKeywordHorizonListView

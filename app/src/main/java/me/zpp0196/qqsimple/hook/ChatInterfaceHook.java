@@ -78,7 +78,7 @@ class ChatInterfaceHook extends BaseHook {
         // 隐藏礼物相关提示
         hideGrayTipsItem("hide_group_gift_tips", ".+礼物.+成为.+守护.+", ".+成为.+魅力.+", ".+成为.+豪气.+", ".+送给.+朵.+");
         // 隐藏移出群助手提示
-        hideTopBar("移出群助手", "hide_group_helper_remove_tips");
+        hideTopBar("hide_group_helper_remove_tips", "经常", "是否");
         hideFontEffect();
         hideGroupChatAdmissions();
         if (isMoreThan732()) {
@@ -134,14 +134,16 @@ class ChatInterfaceHook extends BaseHook {
     /**
      * 隐藏顶部提示
      */
-    private void hideTopBar(String s, String... key) {
+    private void hideTopBar(String key, String... strs) {
         findAndHookMethod(ChatActivityUtils, "a", Context.class, String.class, View.OnClickListener.class, View.OnClickListener.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
                 String str = param.args[1].toString();
-                if (str.contains(s) && getBool(key)) {
-                    param.setResult(null);
+                for (String s : strs) {
+                    if (s.contains(str) && getBool(key)) {
+                        param.setResult(null);
+                    }
                 }
             }
         });

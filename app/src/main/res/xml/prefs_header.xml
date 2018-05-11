@@ -31,6 +31,6 @@
     <header
         android:fragment="me.zpp0196.qqsimple.fragment.AboutFragment"
         android:icon="@drawable/ic_info_black_24dp"
-        android:title="关于" />
+        android:title="关于软件" />
 
 </preference-headers>

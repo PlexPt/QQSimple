@@ -22,6 +22,11 @@
         android:title="禁用 CoreService" />
     <PreferenceCategory android:title="模块设置">
         <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="checkUpdate_auto"
+            android:summary="后台自动检查更新"
+            android:title="检查更新" />
+        <CheckBoxPreference
             android:defaultValue="false"
             android:key="desktop_icon"
             android:summary="隐藏后可以通过 Xposed 框架打开本模块"

@@ -2,8 +2,9 @@ package me.zpp0196.qqsimple.hook;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.util.SparseArray;
 import android.view.View;
-import android.widget.HorizontalScrollView;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -12,20 +13,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.Util;
 
 import static me.zpp0196.qqsimple.hook.comm.Classes.ActionSheet;
+import static me.zpp0196.qqsimple.hook.comm.Classes.BaseActivity;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BusinessInfoCheckUpdate$RedTypeInfo;
-import static me.zpp0196.qqsimple.hook.comm.Classes.ContactsViewController;
+import static me.zpp0196.qqsimple.hook.comm.Classes.Contacts;
+import static me.zpp0196.qqsimple.hook.comm.Classes.ContactsConstant;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Conversation;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ConversationNowController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Leba;
+import static me.zpp0196.qqsimple.hook.comm.Classes.LocalSearchBar;
 import static me.zpp0196.qqsimple.hook.comm.Classes.MainFragment;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$MenuItem;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$OnClickActionListener;
-import static me.zpp0196.qqsimple.hook.comm.Classes.SimpleSlidingIndicator;
+import static me.zpp0196.qqsimple.hook.comm.Classes.TListView;
 
 /**
  * Created by zpp0196 on 2018/3/12.
@@ -39,7 +44,8 @@ class MainUIHook extends BaseHook {
         hidePopupMenuEntry();
         hidePopupMenuContacts();
         hideMainFragmentTab();
-        hideSlidingIndicator();
+        hideSearchContainer();
+        hideContactsConstant();
         // 隐藏消息界面全民闯关入口
         findAndHookMethod(ConversationNowController, "a", String.class, replaceNull("hide_national_entrance"));
         if(Util.isMoreThan735()){
@@ -123,8 +129,11 @@ class MainUIHook extends BaseHook {
                 super.afterHookedMethod(param);
                 View[] views = getObject(param.thisObject, View[].class, "a");
                 if (views == null) return;
+                // 联系人
                 if (getBool("hide_tab_contact")) views[2].setVisibility(View.GONE);
+                // 动态
                 if (getBool("hide_tab_dynamic")) views[3].setVisibility(View.GONE);
+                // 看点
                 if (getBool("hide_tab_readinjoy")) views[6].setVisibility(View.GONE);
             }
         });
@@ -143,26 +152,74 @@ class MainUIHook extends BaseHook {
     }
 
     /**
-     * 隐藏联系人分组
+     * 隐藏搜索框
      */
-    private void hideSlidingIndicator() {
-        findAndHookMethod(ContactsViewController, "a", View.class, new XC_MethodHook() {
+    private void hideSearchContainer() {
+        // 消息界面
+        XposedHelpers.findAndHookConstructor(LocalSearchBar, TListView, View.class, View.class, BaseActivity, View.class, int.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if(!getBool("hide_search_conversation")) return;
+                View view = (View) param.args[4];
+                if(view != null) {
+                    view.setVisibility(View.GONE);
+                    ViewGroup listView = (ViewGroup) param.args[0];
+                    Activity activity = (Activity) param.args[3];
+                    int paddingTop = (int) (activity.getResources().getDisplayMetrics().density * 43 + 0.5f);
+                    listView.setPadding(0, -paddingTop, 0, 0);
+                }
+            }
+        });
+
+        // 联系人界面
+        findAndHookMethod(Contacts, "o", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                if (SimpleSlidingIndicator == null) return;
-                Field field = findFirstFieldByExactType(ContactsViewController, SimpleSlidingIndicator);
-                if (field == null) return;
-                HorizontalScrollView slidingIndicator = (HorizontalScrollView) field.get(param.thisObject);
-                if (slidingIndicator == null) return;
-                LinearLayout linearLayout = (LinearLayout) slidingIndicator.getChildAt(0);
-                if (getBool("hide_contacts_tab_device"))
-                    linearLayout.getChildAt(2).setVisibility(View.GONE);
-                if (getBool("hide_contacts_tab_phone"))
-                    linearLayout.getChildAt(3).setVisibility(View.GONE);
-                if (getBool("hide_contacts_tab_pub_account"))
-                    linearLayout.getChildAt(4).setVisibility(View.GONE);
+                if(!getBool("hide_search_contacts")) return;
+                LinearLayout layout = getObject(param.thisObject, LinearLayout.class, "a");
+                View view = layout.findViewById(getIdInQQ("contactHeader")).findViewById(getIdInQQ("search_container"));
+                view.setVisibility(View.GONE);
             }
         });
+    }
+
+    /**
+     * 隐藏联系人分组
+     */
+    private void hideContactsConstant() {
+        Field fieldI = findField(ContactsConstant, int[].class, "a");
+        Field fieldS = findField(ContactsConstant, String[].class, "a");
+        try {
+            int[] a = (int[])fieldI.get(null);
+            String[] s = (String[])fieldS.get(null);
+
+            SparseArray<String> array = new SparseArray<>();
+            for (int i = 0; i < a.length; i++) {
+                if(s[i].equals("设备") && getBool("hide_contacts_tab_device")){
+                    continue;
+                }
+                if(s[i].equals("通讯录") && getBool("hide_contacts_tab_phone")){
+                    continue;
+                }
+                if(s[i].equals("公众号") && getBool("hide_contacts_tab_pub_account")){
+                    continue;
+                }
+                array.put(a[i], s[i]);
+            }
+
+            int[] tempA = new int[array.size()];
+            String[] tempS = new String[array.size()];
+            for (int i = 0; i < array.size(); i++) {
+                tempA[i] = array.keyAt(i);
+                tempS[i] = array.valueAt(i);
+            }
+
+            fieldI.set(null, tempA);
+            fieldS.set(null, tempS);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }

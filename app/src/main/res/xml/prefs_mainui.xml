@@ -4,6 +4,20 @@
         android:defaultValue="false"
         android:key="hide_menu_uaf"
         android:title="隐藏菜单更新和反馈" />
+    <PreferenceCategory android:title="搜索框">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_search_conversation"
+            android:title="隐藏消息列表搜索框" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_search_contacts"
+            android:title="隐藏联系人搜索框" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="hide_leb_search_entry"
+            android:title="隐藏动态搜索框" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="底部分组">
         <CheckBoxPreference
             android:defaultValue="false"
@@ -103,10 +117,6 @@
             android:title="隐藏不常用联系人" />
     </PreferenceCategory>
     <PreferenceCategory android:title="动态界面">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="hide_leb_search_entry"
-            android:title="隐藏搜索框" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_everyone_searching"

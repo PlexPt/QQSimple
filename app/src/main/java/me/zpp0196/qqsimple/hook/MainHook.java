@@ -29,7 +29,6 @@ public class MainHook implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         Util.log(getClass(), String.format("loading %s(%s)", PACKAGE_NAME_QQ, loadPackageParam.appInfo.uid));
-        if(XPrefs.isCloseAll()) return;
         hookHotPatch(loadPackageParam);
         findAndHookMethod(Application.class.getName(), loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
             @Override

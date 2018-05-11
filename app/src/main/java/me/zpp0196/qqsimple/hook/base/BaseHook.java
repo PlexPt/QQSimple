@@ -16,6 +16,7 @@ import me.zpp0196.qqsimple.hook.util.XPrefs;
 import static de.robv.android.xposed.XposedHelpers.getStaticIntField;
 import static me.zpp0196.qqsimple.hook.comm.Classes.R$drawable;
 import static me.zpp0196.qqsimple.hook.comm.Classes.R$id;
+import static me.zpp0196.qqsimple.hook.util.Util.getQQVersion;
 
 /**
  * Created by zpp0196 on 2018/3/18.
@@ -33,13 +34,13 @@ public abstract class BaseHook {
         Util.log(getClass(), format, args);
     }
 
-    private int getIdInQQ(String name) {
+    protected int getIdInQQ(String name) {
         Integer id = Ids.getId(name);
         if(id != null && id != 0) return id;
         try {
             return getStaticIntField(R$id, name);
         } catch (Throwable e) {
-            log("%s Can't find the id of name: %s!", Util.getQQVersion(), name);
+            log("%s Can't find the id of name: %s!", getQQVersion(), name);
         }
         return 0;
     }
@@ -50,7 +51,7 @@ public abstract class BaseHook {
         try {
             return getStaticIntField(R$drawable, name);
         } catch (Throwable e) {
-            log("%s Can't find the drawable of name: %s!", Util.getQQVersion(), name);
+            log("%s Can't find the drawable of name: %s!", getQQVersion(), name);
         }
         return 0;
     }
@@ -104,6 +105,7 @@ public abstract class BaseHook {
     }
 
     protected Field findFirstFieldByExactType(@NonNull Class<?> clazz, Class<?> type) {
+        if(type == null) return null;
         Class<?> clz = clazz;
         do {
             for (Field field : clz.getDeclaredFields()) {
@@ -113,12 +115,12 @@ public abstract class BaseHook {
                 }
             }
         } while ((clz = clz.getSuperclass()) != null);
-        log("%s Can't find the field of type: %s in class: %s!", Util.getQQVersion(), type.getName(), clazz.getName());
+        log("%s Can't find the field of type: %s in class: %s!", getQQVersion(), type.getName(), clazz.getName());
         return null;
     }
 
     @SuppressWarnings("all")
-    protected <T> T getObject(@NonNull Object obj, Class<?> type, String name){
+    protected <T> T getObject(@NonNull Object obj, @NonNull Class<?> type, String name){
         try {
             return (T)findField(obj.getClass(), type, name).get(obj);
         } catch (IllegalAccessException e) {
@@ -128,6 +130,7 @@ public abstract class BaseHook {
     }
 
     protected Field findField(@NonNull Class<?> clazz, Class<?> type, String name) {
+        if(type == null) return null;
         Class<?> clz = clazz;
         do {
             for (Field field : clz.getDeclaredFields()) {
@@ -137,7 +140,7 @@ public abstract class BaseHook {
                 }
             }
         } while ((clz = clz.getSuperclass()) != null);
-        log("%s Can't find the field of type: %s and name: %s in class: %s!", Util.getQQVersion(), type.getName(), name, clazz.getName());
+        log("%s Can't find the field of type: %s and name: %s in class: %s!", getQQVersion(), type.getName(), name, clazz.getName());
         return null;
     }
 

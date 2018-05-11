@@ -6,6 +6,9 @@ import android.preference.Preference;
 import me.zpp0196.qqsimple.R;
 import me.zpp0196.qqsimple.fragment.base.BaseFragment;
 
+import static me.zpp0196.qqsimple.BuildConfig.VERSION_CODE;
+import static me.zpp0196.qqsimple.BuildConfig.VERSION_NAME;
+
 /**
  * Created by zpp0196 on 2018/3/15.
  */
@@ -20,8 +23,10 @@ public class AboutFragment extends BaseFragment implements Preference.OnPreferen
     protected void initData() {
         findPreference("instructions").setOnPreferenceClickListener(this);
         findPreference("donate").setOnPreferenceClickListener(this);
-        findPreference("feedback").setOnPreferenceClickListener(this);
+        findPreference("checkUpdate").setOnPreferenceClickListener(this);
+        findPreference("checkUpdate").setSummary(String.format("当前版本：%s(%s)", VERSION_NAME, VERSION_CODE));
         findPreference("github").setOnPreferenceClickListener(this);
+        findPreference("issues").setOnPreferenceClickListener(this);
         findPreference("license").setOnPreferenceClickListener(this);
     }
 
@@ -35,10 +40,14 @@ public class AboutFragment extends BaseFragment implements Preference.OnPreferen
             case "donate":
                 getSettingActivity().openAlipay();
                 return true;
-            case "feedback":
-                getSettingActivity().openCoolApk();
+            case "checkUpdate":
+                getSettingActivity().checkUpdate(true);
+                return true;
             case "github":
                 getSettingActivity().openGitHub();
+                return true;
+            case "issues":
+                getSettingActivity().openIssues();
                 return true;
             case "license":
                 getSettingActivity().openUrl("https://github.com/afollestad/material-dialogs");

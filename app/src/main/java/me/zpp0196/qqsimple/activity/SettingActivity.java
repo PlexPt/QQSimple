@@ -19,12 +19,12 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
@@ -41,6 +41,9 @@ import me.zpp0196.qqsimple.fragment.MoreFragment;
 import me.zpp0196.qqsimple.fragment.OtherFragment;
 import me.zpp0196.qqsimple.fragment.QZoneFragment;
 import me.zpp0196.qqsimple.fragment.SidebarFragment;
+import me.zpp0196.qqsimple.util.UpdateUtil;
+
+import me.zpp0196.qqsimple.util.UpdateUtil.UpdateInfo;
 
 public class SettingActivity extends AppCompatPreferenceActivity {
 
@@ -167,6 +170,12 @@ public class SettingActivity extends AppCompatPreferenceActivity {
             if (isUpdate) {
                 showInstructions();
             }
+
+            boolean isAutoUpdate = getPrefs().getBoolean("checkUpdate_auto", true);
+            long lastCheckUpdate = getPrefs().getLong("last_check_update", 0);
+            if(isAutoUpdate && System.currentTimeMillis() - lastCheckUpdate > 216000000){
+                checkUpdate(false);
+            }
         }
     }
 
@@ -251,8 +260,57 @@ public class SettingActivity extends AppCompatPreferenceActivity {
         openUrl("https://github.com/zpp0196/QQSimple");
     }
 
+    public void openReleases(){
+        openUrl("https://github.com/zpp0196/QQSimple/releases");
+    }
+
     public void openReadme(){
         openUrl("https://github.com/zpp0196/QQSimple/blob/master/README.md");
+    }
+
+    public void openIssues(){
+        openUrl("https://github.com/zpp0196/QQSimple/issues/new");
+    }
+
+    @SuppressLint ("HandlerLeak")
+    public void checkUpdate(boolean isShowToast){
+        Toast.makeText(this, "正在检查更新...", Toast.LENGTH_SHORT).show();
+        UpdateUtil.CheckUpdate(new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what){
+                    case UpdateUtil.FINISHED:
+                        getPrefs().edit().putLong("last_check_update", System.currentTimeMillis()).apply();
+                        UpdateInfo updateInfo = (UpdateInfo) msg.obj;
+                        if(updateInfo.isUpdate()) {
+                            showUpdateDialog(updateInfo);
+                        }else if(isShowToast) {
+                            Toast.makeText(SettingActivity.this, "当前已是最新版本", Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                        break;
+                    case UpdateUtil.ERR:
+                        Exception exception = (Exception) msg.obj;
+                        if(isShowToast) {
+                            Toast.makeText(SettingActivity.this, exception.getMessage(), Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                        break;
+                }
+            }
+        });
+    }
+
+    private void showUpdateDialog(UpdateInfo updateInfo){
+        new MaterialDialog.Builder(this)
+                .cancelable(false)
+                .title(String.format("有新版可用：%s(%s)", updateInfo.getVersionName(), updateInfo.getVersionCode()))
+                .items(updateInfo.getUpdateLog())
+                .positiveText("更新")
+                .negativeText("历史")
+                .neutralText("关闭")
+                .onPositive((dialog, which) -> openCoolApk())
+                .onNegative((dialog, which) -> openReleases()).build().show();
     }
 
     public void openUrl(String url) {

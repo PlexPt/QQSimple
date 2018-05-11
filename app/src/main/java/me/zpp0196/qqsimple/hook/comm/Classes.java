@@ -33,9 +33,10 @@ public class Classes {
     public static Class<?> BusinessInfoCheckUpdate$RedTypeInfo;
     public static Class<?> ChatActivityUtils;
     public static Class<?> ChatMessage;
-    public static Class<?> ContactsViewController;
+    public static Class<?> ContactsConstant;
     public static Class<?> Conversation;
     public static Class<?> ConversationNowController;
+    public static Class<?> Contacts;
     public static Class<?> ContactUtils;
     public static Class<?> CoreService;
     public static Class<?> CoreService$KernelService;
@@ -48,6 +49,7 @@ public class Classes {
     public static Class<?> HotChatFlashPicActivity;
     public static Class<?> ItemBuilderFactory;
     public static Class<?> Leba;
+    public static Class<?> LocalSearchBar;
     public static Class<?> MainFragment;
     public static Class<?> MedalNewsItemBuilder;
     public static Class<?> MessageForDeliverGiftTips;
@@ -67,10 +69,10 @@ public class Classes {
     public static Class<?> ReadInJoyHelper;
     public static Class<?> RevokeMsgInfo;
     public static Class<?> RichStatItemBuilder;
-    public static Class<?> SimpleSlidingIndicator;
     public static Class<?> SougouInputGrayTips;
     public static Class<?> TextItemBuilder;
     public static Class<?> TextPreviewActivity;
+    public static Class<?> TListView;
     public static Class<?> TroopEnterEffectController;
     public static Class<?> TroopGiftAnimationController;
     public static Class<?> VipSpecialCareGrayTips;
@@ -98,9 +100,10 @@ public class Classes {
         if(BusinessInfoCheckUpdate$RedTypeInfo == null) BusinessInfoCheckUpdate$RedTypeInfo = findClassInQQ("com.tencent.pb.getbusiinfo.BusinessInfoCheckUpdate$RedTypeInfo");
         if(ChatActivityUtils == null) ChatActivityUtils = findClassInQQ(".activity.ChatActivityUtils");
         if(ChatMessage == null) ChatMessage = findClassInQQ(".data.ChatMessage");
-        if(ContactsViewController == null) ContactsViewController = findClassInQQ(".activity.contacts.base.ContactsViewController");
+        if(ContactsConstant == null) ContactsConstant = findClassInQQ(".activity.contacts.ContactsConstant");
         if(Conversation == null) Conversation = findClassInQQ(".activity.Conversation");
         if(ConversationNowController == null) ConversationNowController = findClassInQQ(".now.enter.ConversationNowController");
+        if(Contacts == null) Contacts = findClassInQQ(".activity.Contacts");
         if(ContactUtils == null) ContactUtils = findClassInQQ(".utils.ContactUtils");
         if(CoreService == null) CoreService = findClassInQQ(".app.CoreService");
         if(CoreService$KernelService == null) CoreService$KernelService = findClassInQQ(".app.CoreService$KernelService");
@@ -113,6 +116,7 @@ public class Classes {
         if(HotChatFlashPicActivity == null) HotChatFlashPicActivity = findClassInQQ(".dating.HotChatFlashPicActivity");
         if(ItemBuilderFactory == null) ItemBuilderFactory = findClassInQQ(".activity.aio.item.ItemBuilderFactory");
         if(Leba == null) Leba = findClassInQQ(".activity.Leba");
+        if(LocalSearchBar == null) LocalSearchBar = findClassInQQ(".activity.recent.LocalSearchBar");
         if(MainFragment == null) MainFragment = findClassInQQ(".activity.MainFragment");
         if(MedalNewsItemBuilder == null) MedalNewsItemBuilder = findClassInQQ(".activity.aio.item.MedalNewsItemBuilder");
         if(MessageForDeliverGiftTips == null) MessageForDeliverGiftTips = findClassInQQ(".data.MessageForDeliverGiftTips");
@@ -132,10 +136,10 @@ public class Classes {
         if(ReadInJoyHelper == null) ReadInJoyHelper = findClassInQQ("cooperation.readinjoy.ReadInJoyHelper");
         if(RevokeMsgInfo == null) RevokeMsgInfo = findClassInQQ(".revokemsg.RevokeMsgInfo");
         if(RichStatItemBuilder == null) RichStatItemBuilder = findClassInQQ(".activity.aio.item.RichStatItemBuilder");
-        if(SimpleSlidingIndicator == null) SimpleSlidingIndicator = findClassInQQ(".activity.contacts.view.SimpleSlidingIndicator");
         if(SougouInputGrayTips == null) SougouInputGrayTips = findClassInQQ(".activity.aio.tips.SougouInputGrayTips");
         if(TextItemBuilder == null) TextItemBuilder = findClassInQQ(".activity.aio.item.TextItemBuilder");
         if(TextPreviewActivity == null) TextPreviewActivity = findClassInQQ(".activity.TextPreviewActivity");
+        if(TListView == null) TListView = findClassInQQ("com.tencent.widget.ListView");
         if(TroopEnterEffectController == null) TroopEnterEffectController = findClassInQQ(".troop.enterEffect.TroopEnterEffectController");
         if(TroopGiftAnimationController == null) TroopGiftAnimationController = findClassInQQ(".troopgift.TroopGiftAnimationController");
         if(VipSpecialCareGrayTips == null) VipSpecialCareGrayTips = findClassInQQ(".activity.aio.tips.VipSpecialCareGrayTips");
