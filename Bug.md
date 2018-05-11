@@ -10,3 +10,17 @@
 * 设置空白间隔，这个暂时不要吐槽谢谢合作
 
 > 以上内容基本是以按影响程度排序
+
+## 解决方法
+
+> 此方法不保证一定能解决你的问题，我自认为感觉比以前稳定了点所以分享出来让大家试试
+
+1. 完全退出 QQ
+
+2. 在模块里面开启**高级功能-拦截热修复**
+
+3. 打开 */data/data/com.tencent.mobileqq/*  删除此目录下的 *app_installed_plugin* 和 *app_odex* 文件夹
+
+> VirtualXposed 用户找这个目录：*/data/data/io.va.exposed/virtual/data/user/0/com.tencent.mobileqq/*
+
+PS：删除该目录后 QQ 会重新下载一遍补丁文件，所以会消耗一些流量，第一次进空间有点慢就是因为在下载文件
