@@ -174,12 +174,15 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                 showInstructions();
             }else if(versionCode < VERSION_CODE){
                 showUpdateLog();
-            }
-
-            boolean isAutoUpdate = getPrefs().getBoolean("checkUpdate_auto", true);
-            long lastCheckUpdate = getPrefs().getLong("last_check_update", 0);
-            if(isAutoUpdate && System.currentTimeMillis() - lastCheckUpdate > 216000000){
-                checkUpdate(false);
+            }else {
+                boolean isAutoUpdate = getPrefs().getBoolean("checkUpdate_auto", true);
+                long lastCheckUpdate = getPrefs().getLong("last_check_update", 0);
+                if (isAutoUpdate && System.currentTimeMillis() - lastCheckUpdate > 216000000) {
+                    checkUpdate(false);
+                }
+                getPrefs().edit()
+                        .putInt("app_version_code", VERSION_CODE)
+                        .apply();
             }
         }
     }
@@ -228,8 +231,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                 .negativeText("捐赠")
                 .neutralText("关闭")
                 .onPositive(((dialog, which) -> openReadme()))
-                .onNegative((dialog, which) -> openAlipay())
-                .onNeutral((dialog, which) -> getPrefs().edit().putInt("app_version_code", VERSION_CODE).apply()).build().show();
+                .onNegative((dialog, which) -> openAlipay()).build().show();
     }
 
     private void showUpdateLog(){

@@ -98,6 +98,7 @@ public class UpdateUtil {
         if(thisVersionUpdateLog == null) {
             thisVersionUpdateLog = new ArrayList<>();
         }
+        thisVersionUpdateLog.clear();
         thisVersionUpdateLog.add("1、修复了不能隐藏移出群助手提示的 bug");
         thisVersionUpdateLog.add("2、修复了隐藏联系人分组后显示异常的 bug");
         thisVersionUpdateLog.add("3、移除了关闭动画");
