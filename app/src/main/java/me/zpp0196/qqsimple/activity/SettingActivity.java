@@ -180,10 +180,10 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                 if (isAutoUpdate && System.currentTimeMillis() - lastCheckUpdate > 216000000) {
                     checkUpdate(false);
                 }
-                getPrefs().edit()
-                        .putInt("app_version_code", VERSION_CODE)
-                        .apply();
             }
+            getPrefs().edit()
+                    .putInt("app_version_code", VERSION_CODE)
+                    .apply();
         }
     }
 

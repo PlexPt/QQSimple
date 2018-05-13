@@ -1,6 +1,6 @@
 {
   "versionName": "1.6.1",
-  "versionCode": 33,
+  "versionCode": 34,
   "updateLog": [
     {
       "content": "修复了不能隐藏移出群助手提示的 bug"
