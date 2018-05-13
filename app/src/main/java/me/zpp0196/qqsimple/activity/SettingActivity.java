@@ -23,6 +23,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -288,14 +289,19 @@ public class SettingActivity extends AppCompatPreferenceActivity {
 
     @SuppressLint ("HandlerLeak")
     public void checkUpdate(boolean isShowToast){
-        Toast.makeText(this, "正在检查更新...", Toast.LENGTH_SHORT).show();
+        if(isShowToast) {
+            Toast.makeText(this, "正在检查更新...", Toast.LENGTH_SHORT)
+                    .show();
+        }
         UpdateUtil.CheckUpdate(new Handler(){
+            @SuppressLint ("LogConditional")
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what){
                     case UpdateUtil.FINISHED:
                         getPrefs().edit().putLong("last_check_update", System.currentTimeMillis()).apply();
                         UpdateInfo updateInfo = (UpdateInfo) msg.obj;
+                        Log.d("SettingActivity", String.format("isUpdate: %s, versionName: %s, versionCode: %s", updateInfo.isUpdate(), updateInfo.getVersionName(), updateInfo.getVersionCode()));
                         if(updateInfo.isUpdate()) {
                             showUpdateDialog(updateInfo);
                         }else if(isShowToast) {
