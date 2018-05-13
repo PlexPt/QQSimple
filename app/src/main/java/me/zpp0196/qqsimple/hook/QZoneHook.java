@@ -152,6 +152,9 @@ class QZoneHook extends BaseHook {
                     if (title.equals("小视频") && getBool("hide_qzone_nav_video")) {
                         needRemove.add(item);
                     }
+                    if (title.equals("消息") && getBool("hide_qzone_nav_news")) {
+                        needRemove.add(item);
+                    }
                 }
                 arrayList.removeAll(needRemove);
             }

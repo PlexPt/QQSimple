@@ -75,8 +75,8 @@ public class MainHook implements IXposedHookLoadPackage {
         List<BaseHook> hooks = new ArrayList<>();
         hooks.add(new RemoveImagine());
         hooks.add(new MainUIHook());
+        hooks.add(new SidebarHook());
         hooks.add(new ChatInterfaceHook());
-        hooks.add(new OtherHook());
         hooks.add(new MoreHook());
         for (BaseHook hook : hooks) {
             hook.init();

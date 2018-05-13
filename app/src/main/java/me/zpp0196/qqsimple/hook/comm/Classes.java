@@ -13,13 +13,8 @@ public class Classes {
 
     private static ClassLoader qqClassLoader;
 
-    public static Class<?> R$color;
-    public static Class<?> R$dimen;
     public static Class<?> R$drawable;
-    public static Class<?> R$layout;
     public static Class<?> R$id;
-    public static Class<?> R$string;
-    public static Class<?> R$style;
 
     public static Class<?> AbstractChatItemBuilder$ViewHolder;
     public static Class<?> ActionSheet;
@@ -28,12 +23,10 @@ public class Classes {
     public static Class<?> ApolloManager$CheckApolloInfoResult;
     public static Class<?> BaseActivity;
     public static Class<?> BaseBubbleBuilder$ViewHolder;
-    public static Class<?> BaseMessageManager;
     public static Class<?> BubbleManager;
     public static Class<?> BusinessInfoCheckUpdate$RedTypeInfo;
     public static Class<?> ChatActivityUtils;
     public static Class<?> ChatMessage;
-    public static Class<?> ContactsConstant;
     public static Class<?> Conversation;
     public static Class<?> ConversationNowController;
     public static Class<?> Contacts;
@@ -56,7 +49,6 @@ public class Classes {
     public static Class<?> MessageRecord;
     public static Class<?> MessageRecordFactory;
     public static Class<?> OnLongClickAndTouchListener;
-    public static Class<?> PluginStatic;
     public static Class<?> PopupMenuDialog;
     public static Class<?> PopupMenuDialog$MenuItem;
     public static Class<?> PopupMenuDialog$OnClickActionListener;
@@ -66,9 +58,8 @@ public class Classes {
     public static Class<?> QQSettingSettingActivity;
     public static Class<?> QzoneFeedItemBuilder;
     public static Class<?> QzonePluginProxyActivity;
-    public static Class<?> ReadInJoyHelper;
-    public static Class<?> RevokeMsgInfo;
     public static Class<?> RichStatItemBuilder;
+    public static Class<?> SimpleSlidingIndicator;
     public static Class<?> SougouInputGrayTips;
     public static Class<?> TextItemBuilder;
     public static Class<?> TextPreviewActivity;
@@ -80,13 +71,8 @@ public class Classes {
     public static void initClass(ClassLoader classLoader){
         qqClassLoader = classLoader;
 
-        if(R$color == null) R$color = findClassInQQ(".R$color");
-        if(R$dimen == null) R$dimen = findClassInQQ(".R$dimen");
         if(R$drawable == null) R$drawable = findClassInQQ(".R$drawable");
-        if(R$layout == null) R$layout = findClassInQQ(".R$layout");
         if(R$id == null) R$id = findClassInQQ(".R$id");
-        if(R$string == null) R$string = findClassInQQ(".R$string");
-        if(R$style == null) R$style = findClassInQQ(".R$style");
 
         if(AbstractChatItemBuilder$ViewHolder == null) AbstractChatItemBuilder$ViewHolder = findClassInQQ(".activity.aio.AbstractChatItemBuilder$ViewHolder");
         if(ActionSheet == null) ActionSheet = findClassInQQ("com.tencent.widget.ActionSheet");
@@ -95,12 +81,10 @@ public class Classes {
         if(ApolloManager$CheckApolloInfoResult == null) ApolloManager$CheckApolloInfoResult = findClassInQQ(".apollo.ApolloManager$CheckApolloInfoResult");
         if(BaseActivity == null) BaseActivity = findClassInQQ(".app.BaseActivity");
         if(BaseBubbleBuilder$ViewHolder == null) BaseBubbleBuilder$ViewHolder = findClassInQQ(".activity.aio.BaseBubbleBuilder$ViewHolder");
-        if(BaseMessageManager == null) BaseMessageManager = findClassInQQ(".app.message.BaseMessageManager");
         if(BubbleManager == null) BubbleManager = findClassInQQ(".bubble.BubbleManager");
         if(BusinessInfoCheckUpdate$RedTypeInfo == null) BusinessInfoCheckUpdate$RedTypeInfo = findClassInQQ("com.tencent.pb.getbusiinfo.BusinessInfoCheckUpdate$RedTypeInfo");
         if(ChatActivityUtils == null) ChatActivityUtils = findClassInQQ(".activity.ChatActivityUtils");
         if(ChatMessage == null) ChatMessage = findClassInQQ(".data.ChatMessage");
-        if(ContactsConstant == null) ContactsConstant = findClassInQQ(".activity.contacts.ContactsConstant");
         if(Conversation == null) Conversation = findClassInQQ(".activity.Conversation");
         if(ConversationNowController == null) ConversationNowController = findClassInQQ(".now.enter.ConversationNowController");
         if(Contacts == null) Contacts = findClassInQQ(".activity.Contacts");
@@ -123,7 +107,6 @@ public class Classes {
         if(MessageRecord == null) MessageRecord = findClassInQQ(".data.MessageRecord");
         if(MessageRecordFactory == null) MessageRecordFactory = findClassInQQ(".service.message.MessageRecordFactory");
         if(OnLongClickAndTouchListener == null) OnLongClickAndTouchListener = findClassInQQ(".activity.aio.OnLongClickAndTouchListener");
-        if(PluginStatic == null) PluginStatic = findClassInQQ(".pluginsdk.PluginStatic");
         if(PopupMenuDialog == null) PopupMenuDialog = findClassInQQ("com.tencent.widget.PopupMenuDialog");
         if(PopupMenuDialog$MenuItem == null) PopupMenuDialog$MenuItem = findClassInQQ("com.tencent.widget.PopupMenuDialog$MenuItem");
         if(PopupMenuDialog$OnClickActionListener == null) PopupMenuDialog$OnClickActionListener = findClassInQQ("com.tencent.widget.PopupMenuDialog$OnClickActionListener");
@@ -133,9 +116,8 @@ public class Classes {
         if(QQSettingSettingActivity == null) QQSettingSettingActivity = findClassInQQ(".activity.QQSettingSettingActivity");
         if(QzoneFeedItemBuilder == null) QzoneFeedItemBuilder = findClassInQQ(".activity.aio.item.QzoneFeedItemBuilder");
         if(QzonePluginProxyActivity == null) QzonePluginProxyActivity = findClassInQQ("cooperation.qzone.QzonePluginProxyActivity");
-        if(ReadInJoyHelper == null) ReadInJoyHelper = findClassInQQ("cooperation.readinjoy.ReadInJoyHelper");
-        if(RevokeMsgInfo == null) RevokeMsgInfo = findClassInQQ(".revokemsg.RevokeMsgInfo");
         if(RichStatItemBuilder == null) RichStatItemBuilder = findClassInQQ(".activity.aio.item.RichStatItemBuilder");
+        if(SimpleSlidingIndicator == null) SimpleSlidingIndicator = findClassInQQ(".activity.contacts.view.SimpleSlidingIndicator");
         if(SougouInputGrayTips == null) SougouInputGrayTips = findClassInQQ(".activity.aio.tips.SougouInputGrayTips");
         if(TextItemBuilder == null) TextItemBuilder = findClassInQQ(".activity.aio.item.TextItemBuilder");
         if(TextPreviewActivity == null) TextPreviewActivity = findClassInQQ(".activity.TextPreviewActivity");

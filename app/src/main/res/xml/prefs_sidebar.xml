@@ -60,9 +60,12 @@
         android:defaultValue="false"
         android:key="hide_sidebar_my_city"
         android:title="隐藏我的城市" />
-    i
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="hide_sidebar_apollo"
         android:title="隐藏厘米秀" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hide_tim_in_my_file"
+        android:title="隐藏我的文件里的 TIM 推广" />
 </PreferenceScreen>

@@ -25,6 +25,7 @@ public class UpdateUtil {
 
     private static JSONObject jsonObject = null;
     private static final String JSON_URL = "https://raw.githubusercontent.com/zpp0196/QQSimple/master/update.json";
+    private static List<String> thisVersionUpdateLog;
 
     public static final int FINISHED = 1, ERR = -1;
 
@@ -91,6 +92,16 @@ public class UpdateUtil {
             list.add(String.format("%s、%s", i + 1, obj.getString("content")));
         }
         return list;
+    }
+
+    public static List<String> getThisVersionUpdateLog(){
+        if(thisVersionUpdateLog == null) {
+            thisVersionUpdateLog = new ArrayList<>();
+        }
+        thisVersionUpdateLog.add("1、修复了不能隐藏移出群助手提示的 bug");
+        thisVersionUpdateLog.add("2、修复了隐藏联系人分组后显示异常的 bug");
+        thisVersionUpdateLog.add("3、移除了关闭动画");
+        return thisVersionUpdateLog;
     }
 
     public static class UpdateInfo{

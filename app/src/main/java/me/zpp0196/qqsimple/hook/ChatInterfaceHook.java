@@ -78,7 +78,7 @@ class ChatInterfaceHook extends BaseHook {
         // 隐藏礼物相关提示
         hideGrayTipsItem("hide_group_gift_tips", ".+礼物.+成为.+守护.+", ".+成为.+魅力.+", ".+成为.+豪气.+", ".+送给.+朵.+");
         // 隐藏移出群助手提示
-        hideTopBar("hide_group_helper_remove_tips", "经常", "是否");
+        hideTopBar("hide_group_helper_remove_tips", "常", "是否");
         hideFontEffect();
         hideGroupChatAdmissions();
         if (isMoreThan732()) {
@@ -141,7 +141,7 @@ class ChatInterfaceHook extends BaseHook {
                 super.beforeHookedMethod(param);
                 String str = param.args[1].toString();
                 for (String s : strs) {
-                    if (s.contains(str) && getBool(key)) {
+                    if (str.contains(s) && getBool(key)) {
                         param.setResult(null);
                     }
                 }

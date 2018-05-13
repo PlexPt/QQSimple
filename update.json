@@ -1,18 +1,15 @@
 {
-  "versionName": "1.6.0",
-  "versionCode": 30,
+  "versionName": "1.6.1",
+  "versionCode": 31,
   "updateLog": [
     {
-      "content": "修复了隐藏联系人分组后仍可以滑出的 bug"
+      "content": "修复了不能隐藏移出群助手提示的 bug"
     },
     {
-      "content": "添加了检查更新功能"
+      "content": "修复了隐藏联系人分组后显示异常的 bug"
     },
     {
       "content": "添加了隐藏搜索框"
-    },
-    {
-      "content": "更改了部分界面"
     }
   ]
 }

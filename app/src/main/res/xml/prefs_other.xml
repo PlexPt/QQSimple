@@ -2,16 +2,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="close_all_animation"
-        android:title="完全关闭动画" />
-    <CheckBoxPreference
-        android:defaultValue="false"
         android:key="hide_some_red_dot"
         android:title="隐藏部分小红点" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="hide_tim_in_my_file"
-        android:title="隐藏我的文件里的 TIM 推广" />
     <PreferenceCategory android:title="设置界面">
         <CheckBoxPreference
             android:defaultValue="false"

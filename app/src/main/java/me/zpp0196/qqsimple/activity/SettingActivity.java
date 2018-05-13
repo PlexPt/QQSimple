@@ -45,6 +45,8 @@ import me.zpp0196.qqsimple.util.UpdateUtil;
 
 import me.zpp0196.qqsimple.util.UpdateUtil.UpdateInfo;
 
+import static me.zpp0196.qqsimple.BuildConfig.VERSION_CODE;
+
 public class SettingActivity extends AppCompatPreferenceActivity {
 
     private boolean isModuleActive() {
@@ -166,9 +168,11 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                     .setNegativeButton("取消", (dialog, id) -> finish())
                     .show();
         } else {
-            boolean isUpdate = getPrefs().getInt("app_version_code", 0) < BuildConfig.VERSION_CODE;
-            if (isUpdate) {
+            int versionCode = getPrefs().getInt("app_version_code", -1);
+            if (versionCode == -1) {
                 showInstructions();
+            }else if(versionCode < VERSION_CODE){
+                showUpdateLog();
             }
 
             boolean isAutoUpdate = getPrefs().getBoolean("checkUpdate_auto", true);
@@ -224,7 +228,17 @@ public class SettingActivity extends AppCompatPreferenceActivity {
                 .neutralText("关闭")
                 .onPositive(((dialog, which) -> openReadme()))
                 .onNegative((dialog, which) -> openAlipay())
-                .onNeutral((dialog, which) -> getPrefs().edit().putInt("app_version_code", BuildConfig.VERSION_CODE).apply()).build().show();
+                .onNeutral((dialog, which) -> getPrefs().edit().putInt("app_version_code", VERSION_CODE).apply()).build().show();
+    }
+
+    private void showUpdateLog(){
+        new MaterialDialog.Builder(this)
+                .cancelable(false)
+                .title(String.format("QQ 精简模块 %s", BuildConfig.VERSION_NAME))
+                .items(UpdateUtil.getThisVersionUpdateLog())
+                .positiveText("关闭")
+                .negativeText("历史版本")
+                .onNegative((dialog, which) -> openReleases()).build().show();
     }
 
     public void openAlipay() {

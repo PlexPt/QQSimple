@@ -2,7 +2,6 @@ package me.zpp0196.qqsimple.hook;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,7 +20,6 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.ActionSheet;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseActivity;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BusinessInfoCheckUpdate$RedTypeInfo;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Contacts;
-import static me.zpp0196.qqsimple.hook.comm.Classes.ContactsConstant;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Conversation;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ConversationNowController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Leba;
@@ -30,6 +28,7 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.MainFragment;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$MenuItem;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$OnClickActionListener;
+import static me.zpp0196.qqsimple.hook.comm.Classes.SimpleSlidingIndicator;
 import static me.zpp0196.qqsimple.hook.comm.Classes.TListView;
 
 /**
@@ -189,37 +188,77 @@ class MainUIHook extends BaseHook {
      * 隐藏联系人分组
      */
     private void hideContactsConstant() {
-        Field fieldI = findField(ContactsConstant, int[].class, "a");
-        Field fieldS = findField(ContactsConstant, String[].class, "a");
-        try {
-            int[] a = (int[])fieldI.get(null);
-            String[] s = (String[])fieldS.get(null);
 
-            SparseArray<String> array = new SparseArray<>();
-            for (int i = 0; i < a.length; i++) {
-                if(s[i].equals("设备") && getBool("hide_contacts_tab_device")){
-                    continue;
+        findAndHookMethod(SimpleSlidingIndicator, "a", int.class, View.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                int i = (int) param.args[0];
+                View v = (View) param.args[1];
+                if ((i == 2 && getBool("hide_contacts_tab_device")) ||
+                    (i == 3 && getBool("hide_contacts_tab_phone")) ||
+                    (i == 4 && getBool("hide_contacts_tab_pub_account"))) {
+                    v.setVisibility(View.GONE);
                 }
-                if(s[i].equals("通讯录") && getBool("hide_contacts_tab_phone")){
-                    continue;
+            }
+        });
+
+        findAndHookMethod(SimpleSlidingIndicator, "a", int.class, boolean.class, boolean.class, new XC_MethodHook() {
+
+            private MethodHookParam param;
+            private int i;
+            private int b;
+
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                this.i = (int) param.args[0];
+                this.b = getObject(param.thisObject, int.class, "b");
+                this.param = param;
+                boolean isHideDevice = getBool("hide_contacts_tab_device");
+                boolean isHidePhone = getBool("hide_contacts_tab_phone");
+                boolean isHidePubAccount = getBool("hide_contacts_tab_pub_account");
+                if (isHideDevice && !isHidePhone && !isHidePubAccount) {
+                    f(2);
                 }
-                if(s[i].equals("公众号") && getBool("hide_contacts_tab_pub_account")){
-                    continue;
+                if (isHideDevice && isHidePhone && !isHidePubAccount) {
+                    f(2, 3);
                 }
-                array.put(a[i], s[i]);
+                if (isHideDevice && !isHidePhone && isHidePubAccount) {
+                    param.args[0] = (b == 1 && i == 2) ? 3 : (b == 3 && i == 4) ? 0 : param.args[0];
+                }
+                if (isHideDevice && isHidePhone && isHidePubAccount) {
+                    if (i != 2 && i != 3 && i != 4)
+                        return;
+                    m(1, 0);
+                }
+                if (!isHideDevice && isHidePhone && !isHidePubAccount) {
+                    f(3);
+                }
+                if (!isHideDevice && isHidePhone && isHidePubAccount) {
+                    f(3, 4);
+                }
+                if (!isHideDevice && !isHidePhone && isHidePubAccount) {
+                    f(4);
+                }
             }
 
-            int[] tempA = new int[array.size()];
-            String[] tempS = new String[array.size()];
-            for (int i = 0; i < array.size(); i++) {
-                tempA[i] = array.keyAt(i);
-                tempS[i] = array.valueAt(i);
+            private void f(int pos) {
+                if (i != pos)
+                    return;
+                m(pos - 1, pos != 4 ? pos + 1 : 0);
             }
 
-            fieldI.set(null, tempA);
-            fieldS.set(null, tempS);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+            private void f(int pos1, int pos2) {
+                if (i != pos1 && i != pos2)
+                    return;
+                m(pos1 - 1, pos2 != 4 ? pos2 + 1 : 0);
+            }
+
+            private void m(int left, int right) {
+                param.args[0] = b == left ? right : b == right ? left : param.args[0];
+            }
+
+        });
     }
 }
