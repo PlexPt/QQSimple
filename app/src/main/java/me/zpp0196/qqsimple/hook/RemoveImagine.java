@@ -174,7 +174,7 @@ class RemoveImagine extends BaseHook {
         hideView("feed_guide_comment_bar", "hide_qzone_et_comment");
         // 隐藏评论内容
         hideView("feed_canvas_comment_area_stub", "hide_qzone_et_comment_content");
-        if (!getBool("hide_qzone_ad")) return;
+        if (!getBool("hide_qzone_AD")) return;
         // 隐藏空间绿厂广告
         hideView("shuoshuo_ad_upload_quality");
         hideView("quality_hd_ad");

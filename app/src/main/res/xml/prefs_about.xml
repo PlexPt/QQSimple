@@ -10,7 +10,7 @@
         android:summary="zpp0196"
         android:title="作者" />
     <Preference
-        android:summary="祈无，weishu，sftmi，静若兰亭"
+        android:summary="祈无，weishu，sftmi，静若兰亭, YiTry"
         android:title="感谢" />
     <Preference
         android:key="checkUpdate"

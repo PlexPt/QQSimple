@@ -26,10 +26,12 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.QzonePluginProxyActivity;
 
 public class MainHook implements IXposedHookLoadPackage {
 
+    private XC_LoadPackage.LoadPackageParam lpparam;
+
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        Util.log(getClass(), String.format("loading %s(%s)", PACKAGE_NAME_QQ, loadPackageParam.appInfo.uid));
-        hookHotPatch(loadPackageParam);
+        this.lpparam = loadPackageParam;
+        hookHotPatch();
         findAndHookMethod(Application.class.getName(), loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -52,8 +54,8 @@ public class MainHook implements IXposedHookLoadPackage {
     /**
      * 拦截热修复
      */
-    private void hookHotPatch(XC_LoadPackage.LoadPackageParam loadPackageParam){
-        findAndHookMethod("com.tencent.common.app.QFixApplicationImpl", loadPackageParam.classLoader, "isAndroidNPatchEnable", new XC_MethodHook() {
+    private void hookHotPatch(){
+        findAndHookMethod("com.tencent.common.app.QFixApplicationImpl", lpparam.classLoader, "isAndroidNPatchEnable", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
@@ -69,8 +71,17 @@ public class MainHook implements IXposedHookLoadPackage {
             Util.log(getClass(), String.format("%s Can't get ClassLoader!", Util.getQQVersion()));
             return;
         }
+
         Classes.initClass(classLoader);
         Ids.init();
+
+        Util.log(getClass(), String.format("loading %s(%s)", lpparam.processName, lpparam.appInfo.uid));
+
+        if(lpparam.processName.contains("qzone")){
+            startQzoneHook(classLoader);
+        }else if(!lpparam.processName.equals(PACKAGE_NAME_QQ)){
+            return;
+        }
 
         List<BaseHook> hooks = new ArrayList<>();
         hooks.add(new RemoveImagine());
@@ -81,8 +92,6 @@ public class MainHook implements IXposedHookLoadPackage {
         for (BaseHook hook : hooks) {
             hook.init();
         }
-
-        startQzoneHook(classLoader);
     }
 
     private void startQzoneHook(ClassLoader classLoader) {

@@ -89,7 +89,7 @@
             android:title="隐藏我的黄钻" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="hide_qzone_ad"
+            android:key="hide_qzone_AD"
             android:title="隐藏部分广告" />
     </PreferenceCategory>
 </PreferenceScreen>

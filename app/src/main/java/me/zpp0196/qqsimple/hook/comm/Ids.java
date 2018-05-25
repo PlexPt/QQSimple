@@ -28,6 +28,8 @@ public class Ids {
                 break;
             case "7.6.0":
                 init760();
+            case "7.6.3":
+                init763();
                 break;
         }
     }
@@ -322,6 +324,102 @@ public class Ids {
         put("qzone_feed_commwidget_hide_btn", 0x7f0a2d5b); // AsyncImageView b
         put("qzone_feed_commwidget_stub", 0x7f0a2a8a); // QZoneFriendFeedFragment new QZoneCommWidget( View c
         put("qz_feed_head_container", 0x7f0a2d80); // HotBannerManager i() LinearLayout
+    }
+
+    @SuppressWarnings("all")
+    private static void init763(){
+        put("unchecked_msg_num", 0x7f0a0c4b); // c6 .activity.MainFragment a(View view) _num
+        put("adviewlayout", 0x7f0a0f3b); // c6 .activity.recent.BannerManager e(View view) relativelayout
+        put("contactHeader", 0x7f0a07fb); // c6 .activity.Contacts o() findViewById
+        put("search_container", 0x7f0a1fed); // c6 .activity.Contacts o() findViewById2
+        put("newFriendEntry", 0x7f0a0850); // c6 .activity.Contacts o() f1a
+        put("createTroopEntry", 0x7f0a0851); // c6 .activity.Contacts o() b
+        put("emotionLayout", 0x7f0a04a6); // c6 .activity.BaseChatPie EmotionKeywordHorizonListView
+        put("btn_more_emoticon", 0x7f0a0a9a); // c4 .emoticonview.EmoticonMainPanel a(QQAppInterface int Context int String BaseChatPie boolean) a ImageView
+        put("unusual_contacts_footerview", 0x7f0a07df); // c6 .activity.contacts.fragment.FriendFragment OnClick UnCommonlyUsedContactsActivity
+        put("leb_search_entry", 0x7f0a0c0b); // c6 .activity.Leba u() a LinearLayout
+        put("qzone_feed_entry", 0x7f0a2148); // c6 .activity.Laba OnClick
+        put("near_people_entry", 0x7f0a214d); // c6 .activity.Laba OnClick
+        put("xingqu_buluo_entry", 0x7f0a2152); // c6 .activity.Laba OnClick
+        put("qzone_feed_entry_sub_iv", 0x7f0a214e); // c6 .activity.Leba u() ImageView
+        put("nearby_people_entry_sub_iv", 0x7f0a2151); // c6 .activity.Leba u() ImageView OnClick getVisibility()
+        put("buluo_entry_sub_iv", 0x7f0a2155); // c6 .activity.Leba u() a URLImageView
+        put("qr_code_icon", 0x7f0a2536); // c6 .activity.QQSettingMe OnClick reportFla
+        put("mydaily", 0x7f0a2537); // OnClick task_entry_config
+        put("nickname_area", 0x7f0a2532); // OnClick 0X80072D6
+        put("sig_layout", 0x7f0a252d); // OnClick signatureH5Url
+        put("myvip", 0x7f0a253d); // OnClick enter vip
+        put("mypocket", 0x7f0a253e); // OnClick My_wallet
+        put("myDressup", 0x7f0a2540); // OnCick Trends_tab
+        put("myfavorites", 0x7f0a2541); // OnClick QfavHelper
+        put("myphotos", 0x7f0a2542); // OnClick QZonePhotoListActivity
+        put("myfiles", 0x7f0a2543); // OnClick QfileFileAssistantActivity
+        put("myvideos", 0x7f0a2544); // OnClick DingdongPluginManager
+        put("mycards", 0x7f0a2545); // OnClick BusinessCardListActivity
+        put("cuKingCard", 0x7f0a2548); // OnClick cuKingCard url = null
+        put("settings", 0x7f0a2549); // OnClick QQSettingSettingActivity
+        put("nightmode", 0x7f0a254d); // OnClick 夜间模式
+        put("weather_layout", 0x7f0a2550); // OnClick https://weather.mp.qq.com/?_wv=5127&asyncMode=1
+        put("weather_area", 0x7f0a2554); // OnClick getText()).append("，天气：");
+        put("chat_item_pendant_image", 0x7f0a0059); // c6 .activity.aio.BaseChatItemLayout setPendantImage URLImageView
+        put("ivTitleBtnRightCall", 0x7f0a08a3); // c6 .actiivty.BaseChatPie d() setContentDescription("通话");
+        put("qq_aio_panel_ptt", 0x7f0a01b7); // c6 .activity.aio.panel.AIOPanelUtils  a 3
+        put("qq_aio_panel_ptt_gold_msg", 0x7f0a01b9); // c
+        put("qq_aio_panel_image", 0x7f0a01bd); // g
+        put("qq_aio_panel_image_gold_msg", 0x7f0a01bf); // i
+        put("qq_aio_panel_camera", 0x7f0a01c0); // j
+        put("qq_aio_panel_ptv", 0x7f0a01c3); // m
+        put("qq_aio_panel_ptv_gold_msg", 0x7f0a01c4); // n
+        put("qq_aio_panel_hongbao", 0x7f0a01ca); // s
+        put("qq_aio_panel_poke", 0x7f0a01d4); // z
+        put("qq_aio_panel_hot_pic", 0x7f0a01d7); // B
+        put("qq_aio_panel_hot_pic_gold_msg", 0x7f0a01db); // F
+        put("chat_item_troop_member_level", 0x7f0a004b); // c6 .activity.aio.BaseBubbleBuilder Clk_label
+        put("chat_item_troop_member_glamour_level", 0x7f0a004c); // level + 1
+        put("troop_assistant_feeds_title_small_video", 0x7f0a34af); // c6 TroopAssistantFeedsJsHandler
+        put("pic_light_emoj", 0x7f0a00a4); // c6 .activity.aio.item.PicItemBuilder a(View view, MotionEvent motionEvent)
+        put("timtips", 0x7f0a1b54); // c4 .filemanager.activity.fileassistant.QfileFileAssistantActivity doOnCreate ViewStub
+        put("qqsetting2_phone_unity_info", 0x7f0a1ccf); // c6 .activity.QQSettingSettingActivity OnClick PhoneUnityBindInfoActivity
+        put("qqsetting2_newXmanLayout", 0x7f0a258b); // OnClick http://ti.qq.com/xman/self.html
+        put("qqsetting2_msg_notify", 0x7f0a1cd2); // OnClick NotifyPushSettingActivity
+        put("qqsetting2_msg_history", 0x7f0a1cd3); // OnClick QQSettingMsgHistoryActivity
+        put("qqsetting2_msg_qqclean", 0x7f0a258c); // OnClick QQSettingCleanActivity
+        put("qqsetting2_device_security", 0x7f0a258d); // OnClick My_settab_safe
+        put("qqsetting2_permission_privacy", 0x7f0a1cd4); // OnClick PermisionPrivacyActivity
+        put("qqsetting2_assist", 0x7f0a1cd5); // OnClick AssistantSettingActivity
+        put("cu_open_card_guide_entry", 0x7f0a258f); // OnClick click cu_open_card_guide url: %s
+        put("about", 0x7f0a1cd9); // OnClick AboutActivity
+        put("qzone_feed_reddot", 0x7f0a214c); // c6 .activity.Leba lebaViewItem.a.uiResId == 0
+        put("xingqu_buluo_reddot", 0x7f0a2156); // c6 .activity.Leba lebaViewItem.a.uiResId == 0
+
+        // drawable
+        put("skin_tips_dot", 0x7f02215d); // c3 .redtouch.RedTouch a(int i)
+        // put("skin_tips_dot_small", 0x7f02215e); // +1
+        put("skin_tips_new", 0x7f02215f); // +2
+        put("shortvideo_redbag_outicon", 0x7f021f85); // c3 .redtouch.RedTouch a(boolean z) parseRedBagTouch
+
+        // Qzone
+        put("qzone_cover_avatar_facade", 0x7f0a2af7); // QZoneFeedsHeader QzoneFacadeDecorator
+        put("qzone_cover_avatar_vip", 0x7f0a2af8); // QZoneFeedsHeader QzoneVipDecorator
+        put("qzone_cover_avatar_qboss", 0x7f0a2e2a); // QZoneFeedsHeader QzoneQbossDecorator
+        put("feed_attach_view", 0x7f0a323a); // @id/feed_attach_view
+        put("operation_like_container", 0x7f0a32ea); // 2188
+        put("operation_like_container2", 0x7f0a32f3); // 2669
+        put("feed_praise_avatars_view", 0x7f0a3318); // 2192
+        put("feed_guide_comment_bar", 0x7f0a32d5); // 2413
+        put("feed_canvas_comment_area_stub", 0x7f0a32d3); // 2787
+        put("shuoshuo_ad_upload_quality", 0x7f0a3061); // restoreShuoshuoPicShow picUrl: AsyncImageView
+        put("quality_normal_ad", 0x7f0a3178); // QZoneUploadQualityActivity AsyncImageView c
+        put("quality_original_ad", 0x7f0a3181); // QZoneUploadQualityActivity AsyncImageView a
+        put("quality_hd_ad", 0x7f0a317d); // QZoneUploadQualityActivity AsyncImageView b
+        put("quality_ad", 0x7f0a319c); // QZoneUploadPhotoActivity AsyncImageView c
+        put("qzone_feed_commwidget_container", 0x7f0a2e0a); // QZoneCommWidget i() View b
+        put("qzone_feed_commwidget_image", 0x7f0a2e0b); // AsyncImageView a
+        put("qzone_feed_commwidget_text", 0x7f0a2e0c); // TextView b
+        put("qzone_feed_commwidget_count", 0x7f0a2e0d); // TextView a
+        put("qzone_feed_commwidget_hide_btn", 0x7f0a2e0e); // AsyncImageView b
+        put("qzone_feed_commwidget_stub", 0x7f0a2b3d); // QZoneFriendFeedFragment new QZoneCommWidget( View c
+        put("qz_feed_head_container", 0x7f0a2e33); // HotBannerManager i() LinearLayout
     }
 
     private static void put(String key, Integer value){

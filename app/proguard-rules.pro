@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep public class me.zpp0196.qqsimple.hook.InitHook
+-keepclassmembernames class me.zpp0196.qqsimple.activity.SettingActivity {
+    boolean isModuleActive();
+}

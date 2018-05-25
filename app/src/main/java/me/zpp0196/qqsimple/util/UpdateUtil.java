@@ -99,9 +99,9 @@ public class UpdateUtil {
             thisVersionUpdateLog = new ArrayList<>();
         }
         thisVersionUpdateLog.clear();
-        thisVersionUpdateLog.add("1、修复了不能隐藏移出群助手提示的 bug");
-        thisVersionUpdateLog.add("2、修复了隐藏联系人分组后显示异常的 bug");
-        thisVersionUpdateLog.add("3、移除了关闭动画");
+        thisVersionUpdateLog.add("适配测试版 7.6.3.3542");
+        thisVersionUpdateLog.add("压缩了模块安装包体积");
+        thisVersionUpdateLog.add("修复了华为等部分手机重启后模块不生效的 bug");
         return thisVersionUpdateLog;
     }
 

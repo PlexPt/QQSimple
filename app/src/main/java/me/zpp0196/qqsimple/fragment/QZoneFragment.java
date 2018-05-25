@@ -20,6 +20,7 @@ public class QZoneFragment extends BaseFragment implements Preference.OnPreferen
     CheckBoxPreference signIn;
     CheckBoxPreference redPacket;
     CheckBoxPreference live;
+    CheckBoxPreference hideAd;
 
     @Override
     protected int setPrefs() {
@@ -34,12 +35,14 @@ public class QZoneFragment extends BaseFragment implements Preference.OnPreferen
         signIn = (CheckBoxPreference) findPreference("hide_qzone_plus_signIn");
         redPacket = (CheckBoxPreference) findPreference("hide_qzone_plus_redPacket");
         live = (CheckBoxPreference) findPreference("hide_qzone_plus_live");
+        hideAd = (CheckBoxPreference) findPreference("hide_qzone_AD");
         mood.setOnPreferenceChangeListener(this);
         album.setOnPreferenceChangeListener(this);
         shoot.setOnPreferenceChangeListener(this);
         signIn.setOnPreferenceChangeListener(this);
         redPacket.setOnPreferenceChangeListener(this);
         live.setOnPreferenceChangeListener(this);
+        hideAd.setOnPreferenceChangeListener(this);
     }
 
     private boolean isMoreThree() {
@@ -65,6 +68,11 @@ public class QZoneFragment extends BaseFragment implements Preference.OnPreferen
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        return !(boolean) newValue || !(preference == mood || preference == album || preference == shoot || preference == signIn || preference == redPacket || preference == live) || isMoreThree();
+        boolean nValue = (boolean)newValue;
+        if(preference == hideAd && nValue){
+            showDialog("该开关主要隐藏一些空间里面的小广告以及主页顶部的猜你喜欢、最近在玩等包括消息通知在内的一些内容，所以会出现看不到消息通知的情况，点击右上角加号左边的图标进去就是消息界面。");
+            return true;
+        }
+        return !nValue || !(preference == mood || preference == album || preference == shoot || preference == signIn || preference == redPacket || preference == live) || isMoreThree();
     }
 }
