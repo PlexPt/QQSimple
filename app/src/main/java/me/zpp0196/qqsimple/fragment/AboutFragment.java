@@ -19,6 +19,7 @@ import me.zpp0196.qqsimple.R;
 import me.zpp0196.qqsimple.activity.MainActivity;
 import me.zpp0196.qqsimple.activity.item.AboutItem;
 import me.zpp0196.qqsimple.fragment.base.BaseFragment;
+import me.zpp0196.qqsimple.util.UpdateUtil;
 
 import static me.zpp0196.qqsimple.BuildConfig.VERSION_CODE;
 import static me.zpp0196.qqsimple.BuildConfig.VERSION_NAME;
@@ -86,7 +87,7 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener 
         // 源码
         github.setOnClickListener(v -> mainActivity.openGitHub());
         // 日志
-        log.setOnClickListener(v -> mainActivity.showUpdateLog());
+        log.setOnClickListener(v -> UpdateUtil.showUpdateLog(mainActivity));
         // 捐赠
         donate.setOnClickListener(v -> {
             long enterDonate = getPrefs().getLong(PREFS_KEY_ENTER_DONATE_TIMES, 0);

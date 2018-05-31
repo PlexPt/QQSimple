@@ -16,7 +16,6 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -30,7 +29,6 @@ import static me.zpp0196.qqsimple.BuildConfig.APPLICATION_ID;
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_ALIPAY;
 import static me.zpp0196.qqsimple.util.CommUtil.getPrefsDir;
 import static me.zpp0196.qqsimple.util.CommUtil.getPrefsFile;
-import static me.zpp0196.qqsimple.util.UpdateUtil.getThisVersionLog;
 
 /**
  * Created by zpp0196 on 2018/5/30 0030.
@@ -151,25 +149,6 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
                 .positiveText(R.string.button_close)
                 .build()
                 .show();
-    }
-
-    public void showDialogView(@StringRes int title, View view) {
-        new MaterialDialog.Builder(this).cancelable(false)
-                .title(title)
-                .customView(view, true)
-                .positiveText(R.string.button_close)
-                .build()
-                .show();
-    }
-
-    public void showUpdateLog() {
-        showDialogView(R.string.title_update_log, getWebView(getThisVersionLog(this)));
-    }
-
-    public WebView getWebView(String html) {
-        WebView webView = new WebView(this);
-        webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
-        return webView;
     }
 
     public SharedPreferences getPrefs() {

@@ -28,7 +28,7 @@
     <string name="enable_module">启用模块</string>
     <string name="module_active">模块已激活。</string>
     <string name="module_not_active">模块未激活！</string>
-    <string name="module_not_support">未兼容的版本！</string>
+    <string name="module_not_support">未兼容的QQ版本！</string>
 
     <string name="item_card_device">设备</string>
     <string name="item_card_device_android">Android %s(%s, API %d)</string>
@@ -72,6 +72,7 @@
     <string name="title_action_copy_log">复制日志</string>
 
     <string name="button_close">关闭</string>
+    <string name="button_more">更多</string>
     <string name="button_backup">备份</string>
     <string name="button_get_permission">授权</string>
     <string name="button_reboot">重启</string>

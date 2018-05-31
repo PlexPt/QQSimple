@@ -13,8 +13,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-
 import java.io.File;
 
 import me.zpp0196.qqsimple.R;
@@ -166,7 +164,7 @@ public class MainFragment extends BaseFragment {
     private void refreshInstallStatus(MainActivity mainActivity) {
         int versionCode = getPrefs().getInt(PREFS_KEY_APP_VERSION_CODE, 0);
         if (versionCode < VERSION_CODE) {
-            mainActivity.showUpdateLog();
+            UpdateUtil.showUpdateLog(mainActivity);
             getEditor().putInt(PREFS_KEY_APP_VERSION_CODE, VERSION_CODE)
                     .apply();
         }
@@ -284,7 +282,7 @@ public class MainFragment extends BaseFragment {
                         UpdateUtil.UpdateInfo updateInfo = (UpdateUtil.UpdateInfo) msg.obj;
                         Log.d(MainActivity.class.getName(), String.format("isUpdate: %s, versionName: %s, versionCode: %s", updateInfo.isUpdate(), updateInfo.getVersionName(), updateInfo.getVersionCode()));
                         if (updateInfo.isUpdate()) {
-                            showUpdateDialog(updateInfo);
+                            UpdateUtil.showUpdateDialog(getMainActivity(), updateInfo);
                         }
                         if (textView != null) {
                             textView.setText(R.string.item_card_module_update_check_latest);
@@ -301,19 +299,5 @@ public class MainFragment extends BaseFragment {
                 }
             }
         });
-    }
-
-    private void showUpdateDialog(UpdateUtil.UpdateInfo updateInfo) {
-        MainActivity mainActivity = getMainActivity();
-        new MaterialDialog.Builder(mainActivity).cancelable(false)
-                .title(R.string.item_card_module_update_check_new)
-                .customView(mainActivity.getWebView(updateInfo.getUpdateLog()), true)
-                .positiveText(R.string.item_card_module_update_check_update)
-                .negativeText(R.string.button_releases)
-                .neutralText(R.string.button_close)
-                .onPositive((dialog, which) -> mainActivity.openCoolApk())
-                .onNegative((dialog, which) -> mainActivity.openReleases())
-                .build()
-                .show();
     }
 }
