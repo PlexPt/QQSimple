@@ -38,8 +38,8 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.TextPreviewActivity;
 import static me.zpp0196.qqsimple.hook.comm.Classes.TroopEnterEffectController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.TroopGiftAnimationController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.VipSpecialCareGrayTips;
-import static me.zpp0196.qqsimple.hook.util.Util.isMoreThan732;
-import static me.zpp0196.qqsimple.hook.util.Util.isMoreThan760;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan732;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan760;
 
 /**
  * Created by zpp0196 on 2018/3/11.
@@ -100,7 +100,8 @@ class ChatInterfaceHook extends BaseHook {
             // 隐藏大字体特效
             Method[] methods = findMethodsByExactParameters(FontManager, boolean.class, ChatMessage);
             for (Method method : methods) {
-                if (method.getName().equals("b")) {
+                if (method.getName()
+                        .equals("b")) {
                     hookMethod(method, replaceFalse("hide_font_effects"));
                 }
             }

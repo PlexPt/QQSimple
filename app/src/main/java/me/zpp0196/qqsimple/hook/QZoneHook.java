@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import de.robv.android.xposed.XC_MethodHook;
 import me.zpp0196.qqsimple.Common;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
-import me.zpp0196.qqsimple.hook.util.Util;
 
-import static me.zpp0196.qqsimple.hook.util.Util.isMoreThan760;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.getQQVersionName;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan760;
 
 /**
  * Created by zpp0196 on 2018/4/1.
@@ -203,7 +203,7 @@ class QZoneHook extends BaseHook {
         try {
             return qqClassLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            log("%s Can't find the Class of name: %s!", Util.getQQVersion(), className);
+            log("%s Can't find the Class of name: %s!", getQQVersionName(), className);
         }
         return null;
     }
@@ -212,7 +212,7 @@ class QZoneHook extends BaseHook {
         try {
             return qzoneClassLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            log("%s Can't find the Class of name: %s in QzonePlugin!", Util.getQQVersion(), className);
+            log("%s Can't find the Class of name: %s in QzonePlugin!", getQQVersionName(), className);
         }
         return null;
     }

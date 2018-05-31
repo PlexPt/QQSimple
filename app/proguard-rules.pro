@@ -21,6 +21,6 @@
 #-renamesourcefileattribute SourceFile
 
 -keep public class me.zpp0196.qqsimple.hook.InitHook
--keepclassmembernames class me.zpp0196.qqsimple.activity.SettingActivity {
+-keepclassmembernames class me.zpp0196.qqsimple.activity.MainActivity {
     boolean isModuleActive();
 }

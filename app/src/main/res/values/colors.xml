@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">#009688</color>
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#FFA726</color>
+
+    <color name="darker_green">#4CAF50</color>
+    <color name="warning">@color/red_500</color>
+    <color name="div">#2B2B2B2B</color>
+    <color name="red_500">#F44336</color>
+    <color name="amber_500">#FFC107</color>
+
 </resources>

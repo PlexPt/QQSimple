@@ -3,10 +3,9 @@ package me.zpp0196.qqsimple.hook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import me.zpp0196.qqsimple.Common;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
-import me.zpp0196.qqsimple.hook.util.Util;
 
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingSettingActivity;
-import static me.zpp0196.qqsimple.hook.util.Util.isMoreThan735;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan735;
 
 /**
  * Created by Deng on 2018/2/16.
@@ -54,12 +53,12 @@ class RemoveImagine extends BaseHook {
         hideView("qr_code_icon", "hide_sidebar_my_qr_code");
         // 隐藏侧滑栏打卡/每日任务
         hideView("mydaily", "hide_sidebar_my_daily");
-        // 隐藏侧滑栏 QQ 信息
+        // 隐藏侧滑栏 QQ信息
         hideView("nickname_area", "hide_sidebar_qq_info");
         hideView("sig_layout", "hide_sidebar_qq_info");
         // 隐藏侧滑栏会员栏
         hideView("myvip", "hide_sidebar_vip");
-        // 隐藏侧滑栏 QQ 钱包
+        // 隐藏侧滑栏 QQ钱包
         hideView("mypocket", "hide_sidebar_pocket");
         // 隐藏侧滑栏个性装扮
         hideView("myDressup", "hide_sidebar_dress_up");
@@ -112,7 +111,7 @@ class RemoveImagine extends BaseHook {
         hideView("timtips", "hide_tim_in_my_file");
         // 隐藏设置电话号码
         hideView("qqsetting2_phone_unity_info", "hide_setting_phone_number");
-        // 隐藏设置 QQ 达人
+        // 隐藏设置 QQ达人
         hideView("qqsetting2_newXmanLayout", "hide_setting_qq_expert");
         // 隐藏设置消息通知
         hideView("qqsetting2_msg_notify", "hide_setting_msg_notify");
@@ -130,7 +129,7 @@ class RemoveImagine extends BaseHook {
         hideView("cu_open_card_guide_entry", "hide_setting_free_flow");
         // 隐藏设置关于QQ与帮助
         hideView("about", "hide_setting_about");
-        if(isMoreThan735()){
+        if (isMoreThan735()) {
             // 隐藏贴表情
             hideView("pic_light_emoj", "hide_group_stick_face");
         }
@@ -140,7 +139,9 @@ class RemoveImagine extends BaseHook {
      * 隐藏小红点
      */
     private void hideRedDot() {
-        if (!getBool(Common.PREFS_KEY_HIDE_SOME_RED_DOT)) return;
+        if (!getBool(Common.PREFS_KEY_HIDE_SOME_RED_DOT)) {
+            return;
+        }
         findAndHookMethod(QQSettingSettingActivity, "a", XC_MethodReplacement.returnConstant(false));
         // hideView("qzone_super_font_tab_reddot");
         // hideView("qzone_uploadphoto_item_reddot");
@@ -149,7 +150,7 @@ class RemoveImagine extends BaseHook {
         hideDrawable("skin_tips_dot");
         // hideDrawable("skin_tips_dot_small");
         hideDrawable("skin_tips_new");
-        if(isMoreThan735()) {
+        if (isMoreThan735()) {
             hideDrawable("shortvideo_redbag_outicon");
         }
     }
@@ -174,7 +175,9 @@ class RemoveImagine extends BaseHook {
         hideView("feed_guide_comment_bar", "hide_qzone_et_comment");
         // 隐藏评论内容
         hideView("feed_canvas_comment_area_stub", "hide_qzone_et_comment_content");
-        if (!getBool("hide_qzone_AD")) return;
+        if (!getBool("hide_qzone_AD")) {
+            return;
+        }
         // 隐藏空间绿厂广告
         hideView("shuoshuo_ad_upload_quality");
         hideView("quality_hd_ad");

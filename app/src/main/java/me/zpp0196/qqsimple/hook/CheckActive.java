@@ -4,7 +4,7 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import me.zpp0196.qqsimple.BuildConfig;
-import me.zpp0196.qqsimple.activity.SettingActivity;
+import me.zpp0196.qqsimple.activity.MainActivity;
 
 /**
  * Created by Deng on 2018/2/12.
@@ -12,9 +12,11 @@ import me.zpp0196.qqsimple.activity.SettingActivity;
 
 class CheckActive {
 
-    @SuppressWarnings("all")
+    @SuppressWarnings ("all")
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        if (!loadPackageParam.packageName.equals(BuildConfig.APPLICATION_ID)) return;
-        XposedHelpers.findAndHookMethod(SettingActivity.class.getName(), loadPackageParam.classLoader, "isModuleActive", XC_MethodReplacement.returnConstant(true));
+        if (!loadPackageParam.packageName.equals(BuildConfig.APPLICATION_ID)) {
+            return;
+        }
+        XposedHelpers.findAndHookMethod(MainActivity.class.getName(), loadPackageParam.classLoader, "isModuleActive", XC_MethodReplacement.returnConstant(true));
     }
 }

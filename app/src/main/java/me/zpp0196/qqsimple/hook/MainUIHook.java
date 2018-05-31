@@ -14,7 +14,7 @@ import java.util.List;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
-import me.zpp0196.qqsimple.hook.util.Util;
+import me.zpp0196.qqsimple.hook.util.HookUtil;
 
 import static me.zpp0196.qqsimple.hook.comm.Classes.ActionSheet;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseActivity;
@@ -38,7 +38,7 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.TListView;
 class MainUIHook extends BaseHook {
 
     @Override
-    public void init(){
+    public void init() {
         hideMenuUAF();
         hidePopupMenuEntry();
         hidePopupMenuContacts();
@@ -47,7 +47,7 @@ class MainUIHook extends BaseHook {
         hideContactsConstant();
         // 隐藏消息界面全民闯关入口
         findAndHookMethod(ConversationNowController, "a", String.class, replaceNull("hide_national_entrance"));
-        if(Util.isMoreThan735()){
+        if (HookUtil.isMoreThan735()) {
             // 隐藏动态界面大家都在搜
             findAndHookMethod(Leba, "a", List.class, replaceObj("hide_everyone_searching"));
         }
@@ -62,15 +62,25 @@ class MainUIHook extends BaseHook {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 Field field = findField(MainFragment, Dialog.class, "b");
-                if (field == null) return;
+                if (field == null) {
+                    return;
+                }
                 Dialog dialog = (Dialog) field.get(param.thisObject);
-                if (dialog == null) return;
+                if (dialog == null) {
+                    return;
+                }
                 Field field1 = findFirstFieldByExactType(ActionSheet, LinearLayout.class);
-                if (field1 == null) return;
-                if (!getBool("hide_menu_uaf")) return;
+                if (field1 == null) {
+                    return;
+                }
+                if (!getBool("hide_menu_uaf")) {
+                    return;
+                }
                 LinearLayout layout = (LinearLayout) field1.get(dialog);
-                layout.getChildAt(0).setVisibility(View.GONE);
-                layout.getChildAt(1).setVisibility(View.GONE);
+                layout.getChildAt(0)
+                        .setVisibility(View.GONE);
+                layout.getChildAt(1)
+                        .setVisibility(View.GONE);
             }
         });
     }
@@ -84,8 +94,12 @@ class MainUIHook extends BaseHook {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 ImageView view = (ImageView) findField(Conversation, ImageView.class, "a").get(param.thisObject);
-                if (!getBool("hide_popup_menu_entry")) return;
-                if(view != null) view.setVisibility(View.GONE);
+                if (!getBool("hide_popup_menu_entry")) {
+                    return;
+                }
+                if (view != null) {
+                    view.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -93,25 +107,41 @@ class MainUIHook extends BaseHook {
     /**
      * 隐藏消息列表右上角快捷入口内容
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings ("unchecked")
     private void hidePopupMenuContacts() {
         findAndHookMethod(PopupMenuDialog, "a", Activity.class, List.class, PopupMenuDialog$OnClickActionListener, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
                 List list = (List) param.args[1];
-                if(list == null || list.isEmpty()) return;
+                if (list == null || list.isEmpty() || PopupMenuDialog$MenuItem == null) {
+                    return;
+                }
                 List needRemove = new ArrayList();
-                if (PopupMenuDialog$MenuItem == null) return;
                 for (Object item : list) {
                     String title = (String) findField(PopupMenuDialog$MenuItem, String.class, "a").get(item);
-                    if (title.equals("创建群聊") && getBool("hide_popup_multiChat")) needRemove.add(item);
-                    if (title.equals("加好友/群") && getBool("hide_popup_add")) needRemove.add(item);
-                    if (title.equals("扫一扫") && getBool("hide_popup_sweep")) needRemove.add(item);
-                    if (title.equals("面对面快传") && getBool("hide_popup_face2face")) needRemove.add(item);
-                    if (title.equals("付款") && getBool("hide_popup_pay")) needRemove.add(item);
-                    if (title.equals("拍摄") && getBool("hide_popup_shoot")) needRemove.add(item);
-                    if (title.equals("高能舞室") && getBool("hide_popup_videoDance")) needRemove.add(item);
+                    if (title.equals("创建群聊") && getBool("hide_popup_multiChat")) {
+                        needRemove.add(item);
+                    }
+                    if (title.equals("加好友/群") && getBool("hide_popup_add")) {
+                        needRemove.add(item);
+                    }
+                    if (title.equals("扫一扫") && getBool("hide_popup_sweep")) {
+                        needRemove.add(item);
+                    }
+                    if (title.equals("面对面快传") && getBool("hide_popup_face2face")) {
+                        needRemove.add(item);
+                    }
+                    if (title.equals("付款") && getBool("hide_popup_pay")) {
+                        needRemove.add(item);
+                    }
+                    if (title.equals("拍摄") && getBool("hide_popup_shoot")) {
+                        needRemove.add(item);
+                    }
+                    if (title.equals("高能舞室") && getBool("hide_popup_videoDance")) {
+                        needRemove.add(item);
+                    }
+
                 }
                 list.removeAll(needRemove);
             }
@@ -127,13 +157,21 @@ class MainUIHook extends BaseHook {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 View[] views = getObject(param.thisObject, View[].class, "a");
-                if (views == null) return;
+                if (views == null) {
+                    return;
+                }
                 // 联系人
-                if (getBool("hide_tab_contact")) views[2].setVisibility(View.GONE);
+                if (getBool("hide_tab_contact")) {
+                    views[2].setVisibility(View.GONE);
+                }
                 // 动态
-                if (getBool("hide_tab_dynamic")) views[3].setVisibility(View.GONE);
+                if (getBool("hide_tab_dynamic")) {
+                    views[3].setVisibility(View.GONE);
+                }
                 // 看点
-                if (getBool("hide_tab_readinjoy")) views[6].setVisibility(View.GONE);
+                if (getBool("hide_tab_readinjoy")) {
+                    views[6].setVisibility(View.GONE);
+                }
             }
         });
 
@@ -143,7 +181,8 @@ class MainUIHook extends BaseHook {
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
                 int i = (int) param.args[0];
-                if ((i == 33 && getBool("hide_tab_contact_num")) || (i == 34 && (getBool("hide_tab_dynamic_num")))) {
+                if ((i == 33 && getBool("hide_tab_contact_num")) ||
+                    (i == 34 && (getBool("hide_tab_dynamic_num")))) {
                     param.setResult(null);
                 }
             }
@@ -159,13 +198,16 @@ class MainUIHook extends BaseHook {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                if(!getBool("hide_search_conversation")) return;
+                if (!getBool("hide_search_conversation")) {
+                    return;
+                }
                 View view = (View) param.args[4];
-                if(view != null) {
+                if (view != null) {
                     view.setVisibility(View.GONE);
                     ViewGroup listView = (ViewGroup) param.args[0];
                     Activity activity = (Activity) param.args[3];
-                    int paddingTop = (int) (activity.getResources().getDisplayMetrics().density * 43 + 0.5f);
+                    int paddingTop = (int) (activity.getResources()
+                                                    .getDisplayMetrics().density * 43 + 0.5f);
                     listView.setPadding(0, -paddingTop, 0, 0);
                 }
             }
@@ -176,9 +218,12 @@ class MainUIHook extends BaseHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                if(!getBool("hide_search_contacts")) return;
+                if (!getBool("hide_search_contacts")) {
+                    return;
+                }
                 LinearLayout layout = getObject(param.thisObject, LinearLayout.class, "a");
-                View view = layout.findViewById(getIdInQQ("contactHeader")).findViewById(getIdInQQ("search_container"));
+                View view = layout.findViewById(getIdInQQ("contactHeader"))
+                        .findViewById(getIdInQQ("search_container"));
                 view.setVisibility(View.GONE);
             }
         });
@@ -228,8 +273,9 @@ class MainUIHook extends BaseHook {
                     param.args[0] = (b == 1 && i == 2) ? 3 : (b == 3 && i == 4) ? 0 : param.args[0];
                 }
                 if (isHideDevice && isHidePhone && isHidePubAccount) {
-                    if (i != 2 && i != 3 && i != 4)
+                    if (i != 2 && i != 3 && i != 4) {
                         return;
+                    }
                     m(1, 0);
                 }
                 if (!isHideDevice && isHidePhone && !isHidePubAccount) {
@@ -244,14 +290,16 @@ class MainUIHook extends BaseHook {
             }
 
             private void f(int pos) {
-                if (i != pos)
+                if (i != pos) {
                     return;
+                }
                 m(pos - 1, pos != 4 ? pos + 1 : 0);
             }
 
             private void f(int pos1, int pos2) {
-                if (i != pos1 && i != pos2)
+                if (i != pos1 && i != pos2) {
                     return;
+                }
                 m(pos1 - 1, pos2 != 4 ? pos2 + 1 : 0);
             }
 

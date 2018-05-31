@@ -1,5 +1,6 @@
 package me.zpp0196.qqsimple.util;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
@@ -13,9 +14,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
-import me.zpp0196.qqsimple.BuildConfig;
+import me.zpp0196.qqsimple.R;
+
+import static me.zpp0196.qqsimple.BuildConfig.VERSION_CODE;
+import static me.zpp0196.qqsimple.BuildConfig.VERSION_NAME;
 
 /**
  * Created by zpp0196 on 2018/5/11 0011.
@@ -23,29 +27,31 @@ import me.zpp0196.qqsimple.BuildConfig;
 
 public class UpdateUtil {
 
-    private static JSONObject jsonObject = null;
-    private static final String JSON_URL = "https://raw.githubusercontent.com/zpp0196/QQSimple/master/update.json";
-    private static List<String> thisVersionUpdateLog;
-
     public static final int FINISHED = 1, ERR = -1;
+    private static final String JSON_URL = "https://raw.githubusercontent.com/zpp0196/QQSimple/master/update.json";
+    private final static String KEY_VERSION_NAME = "versionName";
+    private final static String KEY_VERSION_CODE = "versionCode";
+    private final static String KEY_UPDATE_LOG = "updateLog";
+    private final static String KEY_UPDATE_LOG_CONTENT = "content";
+    private static JSONObject jsonObject = null;
 
     public static void CheckUpdate(Handler handler) {
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 Message msg = new Message();
                 try {
                     UpdateInfo updateInfo = new UpdateInfo();
-                    updateInfo.setUpdate(getVersionCode() > BuildConfig.VERSION_CODE);
+                    updateInfo.setUpdate(getVersionCode() > VERSION_CODE);
                     updateInfo.setVersionName(getVersionName());
                     updateInfo.setVersionCode(getVersionCode());
-                    updateInfo.setUpdateLog(getUpdateLog());
+                    updateInfo.setUpdateLog(getNewVersionLog());
                     msg.obj = updateInfo;
                     msg.what = FINISHED;
                 } catch (Exception e) {
                     msg.obj = e;
                     msg.what = ERR;
-                }finally {
+                } finally {
                     handler.sendMessage(msg);
                 }
             }
@@ -53,7 +59,7 @@ public class UpdateUtil {
     }
 
     private static JSONObject getJson() throws IOException, JSONException {
-        if(jsonObject == null) {
+        if (jsonObject == null) {
             URL url = new URL(JSON_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(15000);
@@ -76,39 +82,45 @@ public class UpdateUtil {
     }
 
     private static String getVersionName() throws JSONException, IOException {
-        return getJson().getString("versionName");
+        return getJson().getString(KEY_VERSION_NAME);
     }
 
 
     private static int getVersionCode() throws JSONException, IOException {
-        return getJson().getInt("versionCode");
+        return getJson().getInt(KEY_VERSION_CODE);
     }
 
-    private static List<String> getUpdateLog() throws JSONException, IOException {
-        JSONArray array = getJson().getJSONArray("updateLog");
-        List<String> list = new ArrayList<>();
+    private static String getNewVersionLog() throws JSONException, IOException {
+        JSONArray array = getJson().getJSONArray(KEY_UPDATE_LOG);
+        ArrayList<String> list = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
-            JSONObject obj = array.getJSONObject(i);
-            list.add(String.format("%s、%s", i + 1, obj.getString("content")));
+            list.add(array.getJSONObject(i)
+                    .getString(KEY_UPDATE_LOG_CONTENT));
         }
-        return list;
+        return getLogHtml(list, getVersionName(), getVersionCode());
     }
 
-    public static List<String> getThisVersionUpdateLog(){
-        if(thisVersionUpdateLog == null) {
-            thisVersionUpdateLog = new ArrayList<>();
-        }
-        thisVersionUpdateLog.clear();
-        thisVersionUpdateLog.add("适配测试版 7.6.3.3542");
-        thisVersionUpdateLog.add("压缩了模块安装包体积");
-        thisVersionUpdateLog.add("修复了华为等部分手机重启后模块不生效的 bug");
-        return thisVersionUpdateLog;
+    public static String getThisVersionLog(Context context) {
+        String[] log = context.getResources()
+                .getStringArray(R.array.UpdateLog);
+        ArrayList<String> list = new ArrayList<>();
+        Collections.addAll(list, log);
+        return getLogHtml(list, VERSION_NAME, VERSION_CODE);
     }
 
-    public static class UpdateInfo{
+    private static String getLogHtml(ArrayList<String> logList, String versionName, int versionCode) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < logList.size(); i++) {
+            sb.append(String.format("<li>%s</li>", logList.get(i)));
+        }
+        return String.format("<h3 style=\"padding-left:16px\">v%s(%s)</h3><ul>%s</ul>", versionName, versionCode, sb.toString());
+    }
+
+    public static class UpdateInfo {
         private boolean isUpdate;
         private String versionName;
         private int versionCode;
+        private String updateLog;
 
         public boolean isUpdate() {
             return isUpdate;
@@ -134,14 +146,12 @@ public class UpdateUtil {
             this.versionCode = versionCode;
         }
 
-        public List<String> getUpdateLog() {
+        public String getUpdateLog() {
             return updateLog;
         }
 
-        public void setUpdateLog(List<String> updateLog) {
+        public void setUpdateLog(String updateLog) {
             this.updateLog = updateLog;
         }
-
-        private List<String> updateLog;
     }
 }

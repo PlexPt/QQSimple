@@ -10,13 +10,13 @@ import java.lang.reflect.Field;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.hook.comm.Ids;
-import me.zpp0196.qqsimple.hook.util.Util;
+import me.zpp0196.qqsimple.hook.util.HookUtil;
 import me.zpp0196.qqsimple.hook.util.XPrefs;
 
 import static de.robv.android.xposed.XposedHelpers.getStaticIntField;
 import static me.zpp0196.qqsimple.hook.comm.Classes.R$drawable;
 import static me.zpp0196.qqsimple.hook.comm.Classes.R$id;
-import static me.zpp0196.qqsimple.hook.util.Util.getQQVersion;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.getQQVersionName;
 
 /**
  * Created by zpp0196 on 2018/3/18.
@@ -26,32 +26,36 @@ public abstract class BaseHook {
 
     public abstract void init();
 
-    protected void log(String msg){
-        Util.log(getClass(), msg);
+    protected void log(String msg) {
+        HookUtil.log(getClass(), msg);
     }
 
-    protected void log(String format, Object... args){
-        Util.log(getClass(), format, args);
+    protected void log(String format, Object... args) {
+        HookUtil.log(getClass(), format, args);
     }
 
     protected int getIdInQQ(String name) {
         Integer id = Ids.getId(name);
-        if(id != null && id != 0) return id;
+        if (id != null && id != 0) {
+            return id;
+        }
         try {
             return getStaticIntField(R$id, name);
         } catch (Throwable e) {
-            log("%s Can't find the id of name: %s!", getQQVersion(), name);
+            log("%s Can't find the id of name: %s!", getQQVersionName(), name);
         }
         return 0;
     }
 
-    private int getDrawableIdInQQ(String name) {
+    protected int getDrawableIdInQQ(String name) {
         Integer id = Ids.getId(name);
-        if(id != null && id != 0) return id;
+        if (id != null && id != 0) {
+            return id;
+        }
         try {
             return getStaticIntField(R$drawable, name);
         } catch (Throwable e) {
-            log("%s Can't find the drawable of name: %s!", getQQVersion(), name);
+            log("%s Can't find the drawable of name: %s!", getQQVersionName(), name);
         }
         return 0;
     }
@@ -64,15 +68,19 @@ public abstract class BaseHook {
         hideView(getIdInQQ(name), key);
     }
 
-    private void hideView(int id, String... key){
-        if (id == 0) return;
+    private void hideView(int id, String... key) {
+        if (id == 0) {
+            return;
+        }
         findAndHookMethod(View.class, "setLayoutParams", ViewGroup.LayoutParams.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 View view = (View) param.thisObject;
                 if (view.getId() == id) {
-                    if(!(getBool(key))) return;
+                    if (!(getBool(key))) {
+                        return;
+                    }
                     ViewGroup.LayoutParams layoutParams = (ViewGroup.LayoutParams) param.args[0];
                     layoutParams.height = 1;
                     layoutParams.width = 0;
@@ -91,13 +99,17 @@ public abstract class BaseHook {
     }
 
     private void hideDrawable(int id, String... key) {
-        if (id == 0) return;
+        if (id == 0) {
+            return;
+        }
         findAndHookMethod(ImageView.class, "setImageResource", int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
                 if ((int) param.args[0] == id) {
-                    if(!(getBool(key))) return;
+                    if (!(getBool(key))) {
+                        return;
+                    }
                     param.setResult(null);
                 }
             }
@@ -105,7 +117,9 @@ public abstract class BaseHook {
     }
 
     protected Field findFirstFieldByExactType(@NonNull Class<?> clazz, Class<?> type) {
-        if(type == null) return null;
+        if (type == null) {
+            return null;
+        }
         Class<?> clz = clazz;
         do {
             for (Field field : clz.getDeclaredFields()) {
@@ -115,14 +129,14 @@ public abstract class BaseHook {
                 }
             }
         } while ((clz = clz.getSuperclass()) != null);
-        log("%s Can't find the field of type: %s in class: %s!", getQQVersion(), type.getName(), clazz.getName());
+        log("%s Can't find the field of type: %s in class: %s!", getQQVersionName(), type.getName(), clazz.getName());
         return null;
     }
 
-    @SuppressWarnings("all")
-    protected <T> T getObject(@NonNull Object obj, @NonNull Class<?> type, String name){
+    @SuppressWarnings ("unchecked")
+    protected <T> T getObject(@NonNull Object obj, @NonNull Class<?> type, String name) {
         try {
-            return (T)findField(obj.getClass(), type, name).get(obj);
+            return (T) findField(obj.getClass(), type, name).get(obj);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -130,47 +144,55 @@ public abstract class BaseHook {
     }
 
     protected Field findField(@NonNull Class<?> clazz, Class<?> type, String name) {
-        if(type == null) return null;
+        if (type == null) {
+            return null;
+        }
         Class<?> clz = clazz;
         do {
             for (Field field : clz.getDeclaredFields()) {
-                if (field.getType() == type && field.getName().equals(name)) {
+                if (field.getType() == type && field.getName()
+                        .equals(name)) {
                     field.setAccessible(true);
                     return field;
                 }
             }
         } while ((clz = clz.getSuperclass()) != null);
-        log("%s Can't find the field of type: %s and name: %s in class: %s!", getQQVersion(), type.getName(), name, clazz.getName());
+        log("%s Can't find the field of type: %s and name: %s in class: %s!", getQQVersionName(), type.getName(), name, clazz.getName());
         return null;
     }
 
     protected void findAndHookMethod(Class<?> clazz, String methodName, Object... parameterTypesAndCallback) {
-        if (clazz == null || methodName.equals("") || parameterTypesAndCallback.length == 0 || !(parameterTypesAndCallback[parameterTypesAndCallback.length - 1] instanceof XC_MethodHook))
+        if (clazz == null || methodName.equals("") || parameterTypesAndCallback.length == 0 ||
+            !(parameterTypesAndCallback[parameterTypesAndCallback.length -
+                                        1] instanceof XC_MethodHook)) {
             return;
+        }
         for (Object obj : parameterTypesAndCallback) {
-            if (obj == null) return;
+            if (obj == null) {
+                return;
+            }
         }
         try {
             XposedHelpers.findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
         } catch (Throwable e) {
-            Util.log(e);
+            HookUtil.log(e);
         }
     }
 
-    protected XC_MethodHook replaceNull(String... key){
+    protected XC_MethodHook replaceNull(String... key) {
         return replaceObj(null, key);
     }
 
-    protected XC_MethodHook replaceFalse(String... key){
+    protected XC_MethodHook replaceFalse(String... key) {
         return replaceObj(false, key);
     }
 
-    protected XC_MethodHook replaceObj(Object result, String... key){
+    protected XC_MethodHook replaceObj(Object result, String... key) {
         return new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                if(getBool(key)){
+                if (getBool(key)) {
                     param.setResult(result);
                 }
             }
@@ -178,13 +200,17 @@ public abstract class BaseHook {
     }
 
     protected boolean getBool(String key) {
-        return XPrefs.getBoolean(key, false);
+        return XPrefs.getBoolean(key);
     }
 
     protected boolean getBool(String... keys) {
-        if(keys == null || keys.length == 0) return true;
+        if (keys == null || keys.length == 0) {
+            return true;
+        }
         for (String key : keys) {
-            if (getBool(key)) return true;
+            if (getBool(key)) {
+                return true;
+            }
         }
         return false;
     }

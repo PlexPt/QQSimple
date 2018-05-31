@@ -1,22 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">QQ 精简模块 2.0</string>
-    <string name="instructions">
-        请务必仔细阅读以下内容！\n\n
-        <b>【关于软件】</b>\n
-        QQ 精简模块（以下简称本软件）是一款基于 Xposed 框架运行的模块，大部分功能用于隐藏一些 QQ 中一些不想看到的视图，仅仅只是被隐藏了而已，不会删除手机上的文件，也不会去修改 QQ 的 apk 源文件即不算使用第三方修改的 QQ！所以如果出现 QQ 被冻结或者任何其他问题一概不负责也请不要来抱怨！\n\n
-        <b>【运行环境】</b>\n
-        本软件只能在 Android 4.1 及以上的并且具有 (Virtual)Xposed 环境的 Android 设备上运行，支持 QQ 版本为 7.5.0 及以上，Play 版以及其他版本自行测试，不保证全部功能均可正常使用但大部分功能还是可以的。\n\n
-        如果模块出现失效问题请先确认不是由于自身使用不当或者和其他软件冲突造成的！\n\n
-        <b>【关于转载】</b>\n
-        本软件只在酷安上架过，并且该版本在除了酷安以外的任何地方都没有过授权，如有授权作者会发布相关声明的。\n\n
-        本软件仅供学习交流使用，未经作者允许请勿私自在其他论坛或社区等地方发搬砖帖！否则均视为盗版！\n\n
-        本软件完全开源免费请勿用于商业用途！如果因为本软件损失了任何可消费的东西均与作者无关！\n\n
-        <b>【关于捐赠】</b>\n
-        感谢所有捐赠过的小伙伴，你们的支持就是我开发的动力，如果你们喜欢这个软件或者想要支持我可以点击下方捐赠按钮打赏支持或者评分给五星好评或者去 GitHub Star。\n\n
-        更多内容点击更多浏览
-    </string>
-    <string name="bor_help">
-        该功能需要【存储空间】权限，如果没有权限请先授予该应用权限！\n\n
-        备份会将配置保存到 <u>/sdcard/Android/data/me.zpp0196.qqsimple/</u> 这个目录下（在 Vxp 里面备份也是这个目录），名字为 <u>me.zpp0196.qqsimple_preferences.xml</u>，请自行保存（如果已存在备份会直接覆盖）如不保存卸载模块后备份将会被自动删除；如需恢复配置将文件改为上面的名字放在上面的目录里面然后在本软件里面恢复即可。
-        </string>
+
+    <string name="app_name">QQ净化</string>
+    <string name="author_name">zpp0196</string>
+    <string name="qq_name">QQ</string>
+
+    <string name="menu_reboot_qq">重启QQ</string>
+
+    <string name="img_description_app_icon">应用图标</string>
+    <string name="img_description_check_state">检查模块状态图标</string>
+    <string name="img_description_item_about">About item icon</string>
+    <string name="img_description_item_card_item_icon">CardItem icon</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="nav_item_main">@string/app_name</string>
+    <string name="nav_item_mainui">主界面</string>
+    <string name="nav_item_sidebar">侧滑栏</string>
+    <string name="nav_item_qzone">QQ空间</string>
+    <string name="nav_item_chat">聊天界面</string>
+    <string name="nav_item_group">群聊界面</string>
+    <string name="nav_item_other">其他功能</string>
+    <string name="nav_item_setting">设置</string>
+    <string name="nav_item_about">关于</string>
+
+    <string name="enable_module">启用模块</string>
+    <string name="module_active">模块已激活。</string>
+    <string name="module_not_active">模块未激活！</string>
+    <string name="module_not_support">未兼容的版本！</string>
+
+    <string name="item_card_device">设备</string>
+    <string name="item_card_device_android">Android %s(%s, API %d)</string>
+    <string name="item_card_comm_version">版本：%s(%d)</string>
+    <string name="item_card_qq">@string/qq_name</string>
+    <string name="item_card_qq_stop">结束运行</string>
+    <string name="item_card_qq_stop_vxp">结束运行(VirtualXposed)</string>
+    <string name="item_card_module">@string/app_name</string>
+    <string name="item_card_module_update_check">检查更新</string>
+    <string name="item_card_module_update_check_ing">正在检查更新</string>
+    <string name="item_card_module_update_check_latest">当前已是最新版本！</string>
+    <string name="item_card_module_update_check_update">立即更新</string>
+    <string name="item_card_module_update_check_new">发现新版本</string>
+    <string name="item_card_module_update_vxp">更新模块(VirtualXposed)</string>
+
+    <string name="about_item_version">版本</string>
+    <string name="about_item_author">作者</string>
+    <string name="about_item_thanks">致谢</string>
+    <string name="about_item_donate">捐赠</string>
+    <string name="about_item_github">源码</string>
+    <string name="about_item_log">日志</string>
+    <string name="about_item_thanks_title">特别鸣谢</string>
+    <string name="about_item_thanks_content">感谢<a href="http://www.coolapk.com/u/753785">祈无</a>提供的<a href="https://github.com/Qiwu2542284182/QQ_Simplity">QQ精简模块</a>源码以及<a href="http://www.coolapk.com/u/1257513">weishu</a>和<a href="http://www.coolapk.com/u/485448">YiTry</a>提供的技术支持，然后谢谢<a href="http://www.coolapk.com/u/491391">sftmi</a>帮我画的图标，还有谢谢<a href="http://www.coolapk.com/u/738446">静若兰亭</a>的帮忙，当然也不能少了酷安的一些大佬和所有捐赠过和支持过我的小伙伴们。Thank you very much!\n\n\n<b>致谢开源项目</b>：\n<a href="https://github.com/Qiwu2542284182/QQ_Simplity">QQ_Simplity</a>\n<a href="https://github.com/rovo89/XposedInstaller">Xposed Installer</a>\n<a href="https://github.com/afollestad/material-dialogs">Material Dialogs</a></string>
+    <string name="about_github_url">https://github.com/zpp0196/QQSimple</string>
+    <string name="about_readme"><a href="https://github.com/zpp0196/QQSimple/blob/master/README.md">Readme</a></string>
+    <string name="about_issues"><a href="https://github.com/zpp0196/QQSimple/issues">Issues</a></string>
+    <string name="about_releases"><a href="https://github.com/zpp0196/QQSimple/releases">Releases</a></string>
+    <string name="about_copyright">Copyright © zpp0196. All Rights Reserved.</string>
+    <string name="about_egg_title">Who am I?</string>
+    <string name="about_egg_close">Close</string>
+    <string name="about_egg_content">Hello! My name is Easter egg, I\'m %d %s old that I was born on %s.\n\nYou have used me for %d %s since you installed me on %s, and you have opened me %d times. %s \n\nAnyway, have a good time :-P</string>
+    <string name="about_egg_content_has_donate">All I know is that you clicked the donation button %d times, but I don\'t know if you did or didn\'t $_$</string>
+    <string name="about_egg_content_not_donate">Too bad you didn\'t click the donation button once :-(</string>
+
+    <string name="title_explain">说明</string>
+    <string name="title_tip">提示</string>
+    <string name="title_open">打开</string>
+    <string name="title_open_vxp">打开 VirtualXposed</string>
+    <string name="title_update_log">更新日志</string>
+    <string name="title_appear_exception">程序发生异常</string>
+    <string name="title_action_copy_log">复制日志</string>
+
+    <string name="button_close">关闭</string>
+    <string name="button_backup">备份</string>
+    <string name="button_get_permission">授权</string>
+    <string name="button_reboot">重启</string>
+    <string name="button_releases">历史版本</string>
+    <string name="switch_not_prompt">不再提示</string>
+
+    <string name="shell_stop_finish">已结束运行</string>
+    <string name="shell_execute_finish">执行完毕</string>
+
+    <string name="tip_xposed_not_install">未找到 Xposed Installer！</string>
+    <string name="tip_vxp_must_be_running">请先保持 VirtualXposed 在后台运行！</string>
+    <string name="tip_popup_menu">该分组里面虽然提供了 7 个开关，但至少需要关闭 1 个，如果全部开启会导致点击菜单时 QQ 闪退，如果你想全部隐藏可以直接开启上面的「隐藏快捷入口」，请根据自己实际情况选择性开启！</string>
+    <string name="tip_qzone_menu">该分组里面虽然提供了 6 个开关，但却只能开启 3 个，多开一个都会导致点击菜单时空间闪退，请根据自己实际情况选择性开启！</string>
+    <string name="tip_qzone_ad">该开关主要隐藏一些空间里面的小广告以及主页顶部的<b>猜你喜欢</b>、<b>最近在玩</b>、<b>好友生日</b>等包括<b>消息通知</b>在内的一些内容，所以会出现看不到消息通知的情况，空间主页顶部右上角加号左边的图标进去就是消息界面。</string>
+    <string name="tip_other_fontSize">请输入[13.92 &#8211; 18.00]之间的数值！</string>
+    <string name="tip_setting_backup">该功能需要「存储空间」权限，如果没有权限请先授予该应用权限！\n\n该功能会将本软件的应用数据保存到 %s/Android/data/%s/%s_preferences.xml ，请自行保存（如果已存在备份会直接覆盖）如不保存卸载模块后备份将会被自动删除！\n\n如需恢复数据将备份好的 .xml 文件改好名放进上面的目录里面然后在本软件里面恢复即可。</string>
+    <string name="tip_setting_backup_finish">已备份到：%s</string>
+    <string name="tip_setting_backup_not_find_file">未找到备份文件！</string>
+    <string name="tip_setting_restore_reboot_tip">已恢复备份文件需要重启应用生效！</string>
+    <string name="tip_setting_failure">设置失败！</string>
+
+    <string name="time_days">days</string>
+
+    <string-array name="UpdateLog">
+        <item>界面更改为 MD 风格</item>
+        <item>软件更名为「QQ净化」</item>
+        <item>压缩了模块安装包体积</item>
+        <item>适配测试版 7.6.3.3542</item>
+        <item>适配稳定版 7.6.3.3560</item>
+        <item>默认开启拦截热修复功能</item>
+        <item>添加了自定义字体大小功能</item>
+        <item>修复了不能隐藏侧滑栏我的视频的 bug</item>
+        <item>修复了华为等部分手机重启后模块不生效的 bug</item>
+    </string-array>
+
 </resources>

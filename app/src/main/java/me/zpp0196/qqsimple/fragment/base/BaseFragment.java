@@ -1,77 +1,72 @@
 package me.zpp0196.qqsimple.fragment.base;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
-import android.support.annotation.NonNull;
-import android.widget.Toast;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-
-import java.io.File;
-
-import me.zpp0196.qqsimple.BuildConfig;
-import me.zpp0196.qqsimple.activity.SettingActivity;
+import me.zpp0196.qqsimple.activity.MainActivity;
 
 /**
- * Created by zpp0196 on 2018/3/16.
+ * Created by zpp0196 on 2018/5/26 0026.
  */
 
-public abstract class BaseFragment extends PreferenceFragment {
+public abstract class BaseFragment extends Fragment {
 
+    private View rootView;
+
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        addPreferencesFromResource(setPrefs());
-        setWorldReadable();
-        initData();
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(setLayoutId(), container, false);
+        init();
+        return rootView;
     }
 
-    protected abstract int setPrefs();
+    @LayoutRes
+    protected abstract int setLayoutId();
 
-    protected void initData() {
+    @StringRes
+    public abstract int getTitleId();
+
+    @SuppressWarnings ("unchecked")
+    protected <T extends View> T findViewById(@IdRes int id) {
+        return (T) getRootView().findViewById(id);
+    }
+
+    protected void init() {}
+
+    public View getRootView() {
+        return rootView;
+    }
+
+    public MainActivity getMainActivity() {
+        return (MainActivity) getActivity();
+    }
+
+    public SharedPreferences getPrefs() {
+        return getMainActivity().getPrefs();
+    }
+
+    public SharedPreferences.Editor getEditor() {
+        return getPrefs().edit();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        setWorldReadable();
+        getMainActivity().setWorldReadable();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        setWorldReadable();
+        getMainActivity().setWorldReadable();
     }
-
-    @SuppressWarnings({"deprecation", "ResultOfMethodCallIgnored"})
-    @SuppressLint({"SetWorldReadable", "WorldReadableFiles"})
-    public void setWorldReadable() {
-        File dataDir = new File(getActivity().getApplicationInfo().dataDir);
-        File prefsDir = new File(dataDir, "shared_prefs");
-        File prefsFile = new File(prefsDir, BuildConfig.APPLICATION_ID + "_preferences.xml");
-        if (prefsFile.exists()) {
-            for (File file : new File[]{dataDir, prefsDir, prefsFile}) {
-                file.setReadable(true, false);
-                file.setExecutable(true, false);
-            }
-        }
-    }
-
-    protected void showToast(@NonNull Object msg) {
-        Activity activity = getActivity();
-        if (activity != null && !msg.toString().isEmpty()) {
-            Toast.makeText(getActivity(), msg.toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    protected void showDialog(String msg) {
-        new MaterialDialog.Builder(getActivity()).title("说明").content(msg).positiveText("关闭").build().show();
-    }
-
-    protected SettingActivity getSettingActivity() {
-        return (SettingActivity) getActivity();
-    }
-
 }
