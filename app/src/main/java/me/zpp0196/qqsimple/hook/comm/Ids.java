@@ -44,7 +44,7 @@ public class Ids {
         if (versionCode > supportVersion[supportVersion.length - 1] || versionCode < 794) {
             return false;
         }
-        if(versionCode >= 794 && versionCode <= 758){
+        if(versionCode >= 794 && versionCode <= 818){
             return true;
         }
 
