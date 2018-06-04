@@ -123,13 +123,14 @@ class OtherHook extends BaseHook {
      * 防止消息撤回
      */
     private void preventMessagesWithdrawn() {
-        findAndHookMethod(QQMessageFacade, "a", ArrayList.class, boolean.class, new XC_MethodReplacement() {
+        findAndHookMethod(QQMessageFacade, "a", ArrayList.class, boolean.class, new XC_MethodHook() {
             @Override
-            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 ArrayList arrayList = (ArrayList) param.args[0];
                 if (arrayList == null || arrayList.isEmpty() ||
-                    HookUtil.isCallingFrom("C2CMessageProcessor")) {
-                    return null;
+                    HookUtil.isCallingFrom("C2CMessageProcessor") ||
+                        !getBool("prevent_messages_withdrawn")) {
+                    return;
                 }
                 Object revokeMsgInfo = arrayList.get(0);
 
@@ -153,7 +154,7 @@ class OtherHook extends BaseHook {
                         //
                     }
                 }
-                return null;
+                param.setResult(null);
             }
         });
     }

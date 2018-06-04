@@ -1,12 +1,15 @@
 {
   "versionName": "2.1.0",
-  "versionCode": 45,
+  "versionCode": 46,
   "updateLog": [
     {
       "content": "修复部分机型闪退问题"
     },
     {
       "content": "修复闪照相关功能"
+    },
+    {
+      "content": "修复防撤回不能关闭的 bug"
     },
     {
       "content": "修复隐藏空间提醒错位的 bug"
