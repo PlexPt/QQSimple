@@ -16,5 +16,12 @@ QQ 精简模块（以下简称本软件）是一款基于 Xposed 框架运行的
 * [更新日志](/Log.md)
 * [问题专区](/Bug.md)
 * [模块下载](https://www.coolapk.com/apk/179983)
-* [QQ 群](https://jq.qq.com/?_wv=1027&k=56uHPQ9)
-* [支付宝捐赠](https://mobilecodec.alipay.com/client_download.htm?qrcode=FKX03149H8YOUWESHOCEC6)
+* [QQ群：676836109](https://jq.qq.com/?_wv=1027&k=56uHPQ9)
+
+### 支持
+
+如果你喜欢这个作品想要支持我可以选择 Star 这个项目或者去酷安评分也可以选择扫描下方二维码给我捐赠
+
+![支付宝捐赠](/alipay.jpg)
+
+![微信赞赏](/vxin.png)
