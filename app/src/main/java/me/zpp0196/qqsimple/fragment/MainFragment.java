@@ -6,12 +6,13 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
 
@@ -30,9 +31,7 @@ import static me.zpp0196.qqsimple.BuildConfig.APPLICATION_ID;
 import static me.zpp0196.qqsimple.BuildConfig.VERSION_CODE;
 import static me.zpp0196.qqsimple.BuildConfig.VERSION_NAME;
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
-import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_VXP;
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_XPOSED_INSTALLER;
-import static me.zpp0196.qqsimple.Common.PREFS_KEY_APP_VERSION_CODE;
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_CHECK_UPDATE_AUTO;
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_SWITCH_ALL;
 import static me.zpp0196.qqsimple.hook.comm.Ids.isSupport;
@@ -40,9 +39,6 @@ import static me.zpp0196.qqsimple.util.CommUtil.getQQVersionCode;
 import static me.zpp0196.qqsimple.util.CommUtil.getQQVersionName;
 import static me.zpp0196.qqsimple.util.CommUtil.isInVxp;
 import static me.zpp0196.qqsimple.util.CommUtil.isInstalled;
-import static me.zpp0196.qqsimple.util.ShellUtil.CMD_LAUNCH;
-import static me.zpp0196.qqsimple.util.ShellUtil.CMD_REBOOT;
-import static me.zpp0196.qqsimple.util.ShellUtil.CMD_UPDATE;
 import static me.zpp0196.qqsimple.util.ShellUtil.Result.DEFAULT;
 import static me.zpp0196.qqsimple.util.ShellUtil.Result.LAUNCH;
 import static me.zpp0196.qqsimple.util.ShellUtil.Result.VXP;
@@ -89,26 +85,27 @@ public class MainFragment extends BaseFragment {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 Result result = (Result) msg.obj;
-                Snackbar snackbar = Snackbar.make(getRootView(), result.getResult(), Snackbar.LENGTH_LONG);
-                String open = getString(R.string.title_open);
-                String actionTitle = open + result.getProgressName();
+                String negativeText = String.format(getString(R.string.title_open), result.getProgressName());
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
+                builder.title(R.string.title_execute_finish)
+                        .content(result.getResult())
+                        .negativeText(negativeText)
+                        .positiveText(R.string.button_close);
                 switch (msg.what) {
                     case DEFAULT:
-                        snackbar.setAction(actionTitle, v -> mainActivity.launchApp(result.getPackageName()));
-                        snackbar.show();
+                        builder.onNegative((dialog, which) -> mainActivity.launchApp(result.getPackageName()));
                         break;
                     case VXP:
-                        if (result.isVxpRunning()) {
-                            snackbar.setAction(actionTitle, v -> shellUtil.executeVxpCmd(CMD_LAUNCH, result.getPackageName(), result.getProgressName()));
-                            snackbar.show();
-                        }
-                    case LAUNCH:
-                        if (!result.isVxpRunning()) {
-                            Snackbar.make(getRootView(), result.getResult(), Snackbar.LENGTH_LONG)
-                                    .setAction(getString(R.string.title_open_vxp), v -> mainActivity.launchApp(PACKAGE_NAME_VXP))
-                                    .show();
-                        }
+                        builder.onNegative((dialog, which) -> shellUtil.executeVxpCmd(ShellUtil.VXP_CMD_TYPE.LAUNCH, result.getPackageName(), result.getProgressName()));
                         break;
+                }
+                if(result.getResult().contains("denied")){
+                    Toast.makeText(mainActivity, result.getResult(), Toast.LENGTH_LONG)
+                            .show();
+                    return;
+                }
+                if (msg.what != LAUNCH) {
+                    builder.show();
                 }
             }
         });
@@ -121,21 +118,21 @@ public class MainFragment extends BaseFragment {
             return false;
         });
         // 结束运行 QQ(Vxp)
-        stopVxpQQ.setOnClickListener(v -> shellUtil.executeVxpCmd(CMD_REBOOT, PACKAGE_NAME_QQ, getString(R.string.qq_name)));
+        stopVxpQQ.setOnClickListener(v -> shellUtil.executeVxpCmd(ShellUtil.VXP_CMD_TYPE.REBOOT, PACKAGE_NAME_QQ, getString(R.string.qq_name)));
         // 打开 QQ(Vxp)
         stopVxpQQ.setOnLongClickListener(v -> {
-            shellUtil.executeVxpCmd(CMD_LAUNCH, PACKAGE_NAME_QQ, getString(R.string.qq_name));
+            shellUtil.executeVxpCmd(ShellUtil.VXP_CMD_TYPE.LAUNCH, PACKAGE_NAME_QQ, getString(R.string.qq_name));
             return false;
         });
         // 打开酷安
         moduleVersion.setOnClickListener(v -> mainActivity.openCoolApk());
         // 检查更新
-        checkUpdate.setOnClickListener(v -> checkUpdate(checkUpdate.getTitleView()));
+        checkUpdate.setOnClickListener(v -> checkUpdate(checkUpdate.getTitleView(), false));
         // 更新模块(Vxp)
-        updateVxp.setOnClickListener(v -> shellUtil.executeVxpCmd(CMD_UPDATE, APPLICATION_ID, getString(R.string.app_name)));
+        updateVxp.setOnClickListener(v -> shellUtil.executeVxpCmd(ShellUtil.VXP_CMD_TYPE.UPDATE, APPLICATION_ID, getString(R.string.app_name)));
         // 进入模块(Vxp)
         updateVxp.setOnLongClickListener(v -> {
-            shellUtil.executeVxpCmd(CMD_LAUNCH, APPLICATION_ID, getString(R.string.item_card_module));
+            shellUtil.executeVxpCmd(ShellUtil.VXP_CMD_TYPE.LAUNCH, APPLICATION_ID, getString(R.string.item_card_module));
             return false;
         });
 
@@ -151,7 +148,7 @@ public class MainFragment extends BaseFragment {
 
         boolean isAutoUpdate = getPrefs().getBoolean(PREFS_KEY_CHECK_UPDATE_AUTO, false);
         if (isAutoUpdate) {
-            checkUpdate(checkUpdate.getTitleView());
+            checkUpdate(checkUpdate.getTitleView(), true);
         }
     }
 
@@ -162,13 +159,6 @@ public class MainFragment extends BaseFragment {
     }
 
     private void refreshInstallStatus(MainActivity mainActivity) {
-        int versionCode = getPrefs().getInt(PREFS_KEY_APP_VERSION_CODE, 0);
-        if (versionCode < VERSION_CODE) {
-            UpdateUtil.showUpdateLog(mainActivity);
-            getEditor().putInt(PREFS_KEY_APP_VERSION_CODE, VERSION_CODE)
-                    .apply();
-        }
-
         TextView txtInstallError = findViewById(R.id.module_active_errors);
         View txtInstallContainer = findViewById(R.id.status_container);
         ImageView txtInstallIcon = findViewById(R.id.status_icon);
@@ -266,35 +256,27 @@ public class MainFragment extends BaseFragment {
     }
 
     @SuppressLint ("HandlerLeak")
-    public synchronized void checkUpdate(TextView textView) {
-        if (textView != null) {
-            textView.setText(R.string.item_card_module_update_check_ing);
-        } else {
-            Snackbar.make(getRootView(), R.string.item_card_module_update_check_ing, Snackbar.LENGTH_SHORT)
-                    .show();
-        }
+    public synchronized void checkUpdate(TextView textView, boolean isAutoUpdate) {
+        textView.setText(R.string.item_card_module_update_check_ing);
         UpdateUtil.CheckUpdate(new Handler() {
             @SuppressLint ("LogConditional")
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case UpdateUtil.FINISHED:
-                        UpdateUtil.UpdateInfo updateInfo = (UpdateUtil.UpdateInfo) msg.obj;
-                        Log.d(MainActivity.class.getName(), String.format("isUpdate: %s, versionName: %s, versionCode: %s", updateInfo.isUpdate(), updateInfo.getVersionName(), updateInfo.getVersionCode()));
-                        if (updateInfo.isUpdate()) {
-                            UpdateUtil.showUpdateDialog(getMainActivity(), updateInfo);
-                        }
-                        if (textView != null) {
-                            textView.setText(R.string.item_card_module_update_check_latest);
+                        boolean isUpdate = (boolean) msg.obj;
+                        if (isUpdate) {
+                            textView.setText(R.string.item_card_module_update_check_new);
+                            UpdateUtil.showUpdateDialog(getMainActivity());
                         } else {
-                            Snackbar.make(getRootView(), R.string.item_card_module_update_check_latest, Snackbar.LENGTH_SHORT)
-                                    .show();
+                            textView.setText(R.string.item_card_module_update_check_latest);
                         }
                         break;
                     case UpdateUtil.ERR:
-                        Exception exception = (Exception) msg.obj;
-                        Snackbar.make(getRootView(), exception.getMessage(), Snackbar.LENGTH_LONG)
-                                .show();
+                        textView.setText(R.string.item_card_module_update_check_err);
+                        if (!isAutoUpdate) {
+                            getMainActivity().showThrowableDialog((Exception) msg.obj);
+                        }
                         break;
                 }
             }

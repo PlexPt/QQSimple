@@ -2,7 +2,6 @@ package me.zpp0196.qqsimple.hook;
 
 import android.app.Instrumentation;
 import android.content.Context;
-import android.os.Build;
 import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -41,6 +40,7 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.MessageRecord;
 import static me.zpp0196.qqsimple.hook.comm.Classes.MessageRecordFactory;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQAppInterface;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQMessageFacade;
+import static me.zpp0196.qqsimple.hook.comm.Classes.UpgradeController;
 
 /**
  * Created by zpp0196 on 2018/3/11.
@@ -57,6 +57,7 @@ class OtherHook extends BaseHook {
         preventFlashDisappear();
         preventMessagesWithdrawn();
         simulateMenu();
+        hookQQUpgrade();
         hookFontSize();
     }
 
@@ -103,21 +104,19 @@ class OtherHook extends BaseHook {
                 }
                 if (Integer.parseInt(param.args[0].toString()) ==
                     WindowManager.LayoutParams.FLAG_SECURE) {
-                    param.args[0] = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                    param.setResult(null);
                 }
             }
         });
-        if (Build.VERSION.SDK_INT >= 17) {
-            findAndHookMethod(SurfaceView.class, "setSecure", boolean.class, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    super.beforeHookedMethod(param);
-                    if (getBool("prevent_flash_disappear")) {
-                        param.args[0] = false;
-                    }
+        findAndHookMethod(SurfaceView.class, "setSecure", boolean.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (getBool("prevent_flash_disappear")) {
+                    param.args[0] = false;
                 }
-            });
-        }
+            }
+        });
     }
 
     /**
@@ -218,6 +217,26 @@ class OtherHook extends BaseHook {
         });
     }
 
+    /**
+     * 隐藏QQ更新提示
+     */
+    private void hookQQUpgrade() {
+        if (UpgradeController != null) {
+            Method[] methods = UpgradeController.getDeclaredMethods();
+            for (Method method : methods) {
+                if (method.getName()
+                            .equals("a") && method.getGenericReturnType()
+                            .toString()
+                            .contains("UpgradeDetailWrapper")) {
+                    hookMethod(method, replaceNull("hook_qq_upgrade"));
+                }
+            }
+        }
+    }
+
+    /**
+     * 自定义字体大小
+     */
     private void hookFontSize() {
         if (!getBool("hook_font_size")) {
             return;

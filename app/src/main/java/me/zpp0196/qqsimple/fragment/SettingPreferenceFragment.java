@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.support.annotation.StringRes;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -45,6 +46,7 @@ public class SettingPreferenceFragment extends BasePreferenceFragment implements
         desktopIcon.setOnPreferenceChangeListener(this);
         findPreference("setting_backup").setOnPreferenceClickListener(this);
         findPreference("setting_restore").setOnPreferenceClickListener(this);
+        findPreference("setting_restore_default").setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class SettingPreferenceFragment extends BasePreferenceFragment implements
                             getEnable() ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED :
                                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
         } else {
-            showSnackBar(R.string.tip_setting_failure);
+            showToast(R.string.tip_setting_failure);
         }
     }
 
@@ -93,6 +95,9 @@ public class SettingPreferenceFragment extends BasePreferenceFragment implements
                 return true;
             case "setting_restore":
                 restorePrefs();
+                return true;
+            case "setting_restore_default":
+                restoreDefault();
                 return true;
         }
         return false;
@@ -139,9 +144,9 @@ public class SettingPreferenceFragment extends BasePreferenceFragment implements
             }
             ins.close();
             out.close();
-            showSnackBar(String.format(getString(R.string.tip_setting_backup_finish), getBackupPrefsFile().getAbsolutePath()));
+            showToast(String.format(getString(R.string.tip_setting_backup_finish), getBackupPrefsFile().getAbsolutePath()));
         } catch (Exception e) {
-            showSnackBar(e.getMessage());
+            getMainActivity().showThrowableDialog(e);
         }
     }
 
@@ -151,7 +156,7 @@ public class SettingPreferenceFragment extends BasePreferenceFragment implements
     private void restorePrefs() {
         try {
             if (!getBackupPrefsFile().exists()) {
-                showSnackBar(R.string.tip_setting_backup_not_find_file);
+                showToast(R.string.tip_setting_backup_not_find_file);
                 return;
             }
             FileInputStream ins = new FileInputStream(getBackupPrefsFile());
@@ -164,16 +169,32 @@ public class SettingPreferenceFragment extends BasePreferenceFragment implements
             ins.close();
             out.close();
             getMainActivity().setWorldReadable();
-            showRestartDialog();
+            showRestartDialog(R.string.tip_setting_restore_reboot_tip);
         } catch (Exception e) {
-            showSnackBar(e.getMessage());
+            getMainActivity().showThrowableDialog(e);
         }
     }
 
-    private void showRestartDialog() {
+    /**
+     * 清空所有设置
+     */
+    private void restoreDefault() {
         new MaterialDialog.Builder(getMainActivity()).cancelable(false)
                 .title(R.string.title_tip)
-                .content(R.string.tip_setting_restore_reboot_tip)
+                .content(R.string.tip_setting_restore_default_reboot_confirm)
+                .positiveText(R.string.button_ok)
+                .negativeText(R.string.button_cancel)
+                .onPositive((dialog, which) -> {
+                    getPrefsFile(getMainActivity()).delete();
+                    showRestartDialog(R.string.tip_setting_restore_default_reboot_confirm);
+                })
+                .show();
+    }
+
+    private void showRestartDialog(@StringRes int msg) {
+        new MaterialDialog.Builder(getMainActivity()).cancelable(false)
+                .title(R.string.title_tip)
+                .content(msg)
                 .positiveText(R.string.button_reboot)
                 .onPositive((dialog, which) -> {
                     Intent intent = new Intent(getMainActivity(), MainActivity.class);
@@ -181,7 +202,6 @@ public class SettingPreferenceFragment extends BasePreferenceFragment implements
                     getMainActivity().startActivity(intent);
                     android.os.Process.killProcess(android.os.Process.myPid());
                 })
-                .build()
                 .show();
     }
 }

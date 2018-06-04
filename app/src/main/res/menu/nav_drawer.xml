@@ -48,6 +48,10 @@
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_nav_info"
             android:title="@string/nav_item_about" />
+        <item
+            android:id="@+id/nav_exit"
+            android:icon="@drawable/ic_nav_exit"
+            android:title="@string/nav_item_exit" />
     </group>
 
 </menu>

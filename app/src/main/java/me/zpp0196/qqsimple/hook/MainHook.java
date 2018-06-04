@@ -17,7 +17,6 @@ import me.zpp0196.qqsimple.hook.comm.Ids;
 import me.zpp0196.qqsimple.hook.util.HookUtil;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QzonePluginProxyActivity;
 import static me.zpp0196.qqsimple.hook.util.HookUtil.log;
 
@@ -64,8 +63,6 @@ public class MainHook implements IXposedHookLoadPackage {
 
         if (lpparam.processName.contains("qzone")) {
             startQzoneHook(classLoader);
-        } else if (!lpparam.processName.equals(PACKAGE_NAME_QQ)) {
-            return;
         }
 
         log(getClass(), String.format("loading %s(%s)", lpparam.processName, lpparam.appInfo.uid));

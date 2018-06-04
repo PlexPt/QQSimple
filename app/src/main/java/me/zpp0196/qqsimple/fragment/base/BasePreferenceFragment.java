@@ -6,7 +6,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.StringRes;
 import android.support.annotation.XmlRes;
-import android.support.design.widget.Snackbar;
+import android.widget.Toast;
 
 import me.zpp0196.qqsimple.activity.MainActivity;
 
@@ -57,18 +57,14 @@ public abstract class BasePreferenceFragment extends PreferenceFragment {
         getMainActivity().setWorldReadable();
     }
 
-    protected void showSnackBar(@StringRes int msg) {
-        MainActivity mainActivity = getMainActivity();
-        if (mainActivity != null) {
-            Snackbar.make(mainActivity.getRootView(), msg, Snackbar.LENGTH_SHORT)
-                    .show();
-        }
+    protected void showToast(@StringRes int strId) {
+        showToast(getString(strId));
     }
 
-    protected void showSnackBar(CharSequence msg) {
+    protected void showToast(CharSequence msg) {
         MainActivity mainActivity = getMainActivity();
         if (mainActivity != null) {
-            Snackbar.make(mainActivity.getRootView(), msg, Snackbar.LENGTH_SHORT)
+            Toast.makeText(mainActivity, msg, Toast.LENGTH_SHORT)
                     .show();
         }
     }

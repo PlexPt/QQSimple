@@ -1,17 +1,22 @@
 package me.zpp0196.qqsimple.util;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.StringRes;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import me.zpp0196.qqsimple.Common;
 import me.zpp0196.qqsimple.R;
+import me.zpp0196.qqsimple.activity.MainActivity;
 
+import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_VXP;
 import static me.zpp0196.qqsimple.util.CommUtil.isAppRunning;
 
 /**
@@ -20,17 +25,21 @@ import static me.zpp0196.qqsimple.util.CommUtil.isAppRunning;
 
 public class ShellUtil {
 
-    public static final String CMD_UPDATE = "update";
-    public static final String CMD_REBOOT = "reboot";
-    public static final String CMD_LAUNCH = "launch";
-    private static final String ACTION = "io.va.exposed.CMD";
-    private static final String KEY_CMD = "cmd";
-    private static final String KEY_PKG = "pkg";
-    private Context context;
+    private MainActivity mainActivity;
     private Handler handler;
 
-    public ShellUtil(Context context) {
-        this.context = context;
+    @SuppressLint ("HandlerLeak")
+    public ShellUtil(MainActivity context) {
+        this.mainActivity = context;
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                Result result = (Result) msg.obj;
+                Toast.makeText(mainActivity, result.getResult(), Toast.LENGTH_SHORT)
+                        .show();
+            }
+        };
     }
 
     public void setHandler(Handler handler) {
@@ -48,7 +57,7 @@ public class ShellUtil {
             Result result = new Result(packageName, progressName);
             result.setResult(executeCmd("am force-stop " + packageName));
             if (result.isEmpty()) {
-                result.setResult(progressName + context.getString(R.string.shell_stop_finish));
+                result.setResult(getResultStr(R.string.shell_stop_finish, progressName));
             }
             Message msg = new Message();
             msg.obj = result;
@@ -57,27 +66,68 @@ public class ShellUtil {
         }).start();
     }
 
+    private String getResultStr(@StringRes int strId, String progressName) {
+        return String.format(mainActivity.getString(strId), progressName);
+    }
+
     /**
      * 执行 Vxp 中的命令
      */
-    public void executeVxpCmd(String type, String packageName, String progressName) {
+    public void executeVxpCmd(VXP_CMD_TYPE type, String packageName, String progressName) {
+        if (!checkVxpOperatingStatus(mainActivity)) {
+            return;
+        }
         new Thread(() -> {
             Result result = new Result(packageName, progressName + "(Vxp)");
-            if (isAppRunning(context, Common.PACKAGE_NAME_VXP)) {
-                result.setResult(executeCmd(String.format("am broadcast -a %s -e %s %s -e %s %s", ACTION, KEY_CMD, type, KEY_PKG, packageName)));
-                if (result.isEmpty()) {
-                    result.setResult(context.getString(R.string.shell_execute_finish));
-                }
-                result.setVxpRunning(true);
-            } else {
-                result.setResult(context.getString(R.string.tip_vxp_must_be_running));
-                result.setVxpRunning(false);
+            result.setResult(executeCmd(String.format("am broadcast -a io.va.exposed.CMD -e cmd %s -e pkg %s", getVxpCmdType(type), packageName)));
+            if (result.isEmpty()) {
+                result.setResult(getVxpResultStr(type, progressName));
             }
             Message msg = new Message();
             msg.obj = result;
-            msg.what = type.equals(CMD_LAUNCH) ? Result.LAUNCH : Result.VXP;
+            msg.what = type == VXP_CMD_TYPE.LAUNCH ? Result.LAUNCH : Result.VXP;
             handler.sendMessage(msg);
         }).start();
+    }
+
+    private boolean checkVxpOperatingStatus(MainActivity mainActivity) {
+        if (isAppRunning(mainActivity, PACKAGE_NAME_VXP)) {
+            return true;
+        }
+        new MaterialDialog.Builder(mainActivity).title(R.string.title_tip)
+                .content(R.string.tip_vxp_must_be_running)
+                .negativeText(R.string.title_open_vxp)
+                .positiveText(R.string.button_close)
+                .onNegative((dialog, which) -> mainActivity.launchApp(PACKAGE_NAME_VXP))
+                .show();
+        return false;
+    }
+
+    private String getVxpResultStr(VXP_CMD_TYPE type, String progressName) {
+        String result;
+        String format = "%s";
+        switch (type) {
+            case REBOOT:
+                format = mainActivity.getString(R.string.shell_vxp_reboot_finish);
+                break;
+            case UPDATE:
+                format = mainActivity.getString(R.string.shell_vxp_update_finish);
+                break;
+        }
+        result = String.format(format, progressName);
+        return result;
+    }
+
+    private String getVxpCmdType(VXP_CMD_TYPE type) {
+        switch (type) {
+            case LAUNCH:
+            default:
+                return "launch";
+            case REBOOT:
+                return "reboot";
+            case UPDATE:
+                return "update";
+        }
     }
 
     /**
@@ -104,7 +154,7 @@ public class ShellUtil {
                 output.append(buffer, 0, read);
             }
             reader.close();
-            return output.toString();
+            return output.toString().trim();
         } catch (IOException e) {
             e.printStackTrace();
             return e.getMessage();
@@ -122,6 +172,10 @@ public class ShellUtil {
         }
     }
 
+    public enum VXP_CMD_TYPE {
+        UPDATE, REBOOT, LAUNCH
+    }
+
     public static class Result {
         public final static int DEFAULT = 0;
         public final static int VXP = 1;
@@ -130,7 +184,6 @@ public class ShellUtil {
         private String progressName;
         private String packageName;
         private String result;
-        private boolean isVxpRunning;
 
         public Result(String packageName, String progressName) {
             this.packageName = packageName;
@@ -155,14 +208,6 @@ public class ShellUtil {
 
         public boolean isEmpty() {
             return getResult().isEmpty();
-        }
-
-        public boolean isVxpRunning() {
-            return isVxpRunning;
-        }
-
-        public void setVxpRunning(boolean vxpRunning) {
-            isVxpRunning = vxpRunning;
         }
     }
 }

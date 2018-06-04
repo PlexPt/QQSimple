@@ -1,31 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
-        android:defaultValue="false"
         android:key="simulate_menu"
         android:summary="点击消息列表顶栏弹出菜单选项"
         android:title="模拟菜单按钮" />
     <CheckBoxPreference
-        android:defaultValue="false"
         android:key="prevent_flash_disappear"
-        android:summary="无限次查看闪照并且可以截图"
+        android:summary="无限时查看闪照并且可以截图"
         android:title="防止闪照销毁" />
     <CheckBoxPreference
-        android:defaultValue="false"
         android:key="prevent_messages_withdrawn"
         android:title="防止消息撤回" />
     <CheckBoxPreference
-        android:defaultValue="false"
+        android:key="hook_qq_upgrade"
+        android:title="隐藏QQ更新提示" />
+    <CheckBoxPreference
         android:key="disable_coreservice"
         android:summary="会影响消息的正常接收"
         android:title="禁用 CoreService" />
     <CheckBoxPreference
-        android:defaultValue="false"
         android:key="hide_some_red_dot"
         android:title="隐藏部分小红点" />
     <PreferenceCategory android:title="辅助功能">
         <SwitchPreference
-            android:defaultValue="false"
             android:key="hook_font_size"
             android:title="自定义字体大小" />
         <EditTextPreference
@@ -36,43 +33,33 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="设置界面">
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_setting_phone_number"
             android:title="隐藏手机号码" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_setting_qq_expert"
             android:title="隐藏QQ达人" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_setting_msg_notify"
             android:title="隐藏消息通知" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_setting_msg_history"
             android:title="隐藏聊天记录" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_setting_msg_qqclean"
             android:title="隐藏空间清理" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_setting_device_security"
             android:title="隐藏账号、设备安全" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_setting_permission_privacy"
             android:title="隐藏联系人、隐私" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_setting_assist"
             android:title="隐藏辅助功能" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_setting_free_flow"
             android:title="隐藏免流量特权" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_setting_about"
             android:title="隐藏关于QQ与帮助" />
     </PreferenceCategory>

@@ -1,148 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
-        android:defaultValue="false"
         android:key="hide_menu_uaf"
         android:title="隐藏菜单更新和反馈" />
     <PreferenceCategory android:title="搜索框">
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_search_conversation"
             android:title="隐藏消息列表搜索框" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_search_contacts"
             android:title="隐藏联系人搜索框" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_leb_search_entry"
             android:title="隐藏动态搜索框" />
     </PreferenceCategory>
     <PreferenceCategory android:title="底部分组">
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_tab_contact"
             android:title="隐藏联系人" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_tab_readinjoy"
             android:title="隐藏看点" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_tab_dynamic"
             android:title="隐藏动态" />
     </PreferenceCategory>
     <PreferenceCategory android:title="底部分组未读消息数量">
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_tab_msg_num"
             android:title="隐藏消息数量" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_tab_contact_num"
             android:title="隐藏联系人数量" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_tab_dynamic_num"
             android:title="隐藏动态数量" />
     </PreferenceCategory>
     <PreferenceCategory android:title="消息列表界面">
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_chat_list_head_ad"
             android:title="隐藏横幅广告" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_national_entrance"
             android:title="隐藏全民闯关入口" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_popup_menu_entry"
             android:title="隐藏快捷入口" />
     </PreferenceCategory>
     <PreferenceCategory android:title="快捷入口">
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_popup_multiChat"
             android:title="隐藏创建群聊" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_popup_add"
             android:title="隐藏加好友/群" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_popup_sweep"
             android:title="隐藏扫一扫" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_popup_face2face"
             android:title="隐藏面对面快传" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_popup_pay"
             android:title="隐藏付款" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_popup_shoot"
             android:title="隐藏拍摄" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_popup_videoDance"
             android:title="隐藏高能舞室" />
     </PreferenceCategory>
     <PreferenceCategory android:title="联系人界面">
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_new_friend_entry"
             android:title="隐藏新朋友" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_create_troop_entry"
             android:title="隐藏创建群聊" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_contacts_tab_device"
             android:title="隐藏设备分组" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_contacts_tab_phone"
             android:title="隐藏通讯录分组" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_contacts_tab_pub_account"
             android:title="隐藏公众号分组" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_unusual_contacts"
             android:title="隐藏不常用联系人" />
     </PreferenceCategory>
     <PreferenceCategory android:title="动态界面">
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_everyone_searching"
             android:title="隐藏大家都在搜" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_qzone_entry"
             android:title="隐藏空间入口" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_near_entry"
             android:title="隐藏附近的人入口" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_tribal_entry"
             android:title="隐藏兴趣部落入口" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_qzone_avatar_remind"
             android:title="隐藏空间提醒" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_near_avatar_remind"
             android:title="隐藏附近的人提醒" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="hide_tribal_avatar_remind"
             android:title="隐藏兴趣部落提醒" />
     </PreferenceCategory>

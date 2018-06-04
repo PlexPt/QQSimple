@@ -78,7 +78,7 @@ public abstract class BaseHook {
                 super.afterHookedMethod(param);
                 View view = (View) param.thisObject;
                 if (view.getId() == id) {
-                    if (!(getBool(key))) {
+                    if (!getBool(key)) {
                         return;
                     }
                     ViewGroup.LayoutParams layoutParams = (ViewGroup.LayoutParams) param.args[0];
@@ -107,7 +107,7 @@ public abstract class BaseHook {
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
                 if ((int) param.args[0] == id) {
-                    if (!(getBool(key))) {
+                    if (!getBool(key)) {
                         return;
                     }
                     param.setResult(null);
@@ -174,6 +174,24 @@ public abstract class BaseHook {
         }
         try {
             XposedHelpers.findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
+        } catch (Throwable e) {
+            HookUtil.log(e);
+        }
+    }
+
+    protected void findAndHookConstructor(Class<?> clazz, Object... parameterTypesAndCallback) {
+        if (clazz == null || parameterTypesAndCallback.length == 0 ||
+            !(parameterTypesAndCallback[parameterTypesAndCallback.length -
+                                        1] instanceof XC_MethodHook)) {
+            return;
+        }
+        for (Object obj : parameterTypesAndCallback) {
+            if (obj == null) {
+                return;
+            }
+        }
+        try {
+            XposedHelpers.findAndHookConstructor(clazz, parameterTypesAndCallback);
         } catch (Throwable e) {
             HookUtil.log(e);
         }

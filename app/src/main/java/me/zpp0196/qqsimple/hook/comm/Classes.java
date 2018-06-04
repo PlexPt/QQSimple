@@ -40,6 +40,7 @@ public class Classes {
     public static Class<?> HotChatFlashPicActivity;
     public static Class<?> ItemBuilderFactory;
     public static Class<?> Leba;
+    public static Class<?> LebaQZoneFacePlayHelper;
     public static Class<?> LocalSearchBar;
     public static Class<?> MainFragment;
     public static Class<?> MedalNewsItemBuilder;
@@ -64,6 +65,7 @@ public class Classes {
     public static Class<?> TListView;
     public static Class<?> TroopEnterEffectController;
     public static Class<?> TroopGiftAnimationController;
+    public static Class<?> UpgradeController;
     public static Class<?> VipSpecialCareGrayTips;
     private static ClassLoader qqClassLoader;
 
@@ -158,6 +160,9 @@ public class Classes {
         if (Leba == null) {
             Leba = findClassInQQ(".activity.Leba");
         }
+        if (LebaQZoneFacePlayHelper == null) {
+            LebaQZoneFacePlayHelper = findClassInQQ(".activity.LebaQZoneFacePlayHelper");
+        }
         if (LocalSearchBar == null) {
             LocalSearchBar = findClassInQQ(".activity.recent.LocalSearchBar");
         }
@@ -229,6 +234,9 @@ public class Classes {
         }
         if (TroopGiftAnimationController == null) {
             TroopGiftAnimationController = findClassInQQ(".troopgift.TroopGiftAnimationController");
+        }
+        if (UpgradeController == null) {
+            UpgradeController = findClassInQQ(".app.upgrade.UpgradeController");
         }
         if (VipSpecialCareGrayTips == null) {
             VipSpecialCareGrayTips = findClassInQQ(".activity.aio.tips.VipSpecialCareGrayTips");

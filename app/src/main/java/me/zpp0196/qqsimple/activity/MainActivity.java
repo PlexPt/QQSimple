@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import me.zpp0196.qqsimple.R;
 import me.zpp0196.qqsimple.activity.base.BaseAppCompatActivity;
@@ -31,8 +32,11 @@ import me.zpp0196.qqsimple.fragment.SidebarPreferenceFragment;
 import me.zpp0196.qqsimple.fragment.base.BaseFragment;
 import me.zpp0196.qqsimple.fragment.base.BasePreferenceFragment;
 import me.zpp0196.qqsimple.util.ShellUtil;
+import me.zpp0196.qqsimple.util.UpdateUtil;
 
+import static me.zpp0196.qqsimple.BuildConfig.VERSION_CODE;
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
+import static me.zpp0196.qqsimple.Common.PREFS_KEY_APP_VERSION_CODE;
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_ENTER_MODULE_TIMES;
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_OPEN_DRAWER;
 import static me.zpp0196.qqsimple.util.CommUtil.isInVxp;
@@ -57,17 +61,19 @@ public class MainActivity extends BaseAppCompatActivity implements NavigationVie
     }
 
     @Override
-    protected int setRootViewId() {
-        return R.id.content_frame;
-    }
-
-    @Override
     protected void initData(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
 
         long enterModuleTimes = getPrefs().getLong(PREFS_KEY_ENTER_MODULE_TIMES, 0);
         getEditor().putLong(PREFS_KEY_ENTER_MODULE_TIMES, enterModuleTimes + 1)
                 .apply();
+
+        int versionCode = getPrefs().getInt(PREFS_KEY_APP_VERSION_CODE, 0);
+        if (versionCode < VERSION_CODE) {
+            UpdateUtil.showUpdateLog(this);
+            getEditor().putInt(PREFS_KEY_APP_VERSION_CODE, VERSION_CODE)
+                    .apply();
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,11 +111,22 @@ public class MainActivity extends BaseAppCompatActivity implements NavigationVie
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
+        if (getPrefs().getBoolean("back_nav_shrink", false)) {
+            if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            } else if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
         } else {
-            super.onBackPressed();
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
         }
+
     }
 
     @Override
@@ -142,11 +159,12 @@ public class MainActivity extends BaseAppCompatActivity implements NavigationVie
                 switch (msg.what) {
                     case DEFAULT:
                         if (result.getResult()
-                                .contains(getString(R.string.shell_stop_finish))) {
+                                .contains("停止")) {
                             setWorldReadable();
                             launchApp(PACKAGE_NAME_QQ);
                         } else {
-                            showExceptionTip(new Exception(result.getResult()));
+                            Toast.makeText(MainActivity.this, result.getResult(), Toast.LENGTH_LONG)
+                                    .show();
                         }
                         break;
                 }
@@ -194,6 +212,10 @@ public class MainActivity extends BaseAppCompatActivity implements NavigationVie
             case R.id.nav_about:
                 navFragment = new AboutFragment();
                 break;
+            case R.id.nav_exit:
+                setWorldReadable();
+                finish();
+                return;
         }
 
         if (navFragment != null) {

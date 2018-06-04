@@ -82,7 +82,6 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener 
         thanks.setOnClickListener(v -> new MaterialDialog.Builder(mainActivity).title(R.string.about_item_thanks_title)
                 .content(R.string.about_item_thanks_content)
                 .positiveText(R.string.button_close)
-                .build()
                 .show());
         // 源码
         github.setOnClickListener(v -> mainActivity.openGitHub());
@@ -115,7 +114,6 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener 
                             .title(R.string.about_egg_title)
                             .content(getEggsContent())
                             .positiveText(R.string.about_egg_close)
-                            .build()
                             .show();
                 }
                 break;

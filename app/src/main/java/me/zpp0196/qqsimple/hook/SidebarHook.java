@@ -12,7 +12,6 @@ import me.zpp0196.qqsimple.activity.MainActivity;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.HookUtil;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookConstructor;
 import static me.zpp0196.qqsimple.BuildConfig.APPLICATION_ID;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ApolloManager$CheckApolloInfoResult;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseActivity;

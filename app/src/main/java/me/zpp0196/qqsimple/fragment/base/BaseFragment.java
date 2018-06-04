@@ -37,14 +37,10 @@ public abstract class BaseFragment extends Fragment {
 
     @SuppressWarnings ("unchecked")
     protected <T extends View> T findViewById(@IdRes int id) {
-        return (T) getRootView().findViewById(id);
+        return (T) rootView.findViewById(id);
     }
 
     protected void init() {}
-
-    public View getRootView() {
-        return rootView;
-    }
 
     public MainActivity getMainActivity() {
         return (MainActivity) getActivity();

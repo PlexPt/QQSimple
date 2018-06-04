@@ -96,4 +96,19 @@ public class CommUtil {
         }
         return dir;
     }
+
+    public static String getThrowableMsg(Throwable tr) {
+        StackTraceElement[] trace = tr.getStackTrace();
+        StringBuilder sb = new StringBuilder();
+        sb.append(tr.getClass()
+                .getName())
+                .append("：");
+        sb.append(tr.getMessage())
+                .append("\n");
+        for (StackTraceElement traceElement : trace)
+            sb.append("\tat ")
+                    .append(traceElement)
+                    .append("\n");
+        return sb.toString();
+    }
 }

@@ -1,11 +1,17 @@
 package me.zpp0196.qqsimple.hook;
 
+import java.lang.reflect.Field;
+
+import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import me.zpp0196.qqsimple.Common;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 
+import static me.zpp0196.qqsimple.hook.comm.Classes.Leba;
+import static me.zpp0196.qqsimple.hook.comm.Classes.LebaQZoneFacePlayHelper;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingSettingActivity;
 import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan735;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan758;
 
 /**
  * Created by Deng on 2018/2/16.
@@ -44,7 +50,11 @@ class RemoveImagine extends BaseHook {
         // 隐藏动态界面兴趣部落入口
         hideView("xingqu_buluo_entry", "hide_tribal_entry");
         // 隐藏动态界面空间头像提醒
-        hideView("qzone_feed_entry_sub_iv", "hide_qzone_avatar_remind");
+        if(isMoreThan758()){
+            hideQzoneFacePlayHelper();
+        }else {
+            hideView("qzone_feed_entry_sub_iv", "hide_qzone_avatar_remind");
+        }
         // 隐藏动态界面附近的人头像提醒
         hideView("nearby_people_entry_sub_iv", "hide_near_avatar_remind");
         // 隐藏动态界面兴趣部落头像提醒
@@ -133,6 +143,23 @@ class RemoveImagine extends BaseHook {
             // 隐藏贴表情
             hideView("pic_light_emoj", "hide_group_stick_face");
         }
+    }
+
+    /**
+     * 隐藏动态界面空间头像提醒
+     */
+    private void hideQzoneFacePlayHelper(){
+        findAndHookMethod(Leba, "u", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if(!getBool("hide_qzone_avatar_remind")){
+                    return;
+                }
+                Field field = findField(Leba, LebaQZoneFacePlayHelper, "a");
+                field.set(param.thisObject, null);
+            }
+        });
     }
 
     /**

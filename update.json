@@ -1,33 +1,24 @@
 {
-  "versionName": "2.0.0",
-  "versionCode": 42,
+  "versionName": "2.1.0",
+  "versionCode": 45,
   "updateLog": [
     {
-      "content": "界面更改为 MD 风格"
+      "content": "修复部分机型闪退问题"
     },
     {
-      "content": "软件更名为「QQ净化」"
+      "content": "修复闪照相关功能"
     },
     {
-      "content": "压缩了模块安装包体积"
+      "content": "修复隐藏空间提醒错位的 bug"
     },
     {
-      "content": "适配测试版 7.6.3.3542"
+      "content": "适配稳定版 7.6.3.3565(852)"
     },
     {
-      "content": "适配稳定版 7.6.3.3560"
+      "content": "添加隐藏QQ更新提示"
     },
     {
-      "content": "默认开启拦截热修复功能"
-    },
-    {
-      "content": "添加了自定义字体大小功能"
-    },
-    {
-      "content": "修复了不能隐藏侧滑栏我的视频的 bug"
-    },
-    {
-      "content": "修复了华为等部分手机重启后模块不生效的 bug"
+      "content": "更改模块部分界面"
     }
   ]
 }

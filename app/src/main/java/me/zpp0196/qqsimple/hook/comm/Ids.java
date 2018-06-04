@@ -8,11 +8,12 @@ import me.zpp0196.qqsimple.hook.util.HookUtil;
  * Created by zpp0196 on 2018/4/30 0030.
  */
 
+@SuppressWarnings ("all")
 public class Ids {
 
     private static HashMap<String, Integer> id;
 
-    private static int[] supportVersion = new int[]{818, 828, 832, 836, 850};
+    private static int[] supportVersion = new int[]{818, 828, 832, 836, 850, 852};
 
     public static void init() {
         if (id == null) {
@@ -36,6 +37,8 @@ public class Ids {
                 break;
             case 850:
                 init763_850();
+            case 852:
+                init763_850();
                 break;
         }
     }
@@ -44,7 +47,7 @@ public class Ids {
         if (versionCode > supportVersion[supportVersion.length - 1] || versionCode < 794) {
             return false;
         }
-        if(versionCode >= 794 && versionCode <= 818){
+        if (versionCode >= 794 && versionCode <= 818) {
             return true;
         }
 
@@ -61,7 +64,6 @@ public class Ids {
         return id.get(name);
     }
 
-    @SuppressWarnings ("all")
     private static void init758_818() {
         put("unchecked_msg_num", 0x7f0a0b4f);
         put("adviewlayout", 0x7f0a0e37);
@@ -76,7 +78,6 @@ public class Ids {
         put("qzone_feed_entry", 0x7f0a1e35);
         put("near_people_entry", 0x7f0a1e3a);
         put("xingqu_buluo_entry", 0x7f0a1e3f);
-        put("qzone_feed_entry_sub_iv", 0x7f0a1e38);
         put("nearby_people_entry_sub_iv", 0x7f0a1e3e);
         put("buluo_entry_sub_iv", 0x7f0a1e42);
         put("qr_code_icon", 0x7f0a21ef);
@@ -158,7 +159,6 @@ public class Ids {
         put("qz_feed_head_container", 0x7f0a2adc);
     }
 
-    @SuppressWarnings ("all")
     private static void init800_828() {
         put("unchecked_msg_num", 0x7f0a0c34); // c6 .activity.MainFragment a(View view) _num
         put("adviewlayout", 0x7f0a0f1f); // c6 .activity.recent.BannerManager e(View view) relativelayout
@@ -173,9 +173,8 @@ public class Ids {
         put("qzone_feed_entry", 0x7f0a20d5); // c6 .activity.Laba OnClick
         put("near_people_entry", 0x7f0a20da); // c6 .activity.Laba OnClick
         put("xingqu_buluo_entry", 0x7f0a20df); // c6 .activity.Laba OnClick
-        put("qzone_feed_entry_sub_iv", 0x7f0a20db); // c6 .activity.Leba u() ImageView
-        put("nearby_people_entry_sub_iv", 0x7f0a20de); // c6 .activity.Leba u() ImageView OnClick visibility
-        put("buluo_entry_sub_iv", 0x7f0a20e2); // c6 .activity.Leba u() a URLImageView
+        put("nearby_people_entry_sub_iv", 0x7f0a20de); // c6 .activity.Leba u() ImageView d
+        put("buluo_entry_sub_iv", 0x7f0a20e2); // c6 .activity.Leba u() URLImageView a
         put("qr_code_icon", 0x7f0a2494); // .activity.QQSettingMe OnClick reportFla
         put("mydaily", 0x7f0a2495); // +1
         put("nickname_area", 0x7f0a2490); // OnClick 0X80072D6
@@ -255,7 +254,6 @@ public class Ids {
         put("qz_feed_head_container", 0x7f0a2d80);
     }
 
-    @SuppressWarnings ("all")
     private static void init760_832() {
         put("unchecked_msg_num", 0x7f0a0c35); // c6 .activity.MainFragment a(View view) _num
         put("adviewlayout", 0x7f0a0f20); // c6 .activity.recent.BannerManager e(View view) relativelayout
@@ -270,9 +268,8 @@ public class Ids {
         put("qzone_feed_entry", 0x7f0a20d6); // c6 .activity.Laba OnClick
         put("near_people_entry", 0x7f0a20db); // c6 .activity.Laba OnClick
         put("xingqu_buluo_entry", 0x7f0a20e0); // c6 .activity.Laba OnClick
-        put("qzone_feed_entry_sub_iv", 0x7f0a20dc); // c6 .activity.Leba u() ImageView
-        put("nearby_people_entry_sub_iv", 0x7f0a20df); // c6 .activity.Leba u() ImageView OnClick visibility
-        put("buluo_entry_sub_iv", 0x7f0a20e3); // c6 .activity.Leba u() a URLImageView
+        put("nearby_people_entry_sub_iv", 0x7f0a20df); // c6 .activity.Leba u() ImageView d
+        put("buluo_entry_sub_iv", 0x7f0a20e3); // c6 .activity.Leba u() URLImageView a
         put("qr_code_icon", 0x7f0a2495); // c6 .activity.QQSettingMe OnClick reportFla
         put("mydaily", 0x7f0a2496); // OnClick task_entry_config
         put("nickname_area", 0x7f0a2491); // OnClick 0X80072D6
@@ -352,7 +349,6 @@ public class Ids {
         put("qz_feed_head_container", 0x7f0a2d80); // HotBannerManager i() LinearLayout
     }
 
-    @SuppressWarnings ("all")
     private static void init763_836() {
         put("unchecked_msg_num", 0x7f0a0c4b); // c6 .activity.MainFragment a(View view) _num
         put("adviewlayout", 0x7f0a0f3b); // c6 .activity.recent.BannerManager e(View view) relativelayout
@@ -367,9 +363,8 @@ public class Ids {
         put("qzone_feed_entry", 0x7f0a2148); // c6 .activity.Laba OnClick
         put("near_people_entry", 0x7f0a214d); // c6 .activity.Laba OnClick
         put("xingqu_buluo_entry", 0x7f0a2152); // c6 .activity.Laba OnClick
-        put("qzone_feed_entry_sub_iv", 0x7f0a214e); // c6 .activity.Leba u() ImageView
-        put("nearby_people_entry_sub_iv", 0x7f0a2151); // c6 .activity.Leba u() ImageView OnClick getVisibility()
-        put("buluo_entry_sub_iv", 0x7f0a2155); // c6 .activity.Leba u() a URLImageView
+        put("nearby_people_entry_sub_iv", 0x7f0a2151); // c6 .activity.Leba u() ImageView d
+        put("buluo_entry_sub_iv", 0x7f0a2155); // c6 .activity.Leba u() URLImageView a
         put("qr_code_icon", 0x7f0a2536); // c6 .activity.QQSettingMe OnClick reportFla
         put("mydaily", 0x7f0a2537); // OnClick task_entry_config
         put("nickname_area", 0x7f0a2532); // OnClick 0X80072D6
@@ -449,7 +444,6 @@ public class Ids {
         put("qz_feed_head_container", 0x7f0a2e33); // HotBannerManager i() LinearLayout
     }
 
-    @SuppressWarnings ("all")
     private static void init763_850() {
         put("unchecked_msg_num", 0x7f0a0c4b); // c6 .activity.MainFragment a(View view) _num
         put("adviewlayout", 0x7f0a0f3b); // c6 .activity.recent.BannerManager e(View view) relativelayout
@@ -464,9 +458,8 @@ public class Ids {
         put("qzone_feed_entry", 0x7f0a214a); // c6 .activity.Laba OnClick
         put("near_people_entry", 0x7f0a214f); // c6 .activity.Laba OnClick
         put("xingqu_buluo_entry", 0x7f0a2154); // c6 .activity.Laba OnClick
-        put("qzone_feed_entry_sub_iv", 0x7f0a2150); // c6 .activity.Leba u() c ImageView
-        put("nearby_people_entry_sub_iv", 0x7f0a2153); // c6 .activity.Leba u() d ImageView OnClick getVisibility()
-        put("buluo_entry_sub_iv", 0x7f0a2157); // c6 .activity.Leba u() a URLImageView
+        put("nearby_people_entry_sub_iv", 0x7f0a2153); // c6 .activity.Leba u() ImageView d
+        put("buluo_entry_sub_iv", 0x7f0a2157); // c6 .activity.Leba u() URLImageView a
         put("qr_code_icon", 0x7f0a2538); // c6 .activity.QQSettingMe OnClick reportFla
         put("mydaily", 0x7f0a2539); // OnClick task_entry_config
         put("nickname_area", 0x7f0a2534); // OnClick 0X80072D6

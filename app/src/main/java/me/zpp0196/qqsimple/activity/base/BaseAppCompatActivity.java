@@ -10,13 +10,9 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -29,6 +25,7 @@ import static me.zpp0196.qqsimple.BuildConfig.APPLICATION_ID;
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_ALIPAY;
 import static me.zpp0196.qqsimple.util.CommUtil.getPrefsDir;
 import static me.zpp0196.qqsimple.util.CommUtil.getPrefsFile;
+import static me.zpp0196.qqsimple.util.CommUtil.getThrowableMsg;
 
 /**
  * Created by zpp0196 on 2018/5/30 0030.
@@ -37,29 +34,15 @@ import static me.zpp0196.qqsimple.util.CommUtil.getPrefsFile;
 @SuppressLint ("Registered")
 public abstract class BaseAppCompatActivity extends AppCompatActivity {
 
-    private View rootView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(setContentViewId());
-        initRootView();
         initData(savedInstanceState);
     }
 
     @LayoutRes
     protected abstract int setContentViewId();
-
-    @IdRes
-    protected abstract int setRootViewId();
-
-    protected void initRootView() {
-        rootView = findViewById(setRootViewId());
-    }
-
-    public View getRootView() {
-        return rootView;
-    }
 
     protected void initData(Bundle savedInstanceState) {}
 
@@ -113,7 +96,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
         try {
             startActivity(intent);
         } catch (Exception e) {
-            showExceptionTip(e);
+            showThrowableDialog(e);
         }
     }
 
@@ -121,25 +104,25 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
         try {
             startActivity(getPackageManager().getLaunchIntentForPackage(packageName));
         } catch (Exception e) {
-            showExceptionTip(e);
+            showThrowableDialog(e);
         }
     }
 
-    public void showExceptionTip(Exception e) {
-        e.printStackTrace();
-        if (getRootView() == null) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT)
-                    .show();
-        } else {
-            Snackbar.make(getRootView(), R.string.title_appear_exception, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.title_action_copy_log, v -> {
-                        ClipData clip = ClipData.newPlainText("text", e.getMessage());
-                        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                        if (clipboardManager != null) {
-                            clipboardManager.setPrimaryClip(clip);
-                        }
-                    });
-        }
+    public void showThrowableDialog(Throwable tr) {
+        String msg = getThrowableMsg(tr);
+        new MaterialDialog.Builder(this).cancelable(false)
+                .title(R.string.title_appear_exception)
+                .content(msg)
+                .positiveText(R.string.button_close)
+                .negativeText(R.string.button_copy)
+                .onNegative((dialog, which) -> {
+                    ClipData clip = ClipData.newPlainText("text", msg);
+                    ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    if (clipboardManager != null) {
+                        clipboardManager.setPrimaryClip(clip);
+                    }
+                })
+                .show();
     }
 
     public void showMsgDialog(@StringRes int title, @StringRes int msg) {
@@ -147,7 +130,6 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
                 .title(title)
                 .content(msg)
                 .positiveText(R.string.button_close)
-                .build()
                 .show();
     }
 

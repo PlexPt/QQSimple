@@ -1,7 +1,9 @@
 package me.zpp0196.qqsimple.util;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.webkit.WebView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -40,16 +42,15 @@ public class UpdateUtil {
 
     public static void CheckUpdate(Handler handler) {
         new Thread() {
+            @SuppressLint ("LogConditional")
             @Override
             public void run() {
                 Message msg = new Message();
                 try {
-                    UpdateInfo updateInfo = new UpdateInfo();
-                    updateInfo.setUpdate(getVersionCode() > VERSION_CODE);
-                    updateInfo.setVersionName(getVersionName());
-                    updateInfo.setVersionCode(getVersionCode());
-                    msg.obj = updateInfo;
+                    boolean isUpdate = getVersionCode() > VERSION_CODE;
+                    msg.obj = isUpdate;
                     msg.what = FINISHED;
+                    Log.d(UpdateUtil.class.getName(), String.format("isUpdate: %s, versionName: %s, versionCode: %s", isUpdate, getVersionName(), getVersionCode()));
                 } catch (Exception e) {
                     msg.obj = e;
                     msg.what = ERR;
@@ -134,7 +135,7 @@ public class UpdateUtil {
         return String.format("<h3 style=\"padding-left:16px\">v%s(%s)</h3><ul>%s</ul>", versionName, versionCode, sb.toString());
     }
 
-    public static void showUpdateDialog(MainActivity mainActivity, UpdateInfo updateInfo){
+    public static void showUpdateDialog(MainActivity mainActivity) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity).cancelable(false)
                 .title(R.string.item_card_module_update_check_new)
                 .positiveText(R.string.item_card_module_update_check_update)
@@ -145,9 +146,9 @@ public class UpdateUtil {
         WebView webView;
         try {
             webView = getWebView(mainActivity, getNewVersionLogHtml());
-            if(webView != null){
+            if (webView != null) {
                 builder.customView(webView, true);
-            }else {
+            } else {
                 builder.content(getLogString(getNewVersionLogList()));
             }
         } catch (JSONException e) {
@@ -164,53 +165,23 @@ public class UpdateUtil {
                 .negativeText(R.string.button_more)
                 .onNegative((dialog, which) -> mainActivity.openUrl("https://github.com/zpp0196/QQSimple/blob/master/Log.md"));
         WebView webView = getWebView(mainActivity, getThisVersionLogHtml(mainActivity));
-        if(webView != null){
+        if (webView != null) {
             builder.title(R.string.title_update_log);
             builder.customView(webView, true);
-        }else {
+        } else {
             builder.title(String.format("%s_v%s(%s)", mainActivity.getString(R.string.app_name), VERSION_NAME, VERSION_CODE));
             builder.content(getLogString(getThisVersionLogList(mainActivity)));
         }
         builder.show();
     }
 
-    private static WebView getWebView(MainActivity mainActivity, String html){
+    private static WebView getWebView(MainActivity mainActivity, String html) {
         try {
             WebView webView = new WebView(mainActivity);
             webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
             return webView;
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
-        }
-    }
-
-    public static class UpdateInfo {
-        private boolean isUpdate;
-        private String versionName;
-        private int versionCode;
-
-        public boolean isUpdate() {
-            return isUpdate;
-        }
-
-        public void setUpdate(boolean update) {
-            isUpdate = update;
-        }
-
-        public String getVersionName() {
-            return versionName;
-        }
-
-        public void setVersionName(String versionName) {
-            this.versionName = versionName;
-        }
-
-        public int getVersionCode() {
-            return versionCode;
-        }
-
-        public void setVersionCode(int versionCode) {
-            this.versionCode = versionCode;
         }
     }
 }
