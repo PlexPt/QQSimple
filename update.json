@@ -1,27 +1,12 @@
 {
-  "versionName": "2.1.0",
-  "versionCode": 46,
+  "versionName": "2.2.0",
+  "versionCode": 48,
   "updateLog": [
     {
-      "content": "修复部分机型闪退问题"
+      "content": "适配稳定版 7.6.5.3595(864)"
     },
     {
-      "content": "修复闪照相关功能"
-    },
-    {
-      "content": "修复防撤回不能关闭的 bug"
-    },
-    {
-      "content": "修复隐藏空间提醒错位的 bug"
-    },
-    {
-      "content": "适配稳定版 7.6.3.3565(852)"
-    },
-    {
-      "content": "添加隐藏QQ更新提示"
-    },
-    {
-      "content": "更改模块部分界面"
+      "content": "添加隐藏联系人界面坦白说"
     }
   ]
 }
