@@ -123,14 +123,14 @@ class OtherHook extends BaseHook {
      * 防止消息撤回
      */
     private void preventMessagesWithdrawn() {
-        findAndHookMethod(QQMessageFacade, "a", ArrayList.class, boolean.class, new XC_MethodHook() {
+        if(!getBool("prevent_messages_withdrawn")) return;
+        findAndHookMethod(QQMessageFacade, "a", ArrayList.class, boolean.class, new XC_MethodReplacement() {
             @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
                 ArrayList arrayList = (ArrayList) param.args[0];
                 if (arrayList == null || arrayList.isEmpty() ||
-                    HookUtil.isCallingFrom("C2CMessageProcessor") ||
-                        !getBool("prevent_messages_withdrawn")) {
-                    return;
+                    HookUtil.isCallingFrom("C2CMessageProcessor")) {
+                    return null;
                 }
                 Object revokeMsgInfo = arrayList.get(0);
 
@@ -154,7 +154,7 @@ class OtherHook extends BaseHook {
                         //
                     }
                 }
-                param.setResult(null);
+                return null;
             }
         });
     }
@@ -199,13 +199,7 @@ class OtherHook extends BaseHook {
                     return;
                 }
                 Field field = findField(Conversation, RelativeLayout.class, "b");
-                if (field == null) {
-                    return;
-                }
                 ViewGroup viewGroup = (ViewGroup) field.get(param.thisObject);
-                if (viewGroup == null) {
-                    return;
-                }
                 viewGroup.setOnClickListener(v -> new Thread(() -> {
                     try {
                         Instrumentation inst = new Instrumentation();

@@ -4,12 +4,15 @@ import java.lang.reflect.Field;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.Common;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 
 import static me.zpp0196.qqsimple.hook.comm.Classes.Leba;
 import static me.zpp0196.qqsimple.hook.comm.Classes.LebaQZoneFacePlayHelper;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingSettingActivity;
+import static me.zpp0196.qqsimple.hook.comm.Ids.isSupport;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.getQQVersionCode;
 import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan735;
 import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan758;
 
@@ -21,6 +24,9 @@ class RemoveImagine extends BaseHook {
 
     @Override
     public void init() {
+        if (!isSupport(getQQVersionCode())) {
+            return;
+        }
         hideView();
         hideRedDot();
         hideQzone();
@@ -31,6 +37,8 @@ class RemoveImagine extends BaseHook {
         hideView("unchecked_msg_num", "hide_tab_msg_num");
         // 隐藏消息列表界面横幅广告
         hideView("adviewlayout", "hide_chat_list_head_ad");
+        // 隐藏联系人界面坦白说
+        hideView("slidcards_container", "hide_slidcards_container");
         // 隐藏联系人界面新朋友
         hideView("newFriendEntry", "hide_new_friend_entry");
         // 隐藏联系人界面创建群聊

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
+import java.net.SocketTimeoutException;
 
 import me.zpp0196.qqsimple.R;
 import me.zpp0196.qqsimple.activity.MainActivity;
@@ -274,8 +275,9 @@ public class MainFragment extends BaseFragment {
                         break;
                     case UpdateUtil.ERR:
                         textView.setText(R.string.item_card_module_update_check_err);
-                        if (!isAutoUpdate) {
-                            getMainActivity().showThrowableDialog((Exception) msg.obj);
+                        Exception exception = (Exception)msg.obj;
+                        if(!(exception instanceof SocketTimeoutException) && !isAutoUpdate){
+                            getMainActivity().showThrowableDialog(exception);
                         }
                         break;
                 }

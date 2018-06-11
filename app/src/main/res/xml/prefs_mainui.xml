@@ -72,6 +72,9 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="联系人界面">
         <CheckBoxPreference
+            android:key="hide_slidcards_container"
+            android:title="隐藏坦白说" />
+        <CheckBoxPreference
             android:key="hide_new_friend_entry"
             android:title="隐藏新朋友" />
         <CheckBoxPreference

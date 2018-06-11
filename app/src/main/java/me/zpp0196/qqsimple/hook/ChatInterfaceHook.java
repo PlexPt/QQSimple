@@ -185,13 +185,7 @@ class ChatInterfaceHook extends BaseHook {
                     return;
                 }
                 Field field = XposedHelpers.findFieldIfExists(MessageRecord, "msg");
-                if (field == null) {
-                    return;
-                }
                 String msg = (String) field.get(param.args[0]);
-                if (msg == null) {
-                    return;
-                }
                 for (String str : regex) {
                     if (Pattern.matches(str, msg)) {
                         param.setResult(null);

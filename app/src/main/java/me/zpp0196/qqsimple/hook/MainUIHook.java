@@ -7,15 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
-import me.zpp0196.qqsimple.hook.util.HookUtil;
 
-import static me.zpp0196.qqsimple.hook.comm.Classes.ActionSheet;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseActivity;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BusinessInfoCheckUpdate$RedTypeInfo;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Contacts;
@@ -29,6 +26,7 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$MenuItem;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$OnClickActionListener;
 import static me.zpp0196.qqsimple.hook.comm.Classes.SimpleSlidingIndicator;
 import static me.zpp0196.qqsimple.hook.comm.Classes.TListView;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan735;
 
 /**
  * Created by zpp0196 on 2018/3/12.
@@ -46,9 +44,9 @@ class MainUIHook extends BaseHook {
         hideContactsConstant();
         // 隐藏消息界面全民闯关入口
         findAndHookMethod(ConversationNowController, "a", String.class, replaceNull("hide_national_entrance"));
-        if (HookUtil.isMoreThan735()) {
+        if (isMoreThan735()) {
             // 隐藏动态界面大家都在搜
-            findAndHookMethod(Leba, "a", List.class, replaceObj("hide_everyone_searching"));
+            findAndHookMethod(Leba, "a", List.class, replaceNull("hide_everyone_searching"));
         }
     }
 
@@ -60,26 +58,13 @@ class MainUIHook extends BaseHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                Field field = findField(MainFragment, Dialog.class, "b");
-                if (field == null) {
-                    return;
-                }
-                Dialog dialog = (Dialog) field.get(param.thisObject);
-                if (dialog == null) {
-                    return;
-                }
-                Field field1 = findFirstFieldByExactType(ActionSheet, LinearLayout.class);
-                if (field1 == null) {
-                    return;
-                }
                 if (!getBool("hide_menu_uaf")) {
                     return;
                 }
-                LinearLayout layout = (LinearLayout) field1.get(dialog);
-                layout.getChildAt(0)
-                        .setVisibility(View.GONE);
-                layout.getChildAt(1)
-                        .setVisibility(View.GONE);
+                Dialog dialog = getObject(param.thisObject, Dialog.class, "b");
+                LinearLayout layout = getObject(dialog, LinearLayout.class, "a");
+                layout.getChildAt(0).setVisibility(View.GONE);
+                layout.getChildAt(1).setVisibility(View.GONE);
             }
         });
     }
@@ -92,13 +77,11 @@ class MainUIHook extends BaseHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                ImageView view = (ImageView) findField(Conversation, ImageView.class, "a").get(param.thisObject);
                 if (!getBool("hide_popup_menu_entry")) {
                     return;
                 }
-                if (view != null) {
-                    view.setVisibility(View.GONE);
-                }
+                ImageView imageView = getObject(param.thisObject, ImageView.class, "a");
+                imageView.setVisibility(View.GONE);
             }
         });
     }
@@ -113,12 +96,9 @@ class MainUIHook extends BaseHook {
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
                 List list = (List) param.args[1];
-                if (list == null || list.isEmpty() || PopupMenuDialog$MenuItem == null) {
-                    return;
-                }
                 List needRemove = new ArrayList();
                 for (Object item : list) {
-                    String title = (String) findField(PopupMenuDialog$MenuItem, String.class, "a").get(item);
+                    String title = getObject(PopupMenuDialog$MenuItem, String.class, "a", item);
                     if (title.equals("创建群聊") && getBool("hide_popup_multiChat")) {
                         needRemove.add(item);
                     }
@@ -140,7 +120,6 @@ class MainUIHook extends BaseHook {
                     if (title.equals("高能舞室") && getBool("hide_popup_videoDance")) {
                         needRemove.add(item);
                     }
-
                 }
                 list.removeAll(needRemove);
             }
@@ -156,9 +135,6 @@ class MainUIHook extends BaseHook {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 View[] views = getObject(param.thisObject, View[].class, "a");
-                if (views == null) {
-                    return;
-                }
                 // 联系人
                 if (getBool("hide_tab_contact")) {
                     views[2].setVisibility(View.GONE);
@@ -201,14 +177,12 @@ class MainUIHook extends BaseHook {
                     return;
                 }
                 View view = (View) param.args[4];
-                if (view != null) {
-                    view.setVisibility(View.GONE);
-                    ViewGroup listView = (ViewGroup) param.args[0];
-                    Activity activity = (Activity) param.args[3];
-                    int paddingTop = (int) (activity.getResources()
-                                                    .getDisplayMetrics().density * 43 + 0.5f);
-                    listView.setPadding(0, -paddingTop, 0, 0);
-                }
+                view.setVisibility(View.GONE);
+                ViewGroup listView = (ViewGroup) param.args[0];
+                Activity activity = (Activity) param.args[3];
+                int paddingTop = (int) (activity.getResources()
+                                                .getDisplayMetrics().density * 43 + 0.5f);
+                listView.setPadding(0, -paddingTop, 0, 0);
             }
         });
 
@@ -232,7 +206,6 @@ class MainUIHook extends BaseHook {
      * 隐藏联系人分组
      */
     private void hideContactsConstant() {
-
         findAndHookMethod(SimpleSlidingIndicator, "a", int.class, View.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

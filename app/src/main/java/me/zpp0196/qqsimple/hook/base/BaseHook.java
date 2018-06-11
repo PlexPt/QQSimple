@@ -16,7 +16,6 @@ import me.zpp0196.qqsimple.hook.util.XPrefs;
 import static de.robv.android.xposed.XposedHelpers.getStaticIntField;
 import static me.zpp0196.qqsimple.hook.comm.Classes.R$drawable;
 import static me.zpp0196.qqsimple.hook.comm.Classes.R$id;
-import static me.zpp0196.qqsimple.hook.util.HookUtil.getQQVersionName;
 
 /**
  * Created by zpp0196 on 2018/3/18.
@@ -42,12 +41,12 @@ public abstract class BaseHook {
         try {
             return getStaticIntField(R$id, name);
         } catch (Throwable e) {
-            log("%s Can't find the id of name: %s!", getQQVersionName(), name);
+            log("Can't find the id of name: %s!", name);
         }
         return 0;
     }
 
-    protected int getDrawableIdInQQ(String name) {
+    private int getDrawableIdInQQ(String name) {
         Integer id = Ids.getId(name);
         if (id != null && id != 0) {
             return id;
@@ -55,7 +54,7 @@ public abstract class BaseHook {
         try {
             return getStaticIntField(R$drawable, name);
         } catch (Throwable e) {
-            log("%s Can't find the drawable of name: %s!", getQQVersionName(), name);
+            log("Can't find the drawable of name: %s!", name);
         }
         return 0;
     }
@@ -94,10 +93,6 @@ public abstract class BaseHook {
         hideDrawable(getDrawableIdInQQ(name));
     }
 
-    protected void hideDrawable(String name, String... key) {
-        hideDrawable(getDrawableIdInQQ(name), key);
-    }
-
     private void hideDrawable(int id, String... key) {
         if (id == 0) {
             return;
@@ -116,27 +111,14 @@ public abstract class BaseHook {
         });
     }
 
-    protected Field findFirstFieldByExactType(@NonNull Class<?> clazz, Class<?> type) {
-        if (type == null) {
-            return null;
-        }
-        Class<?> clz = clazz;
-        do {
-            for (Field field : clz.getDeclaredFields()) {
-                if (field.getType() == type) {
-                    field.setAccessible(true);
-                    return field;
-                }
-            }
-        } while ((clz = clz.getSuperclass()) != null);
-        log("%s Can't find the field of type: %s in class: %s!", getQQVersionName(), type.getName(), clazz.getName());
-        return null;
+    protected <T> T getObject(@NonNull Object obj, @NonNull Class<?> type, String name) {
+        return getObject(obj.getClass(), type, name, obj);
     }
 
     @SuppressWarnings ("unchecked")
-    protected <T> T getObject(@NonNull Object obj, @NonNull Class<?> type, String name) {
+    protected <T> T getObject(@NonNull Class clazz, @NonNull Class<?> type, String name, @NonNull Object obj) {
         try {
-            return (T) findField(obj.getClass(), type, name).get(obj);
+            return (T) findField(clazz, type, name).get(obj);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -157,7 +139,7 @@ public abstract class BaseHook {
                 }
             }
         } while ((clz = clz.getSuperclass()) != null);
-        log("%s Can't find the field of type: %s and name: %s in class: %s!", getQQVersionName(), type.getName(), name, clazz.getName());
+        log("Can't find the field of type: %s and name: %s in class: %s!", type.getName(), name, clazz.getName());
         return null;
     }
 
@@ -221,7 +203,7 @@ public abstract class BaseHook {
         return XPrefs.getBoolean(key);
     }
 
-    protected boolean getBool(String... keys) {
+    private boolean getBool(String... keys) {
         if (keys == null || keys.length == 0) {
             return true;
         }

@@ -55,7 +55,7 @@ public class HookUtil {
 
     public static void log(String TAG, String msg) {
         if (XPrefs.isPrintLog()) {
-            XposedBridge.log(String.format("%s -> %s", TAG, msg));
+            XposedBridge.log(String.format("QQ_v%s(%s): %s -> %s", getQQVersionName(), getQQVersionCode(), TAG, msg));
         }
     }
 

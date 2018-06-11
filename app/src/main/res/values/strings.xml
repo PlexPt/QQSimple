@@ -105,13 +105,8 @@
     <string name="time_days">days</string>
 
     <string-array name="UpdateLog">
-        <item>修复部分机型闪退问题</item>
-        <item>修复闪照相关功能</item>
-        <item>修复防撤回不能关闭的 bug</item>
-        <item>修复隐藏空间提醒错位的 bug</item>
-        <item>适配稳定版 7.6.3.3565(852)</item>
-        <item>添加隐藏QQ更新提示</item>
-        <item>更改模块部分界面</item>
+        <item>适配稳定版 7.6.5.3595(864)</item>
+        <item>添加隐藏联系人界面坦白说</item>
     </string-array>
 
 </resources>

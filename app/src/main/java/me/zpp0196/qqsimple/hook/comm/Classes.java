@@ -3,7 +3,6 @@ package me.zpp0196.qqsimple.hook.comm;
 import me.zpp0196.qqsimple.hook.util.HookUtil;
 
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
-import static me.zpp0196.qqsimple.hook.util.HookUtil.getQQVersionName;
 
 /**
  * Created by zpp0196 on 2018/4/27 0027.
@@ -14,7 +13,6 @@ public class Classes {
     public static Class<?> R$drawable;
     public static Class<?> R$id;
     public static Class<?> AbstractChatItemBuilder$ViewHolder;
-    public static Class<?> ActionSheet;
     public static Class<?> AioAnimationConfigHelper;
     public static Class<?> AIOImageProviderService;
     public static Class<?> ApolloManager$CheckApolloInfoResult;
@@ -81,9 +79,6 @@ public class Classes {
 
         if (AbstractChatItemBuilder$ViewHolder == null) {
             AbstractChatItemBuilder$ViewHolder = findClassInQQ(".activity.aio.AbstractChatItemBuilder$ViewHolder");
-        }
-        if (ActionSheet == null) {
-            ActionSheet = findClassInQQ("com.tencent.widget.ActionSheet");
         }
         if (AioAnimationConfigHelper == null) {
             AioAnimationConfigHelper = findClassInQQ(".activity.aio.anim.AioAnimationConfigHelper");
@@ -254,7 +249,7 @@ public class Classes {
             return qqClassLoader.loadClass(className);
         } catch (Throwable e) {
             if (!className.contains("com.tencent.mobileqq.R$")) {
-                HookUtil.log("Classes", String.format("%s Can't find the Class of name: %s!", getQQVersionName(), className));
+                HookUtil.log("Classes", String.format("Can't find the Class of name: %s!", className));
             }
         }
         return null;

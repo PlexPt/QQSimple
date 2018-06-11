@@ -13,7 +13,7 @@ public class Ids {
 
     private static HashMap<String, Integer> id;
 
-    private static int[] supportVersion = new int[]{818, 828, 832, 836, 850, 852};
+    private static int[] supportVersion = new int[]{818, 828, 832, 836, 850, 852, 864};
 
     public static void init() {
         if (id == null) {
@@ -39,6 +39,9 @@ public class Ids {
                 init763_850();
             case 852:
                 init763_850();
+                break;
+            case 864:
+                init750_864();
                 break;
         }
     }
@@ -69,6 +72,7 @@ public class Ids {
         put("adviewlayout", 0x7f0a0e37);
         put("contactHeader", 0x7f0a07e4);
         put("search_container", 0x7f0a1fa2);
+        put("slidcards_container", 0x7f0a07df);
         put("newFriendEntry", 0x7f0a07e1);
         put("createTroopEntry", 0x7f0a07e2);
         put("emotionLayout", 0x7f0a045b);
@@ -133,7 +137,6 @@ public class Ids {
         // put("skin_tips_dot_small", 0x7f021e21);
         put("skin_tips_new", 0x7f021e23);
         put("shortvideo_redbag_outicon", 0x7f021c4c);
-        put("qq_setting_setting_icon", 0x7f0213c9);
 
         // Qzone
         put("qzone_cover_avatar_facade", 0x7f0a27c9);
@@ -164,6 +167,7 @@ public class Ids {
         put("adviewlayout", 0x7f0a0f1f); // c6 .activity.recent.BannerManager e(View view) relativelayout
         put("contactHeader", 0x7f0a07e3); // c6 .activity.Contact o() findViewById
         put("search_container", 0x7f0a1fa1); // c6 .activity.Contact o() findViewById2
+        put("slidcards_container", 0x7f0a0836); // c6 .activity.contacts.base.CardController a(View view) FrameLayout
         put("newFriendEntry", 0x7f0a0838); // c6 .activity.Contacts o() f1a
         put("createTroopEntry", 0x7f0a0839); // c6 .activity.Contacts o() b
         put("emotionLayout", 0x7f0a0493); // c6 .activity.BaseChatPie EmotionKeywordHorizonListView
@@ -228,7 +232,6 @@ public class Ids {
         // put("skin_tips_dot_small", 0x7f0220e4); // +1
         put("skin_tips_new", 0x7f0220e6); // +2
         put("shortvideo_redbag_outicon", 0x7f021f0b); // c3 .redtouch.RedTouch a(boolean z) parseRedBagTouch
-        put("qq_setting_setting_icon", 0x7f021649);
 
         // Qzone
         put("qzone_cover_avatar_facade", 0x7f0a2a44);
@@ -259,6 +262,7 @@ public class Ids {
         put("adviewlayout", 0x7f0a0f20); // c6 .activity.recent.BannerManager e(View view) relativelayout
         put("contactHeader", 0x7f0a07e4); // c6 .activity.Contact o() findViewById
         put("search_container", 0x7f0a1fa2); // c6 .activity.Contact o() findViewById2
+        put("slidcards_container", 0x7f0a0837); // c6 .activity.contacts.base.CardController a(View view) FrameLayout
         put("newFriendEntry", 0x7f0a0839); // c6 .activity.Contacts o() f1a
         put("createTroopEntry", 0x7f0a083a); // c6 .activity.Contacts o() b
         put("emotionLayout", 0x7f0a0494); // c6 .activity.BaseChatPie EmotionKeywordHorizonListView
@@ -323,7 +327,6 @@ public class Ids {
         // put("skin_tips_dot_small", 0x7f0220e4); // +1
         put("skin_tips_new", 0x7f0220e6); // +2
         put("shortvideo_redbag_outicon", 0x7f021f0b); // c3 .redtouch.RedTouch a(boolean z) parseRedBagTouch
-        put("qq_setting_setting_icon", 0x7f021649);
 
         // Qzone
         put("qzone_cover_avatar_facade", 0x7f0a2a44); // QZoneFeedsHeader QzoneFacadeDecorator
@@ -354,6 +357,7 @@ public class Ids {
         put("adviewlayout", 0x7f0a0f3b); // c6 .activity.recent.BannerManager e(View view) relativelayout
         put("contactHeader", 0x7f0a07fb); // c6 .activity.Contacts o() findViewById
         put("search_container", 0x7f0a1fed); // c6 .activity.Contacts o() findViewById2
+        put("slidcards_container", 0x7f0a084e); // c6 .activity.contacts.base.CardController a(View view) FrameLayout
         put("newFriendEntry", 0x7f0a0850); // c6 .activity.Contacts o() f1a
         put("createTroopEntry", 0x7f0a0851); // c6 .activity.Contacts o() b
         put("emotionLayout", 0x7f0a04a6); // c6 .activity.BaseChatPie EmotionKeywordHorizonListView
@@ -418,7 +422,6 @@ public class Ids {
         // put("skin_tips_dot_small", 0x7f02215e); // +1
         put("skin_tips_new", 0x7f02215f); // +2
         put("shortvideo_redbag_outicon", 0x7f021f85); // c3 .redtouch.RedTouch a(boolean z) parseRedBagTouch
-        put("qq_setting_setting_icon", 0x7f0216a6);
 
         // Qzone
         put("qzone_cover_avatar_facade", 0x7f0a2af7); // QZoneFeedsHeader QzoneFacadeDecorator
@@ -449,6 +452,7 @@ public class Ids {
         put("adviewlayout", 0x7f0a0f3b); // c6 .activity.recent.BannerManager e(View view) relativelayout
         put("contactHeader", 0x7f0a07fb); // c6 .activity.Contacts o() findViewById
         put("search_container", 0x7f0a1fef); // c6 .activity.Contacts o() findViewById2
+        put("slidcards_container", 0x7f0a084e); // c6 .activity.contacts.base.CardController a(View view) FrameLayout
         put("newFriendEntry", 0x7f0a0850); // c6 .activity.Contacts o() f1a
         put("createTroopEntry", 0x7f0a0851); // c6 .activity.Contacts o() b
         put("emotionLayout", 0x7f0a04a6); // c6 .activity.BaseChatPie EmotionKeywordHorizonListView
@@ -513,7 +517,6 @@ public class Ids {
         // put("skin_tips_dot_small", 0x7f022164); // +1
         put("skin_tips_new", 0x7f022165); // +2
         put("shortvideo_redbag_outicon", 0x7f021f8b); // c3 .redtouch.RedTouch a(boolean z) parseRedBagTouch
-        put("qq_setting_setting_icon", 0x7f0216ac);
 
         // Qzone
         put("qzone_cover_avatar_facade", 0x7f0a2af9); // QZoneFeedsHeader QzoneFacadeDecorator
@@ -537,6 +540,101 @@ public class Ids {
         put("qzone_feed_commwidget_hide_btn", 0x7f0a2e10); // AsyncImageView b
         put("qzone_feed_commwidget_stub", 0x7f0a2b3f); // QZoneFriendFeedFragment new QZoneCommWidget( View c
         put("qz_feed_head_container", 0x7f0a2e35); // HotBannerManager i() LinearLayout
+    }
+
+    private static void init750_864() {
+        put("unchecked_msg_num", 0x7f0a0c66); // c6 .activity.MainFragment a(View view) _num
+        put("adviewlayout", 0x7f0a0f40); // c6 .activity.recent.BannerManager e(View view) relativelayout
+        put("contactHeader", 0x7f0a0813); // c6 .activity.Contacts o() findViewById
+        put("search_container", 0x7f0a1ff8); // c6 .activity.Contacts o() findViewById2
+        put("newFriendEntry", 0x7f0a0869); // c6 .activity.Contacts o() a
+        put("slidcards_container", 0x7f0a0867); // c6 .activity.contacts.base.CardController a(View view) FrameLayout
+        put("createTroopEntry", 0x7f0a086a); // c6 .activity.Contacts o() b
+        put("emotionLayout", 0x7f0a04ab); // c6 .activity.BaseChatPie EmotionKeywordHorizonListView
+        put("btn_more_emoticon", 0x7f0a0ab2); // c4 .emoticonview.EmoticonMainPanel a(QQAppInterface int Context int String BaseChatPie boolean) ImageView a
+        put("unusual_contacts_footerview", 0x7f0a07f7); // c6 .activity.contacts.fragment.FriendFragment OnClick UnCommonlyUsedContactsActivity
+        put("leb_search_entry", 0x7f0a0c26); // c6 .activity.Leba u() a LinearLayout
+        put("qzone_feed_entry", 0x7f0a2153); // c6 .activity.Laba OnClick
+        put("near_people_entry", 0x7f0a2158); // c6 .activity.Laba OnClick
+        put("xingqu_buluo_entry", 0x7f0a215d); // c6 .activity.Laba OnClick
+        put("nearby_people_entry_sub_iv", 0x7f0a215c); // c6 .activity.Leba u() ImageView d
+        put("buluo_entry_sub_iv", 0x7f0a2160); // c6 .activity.Leba u() URLImageView a
+        put("qr_code_icon", 0x7f0a2536); // c6 .activity.QQSettingMe OnClick reportFla
+        put("mydaily", 0x7f0a2537); // OnClick task_entry_config
+        put("nickname_area", 0x7f0a2532); // OnClick 0X80072D6
+        put("sig_layout", 0x7f0a252d); // OnClick signatureH5Url
+        put("myvip", 0x7f0a253d); // OnClick enter vip
+        put("mypocket", 0x7f0a253e); // OnClick My_wallet
+        put("myDressup", 0x7f0a2540); // OnCick Trends_tab
+        put("myfavorites", 0x7f0a2541); // OnClick QfavHelper
+        put("myphotos", 0x7f0a2542); // OnClick QZonePhotoListActivity
+        put("myfiles", 0x7f0a2543); // OnClick QfileFileAssistantActivity
+        put("myvideos", 0x7f0a2546); // OnClick QQStoryMemoriesActivity
+        put("mycards", 0x7f0a2545); // OnClick BusinessCardListActivity
+        put("cuKingCard", 0x7f0a2548); // OnClick cuKingCard url = null
+        put("settings", 0x7f0a2549); // OnClick QQSettingSettingActivity
+        put("nightmode", 0x7f0a254d); // OnClick 夜间模式
+        put("weather_layout", 0x7f0a2550); // OnClick https://weather.mp.qq.com/?_wv=5127&asyncMode=1
+        put("weather_area", 0x7f0a2554); // OnClick getText()).append("，天气：");
+        put("chat_item_pendant_image", 0x7f0a0059); // c6 .activity.aio.BaseChatItemLayout setPendantImage URLImageView
+        put("ivTitleBtnRightCall", 0x7f0a08bc); // c6 .actiivty.BaseChatPie d() setContentDescription("通话"); d
+        put("qq_aio_panel_ptt", 0x7f0a01b7); // c6 .activity.aio.panel.AIOPanelUtiles  a 3
+        put("qq_aio_panel_ptt_gold_msg", 0x7f0a01b9); // c
+        put("qq_aio_panel_image", 0x7f0a01bd); // g
+        put("qq_aio_panel_image_gold_msg", 0x7f0a01bf); // i
+        put("qq_aio_panel_camera", 0x7f0a01c0); // j
+        put("qq_aio_panel_ptv", 0x7f0a01c3); // m
+        put("qq_aio_panel_ptv_gold_msg", 0x7f0a01c4); // n
+        put("qq_aio_panel_hongbao", 0x7f0a01ca); // s
+        put("qq_aio_panel_poke", 0x7f0a01d4); // z
+        put("qq_aio_panel_hot_pic", 0x7f0a01d7); // B
+        put("qq_aio_panel_hot_pic_gold_msg", 0x7f0a01db); // F
+        put("chat_item_troop_member_level", 0x7f0a004b); // c6 .activity.aio.BaseBubbleBuilder Clk_label
+        put("chat_item_troop_member_glamour_level", 0x7f0a004c); // level + 1
+        put("troop_assistant_feeds_title_small_video", 0x7f0a34e5); // c6 TroopAssistantFeedsJsHandler
+        put("pic_light_emoj", 0x7f0a00a4); // c6 .activity.aio.item.PicItemBuilder a(View view, MotionEvent motionEvent)
+        put("timtips", 0x7f0a1b58); // c4 .filemanager.activity.fileassistant.QfileFileAssistantActivity doOnCreate ViewStub
+        put("qqsetting2_phone_unity_info", 0x7f0a1cd1); // c6 .activity.QQSettingSettingActivity OnClick PhoneUnityBindInfoActivity
+        put("qqsetting2_newXmanLayout", 0x7f0a258b); // OnClick http://ti.qq.com/xman/self.html
+        put("qqsetting2_msg_notify", 0x7f0a1cd4); // OnClick NotifyPushSettingActivity
+        put("qqsetting2_msg_history", 0x7f0a1cd5); // OnClick QQSettingMsgHistoryActivity
+        put("qqsetting2_msg_qqclean", 0x7f0a258c); // OnClick QQSettingCleanActivity
+        put("qqsetting2_device_security", 0x7f0a258d); // OnClick My_settab_safe
+        put("qqsetting2_permission_privacy", 0x7f0a1cd6); // OnClick PermisionPrivacyActivity
+        put("qqsetting2_assist", 0x7f0a1cd7); // OnClick AssistantSettingActivity
+        put("cu_open_card_guide_entry", 0x7f0a258f); // OnClick click cu_open_card_guide url: %s
+        put("about", 0x7f0a1cdb); // OnClick AboutActivity
+        put("qzone_feed_reddot", 0x7f0a2157); // c6 .activity.Leba TextView b
+        put("xingqu_buluo_reddot", 0x7f0a2161); // c6 .activity.Leba u() TextView d
+
+        // drawable
+        put("skin_tips_dot", 0x7f0221b3); // c3 .redtouch.RedTouch a(int i)
+        // put("skin_tips_dot_small", 0x7f0221b4); // +1
+        put("skin_tips_new", 0x7f0221b5); // +2
+        put("shortvideo_redbag_outicon", 0x7f021fda); // c3 .redtouch.RedTouch a(boolean z) parseRedBagTouch
+
+        // Qzone
+        put("qzone_cover_avatar_facade", 0x7f0a2b04); // QZoneFeedsHeader QzoneFacadeDecorator
+        put("qzone_cover_avatar_vip", 0x7f0a2b05); // QZoneFeedsHeader QzoneVipDecorator
+        put("qzone_cover_avatar_qboss", 0x7f0a2e47); // QZoneFeedsHeader QzoneQbossDecorator
+        put("feed_attach_view", 0x7f0a3261); // @id/feed_attach_view
+        put("operation_like_container", 0x7f0a3313); // 2188
+        put("operation_like_container2", 0x7f0a331c); // 2669
+        put("feed_praise_avatars_view", 0x7f0a3341); // 2192
+        put("feed_guide_comment_bar", 0x7f0a32fe); // 2413
+        put("feed_canvas_comment_area_stub", 0x7f0a32fc); // 2787
+        put("shuoshuo_ad_upload_quality", 0x7f0a3081); // restoreShuoshuoPicShow picUrl: AsyncImageView
+        put("quality_normal_ad", 0x7f0a3199); // QZoneUploadQualityActivity AsyncImageView c
+        put("quality_original_ad", 0x7f0a31a2); // QZoneUploadQualityActivity AsyncImageView a
+        put("quality_hd_ad", 0x7f0a319e); // QZoneUploadQualityActivity AsyncImageView b
+        put("quality_ad", 0x7f0a31bd); // QZoneUploadPhotoActivity AsyncImageView c
+        put("qzone_feed_commwidget_container", 0x7f0a2e27); // QZoneCommWidget i() View b
+        put("qzone_feed_commwidget_image", 0x7f0a2e28); // AsyncImageView a
+        put("qzone_feed_commwidget_text", 0x7f0a2e29); // TextView b
+        put("qzone_feed_commwidget_count", 0x7f0a2e2a); // TextView a
+        put("qzone_feed_commwidget_hide_btn", 0x7f0a2e2b); // AsyncImageView b
+        put("qzone_feed_commwidget_stub", 0x7f0a2b49); // QZoneFriendFeedFragment new QZoneCommWidget( View d
+        put("qz_feed_head_container", 0x7f0a2e50); // HotBannerManager i() LinearLayout
     }
 
     private static void put(String key, Integer value) {
