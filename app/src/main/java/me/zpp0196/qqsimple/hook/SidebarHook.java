@@ -47,13 +47,10 @@ public class SidebarHook extends BaseHook {
 
     private void hideViews(XC_MethodHook.MethodHookParam param) {
         final Object obj = param.thisObject;
-        LinearLayout daily = getObject(obj, LinearLayout.class, "a");
         ImageView qrCode = getObject(obj, ImageView.class, "d");
         View qqInfo = getObject(obj, View.class, "a");
         View nightTheme = getObject(obj, View.class, "d");
 
-        // 隐藏打卡/每日任务
-        hideView(daily, "hide_sidebar_myDaily");
         // 隐藏二维码
         hideView(qrCode, "hide_sidebar_myQrCode");
         // 隐藏QQ信息

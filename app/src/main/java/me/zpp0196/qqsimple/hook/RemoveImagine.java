@@ -38,6 +38,8 @@ class RemoveImagine extends BaseHook {
         hideView("unusual_contacts_footerview", "hide_contacts_unusualContacts");
         // 隐藏动态界面搜索框
         hideView("leb_search_entry", "hide_leba_search");
+        // 隐藏打卡/每日任务
+        hideView("mydaily", "hide_sidebar_myDaily");
         // 隐藏侧滑栏会员栏
         hideView("myvip", "hide_sidebar_vip");
         // 隐藏侧滑栏我的名片夹
