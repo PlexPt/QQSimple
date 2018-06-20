@@ -42,6 +42,8 @@ class RemoveImagine extends BaseHook {
         hideView("mydaily", "hide_sidebar_myDaily");
         // 隐藏侧滑栏会员栏
         hideView("myvip", "hide_sidebar_vip");
+        // 隐藏侧滑栏我的视频
+        hideView("myvideos", "hide_sidebar_myVideos");
         // 隐藏侧滑栏我的名片夹
         hideView("mycards", "hide_sidebar_myCards");
         // 隐藏侧滑栏免流量特权
@@ -60,6 +62,8 @@ class RemoveImagine extends BaseHook {
         hideView("chat_item_troop_member_glamour_level", "hide_troop_memberGlamourLevel");
         // 隐藏群消息里的小视频
         hideView("troop_assistant_feeds_title_small_video", "hide_troopAssistant_smallVideo");
+        // 隐藏设置免流量特权
+        hideView("cu_open_card_guide_entry", "hide_setting_kingCard");
         if (isMoreThan735()) {
             // 隐藏贴表情
             hideView("pic_light_emoj", "hide_troop_lightEmoji");

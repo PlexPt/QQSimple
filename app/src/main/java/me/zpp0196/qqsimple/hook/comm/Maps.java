@@ -32,7 +32,6 @@ public class Maps {
             sidebarItem.put("hide_sidebar_myFiles", "文件");
             sidebarItem.put("hide_sidebar_myPhotos", "相册");
             sidebarItem.put("hide_sidebar_dressUp", "装扮");
-            sidebarItem.put("hide_sidebar_myVideos", "视频");
         }
         if (popouItem == null) {
             popouItem = new HashMap<>();
@@ -52,7 +51,6 @@ public class Maps {
             settingItem.put("hide_setting_deviceSecurity", "安全");
             settingItem.put("hide_setting_privacy", "隐私");
             settingItem.put("hide_setting_assist", "辅助");
-            settingItem.put("hide_setting_kingCard", "流量");
             settingItem.put("hide_setting_about", "关于");
         }
         if (qzoneMenuItem == null) {

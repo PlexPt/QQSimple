@@ -110,6 +110,7 @@ class MainUIHook extends BaseHook {
     private void hidePopupMenu() {
         // TODO 隐藏轻游戏入口
 
+        // FIXME 闪退
         // 隐藏消息列表右上角快捷入口
         findAndHookMethod(Conversation, "D", hideView(ImageView.class, "a", "hide_conversation_popupMenu"));
         findAndHookMethod(PopupMenuDialog, "a", Activity.class, List.class, PopupMenuDialog$OnClickActionListener, PopupMenuDialog$OnDismissListener, int.class, boolean.class, new XC_MethodHook() {
