@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,13 +23,13 @@ import me.zpp0196.qqsimple.R;
 import me.zpp0196.qqsimple.activity.base.BaseAppCompatActivity;
 import me.zpp0196.qqsimple.fragment.AboutFragment;
 import me.zpp0196.qqsimple.fragment.ChatPreferenceFragment;
-import me.zpp0196.qqsimple.fragment.GroupPreferenceFragment;
 import me.zpp0196.qqsimple.fragment.MainFragment;
 import me.zpp0196.qqsimple.fragment.MainUIPreferenceFragment;
 import me.zpp0196.qqsimple.fragment.OtherPreferenceFragment;
 import me.zpp0196.qqsimple.fragment.QZonePreferenceFragment;
 import me.zpp0196.qqsimple.fragment.SettingPreferenceFragment;
 import me.zpp0196.qqsimple.fragment.SidebarPreferenceFragment;
+import me.zpp0196.qqsimple.fragment.TroopPreferenceFragment;
 import me.zpp0196.qqsimple.fragment.base.BaseFragment;
 import me.zpp0196.qqsimple.fragment.base.BasePreferenceFragment;
 import me.zpp0196.qqsimple.util.ShellUtil;
@@ -52,6 +53,8 @@ public class MainActivity extends BaseAppCompatActivity implements NavigationVie
     private DrawerLayout drawerLayout;
 
     public boolean isModuleActive() {
+        // VirtualXposed 在某些机型上hook短方法有问题，这里认为添加日志增大方法长度确保能hook成功。
+        Log.i("fake", "isModuleActive");
         return false;
     }
 
@@ -62,8 +65,6 @@ public class MainActivity extends BaseAppCompatActivity implements NavigationVie
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_main);
-
         long enterModuleTimes = getPrefs().getLong(PREFS_KEY_ENTER_MODULE_TIMES, 0);
         getEditor().putLong(PREFS_KEY_ENTER_MODULE_TIMES, enterModuleTimes + 1)
                 .apply();
@@ -86,7 +87,7 @@ public class MainActivity extends BaseAppCompatActivity implements NavigationVie
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu()
-                .getItem(0)
+                .findItem(R.id.nav_main)
                 .setChecked(true);
 
         if (!isModuleActive()) {
@@ -94,18 +95,15 @@ public class MainActivity extends BaseAppCompatActivity implements NavigationVie
                     .removeGroup(R.id.main_items);
         }
 
-        // 防止横竖屏切换时切换Fragment
-        if (savedInstanceState == null) {
-            drawerHandler.removeCallbacksAndMessages(null);
-            drawerHandler.postDelayed(() -> navigate(R.id.nav_main), 250);
+        drawerHandler.removeCallbacksAndMessages(null);
+        drawerHandler.postDelayed(() -> navigate(R.id.nav_main), 250);
 
-            boolean openDrawer = getPrefs().getBoolean(PREFS_KEY_OPEN_DRAWER, false);
+        boolean openDrawer = getPrefs().getBoolean(PREFS_KEY_OPEN_DRAWER, false);
 
-            if (openDrawer) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            } else {
-                drawerLayout.closeDrawers();
-            }
+        if (openDrawer) {
+            drawerLayout.openDrawer(GravityCompat.START);
+        } else {
+            drawerLayout.closeDrawers();
         }
     }
 
@@ -131,7 +129,7 @@ public class MainActivity extends BaseAppCompatActivity implements NavigationVie
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!isInVxp(this)) {
+        if (!isInVxp()) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_main, menu);
         }
@@ -201,7 +199,7 @@ public class MainActivity extends BaseAppCompatActivity implements NavigationVie
                 navFragment = new ChatPreferenceFragment();
                 break;
             case R.id.nav_group:
-                navFragment = new GroupPreferenceFragment();
+                navFragment = new TroopPreferenceFragment();
                 break;
             case R.id.nav_other:
                 navFragment = new OtherPreferenceFragment();

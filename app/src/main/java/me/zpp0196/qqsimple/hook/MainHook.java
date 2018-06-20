@@ -14,6 +14,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.comm.Classes;
 import me.zpp0196.qqsimple.hook.comm.Ids;
+import me.zpp0196.qqsimple.hook.comm.Maps;
 import me.zpp0196.qqsimple.hook.util.HookUtil;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
@@ -36,7 +37,6 @@ public class MainHook implements IXposedHookLoadPackage {
         findAndHookMethod(Application.class.getName(), loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 final ClassLoader classLoader = ((Context) param.args[0]).getClassLoader();
                 if (Build.VERSION.SDK_INT < 21) {
                     findAndHookMethod("com.tencent.common.app.BaseApplicationImpl", classLoader, "onCreate", new XC_MethodHook() {
@@ -60,6 +60,7 @@ public class MainHook implements IXposedHookLoadPackage {
 
         Classes.initClass(classLoader);
         Ids.init();
+        Maps.init();
 
         if (lpparam.processName.contains("qzone")) {
             startQzoneHook(classLoader);
@@ -71,7 +72,8 @@ public class MainHook implements IXposedHookLoadPackage {
         hooks.add(new RemoveImagine());
         hooks.add(new MainUIHook());
         hooks.add(new SidebarHook());
-        hooks.add(new ChatInterfaceHook());
+        hooks.add(new ChatHook());
+        hooks.add(new TroopHook());
         hooks.add(new OtherHook());
         for (BaseHook hook : hooks) {
             hook.init();
@@ -83,7 +85,6 @@ public class MainHook implements IXposedHookLoadPackage {
             findAndHookMethod(QzonePluginProxyActivity, "a", Context.class, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
                     new QZoneHook(classLoader, (ClassLoader) param.getResult()).init();
                 }
             });

@@ -33,6 +33,10 @@ public class HookUtil {
         return getQQVersionName().compareTo("7.3.5") >= 0;
     }
 
+    public static boolean isMoreThan750() {
+        return getQQVersionName().compareTo("7.5.0") >= 0;
+    }
+
     public static boolean isMoreThan758() {
         return getQQVersionName().compareTo("7.5.8") >= 0;
     }

@@ -11,6 +11,7 @@ import java.util.List;
 
 import static me.zpp0196.qqsimple.BuildConfig.APPLICATION_ID;
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
+import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_VXP;
 
 /**
  * Created by zpp0196 on 2018/5/27 0027.
@@ -18,18 +19,19 @@ import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
 
 public class CommUtil {
 
-    public static boolean isInVxp(Context context) {
-        String filesDir = context.getFilesDir()
-                .getAbsolutePath();
-        return filesDir.contains("virtual");
+    public static boolean isInVxp() {
+        return System.getProperty("vxp") != null;
     }
 
-    public static boolean isAppRunning(Context context, String progressName) {
+    static boolean isVxpRunning(Context context) {
         try {
             ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            if (activityManager == null) {
+                return false;
+            }
             List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
             for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
-                if (appProcess.processName.equals(progressName)) {
+                if (appProcess.processName.equals(PACKAGE_NAME_VXP)) {
                     return true;
                 }
             }

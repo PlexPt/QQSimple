@@ -30,34 +30,35 @@
             android:inputType="numberDecimal"
             android:key="qq_font_size"
             android:title="字体大小" />
+        <SwitchPreference
+            android:key="hook_chat_tail"
+            android:title="开启聊天小尾巴" />
+        <EditTextPreference
+            android:dependency="hook_chat_tail"
+            android:key="chat_tail"
+            android:title="小尾巴" />
     </PreferenceCategory>
     <PreferenceCategory android:title="设置界面">
         <CheckBoxPreference
-            android:key="hide_setting_phone_number"
-            android:title="隐藏手机号码" />
-        <CheckBoxPreference
-            android:key="hide_setting_qq_expert"
-            android:title="隐藏QQ达人" />
-        <CheckBoxPreference
-            android:key="hide_setting_msg_notify"
+            android:key="hide_setting_msgNotify"
             android:title="隐藏消息通知" />
         <CheckBoxPreference
-            android:key="hide_setting_msg_history"
+            android:key="hide_setting_msgHistory"
             android:title="隐藏聊天记录" />
         <CheckBoxPreference
-            android:key="hide_setting_msg_qqclean"
+            android:key="hide_setting_qqClean"
             android:title="隐藏空间清理" />
         <CheckBoxPreference
-            android:key="hide_setting_device_security"
+            android:key="hide_setting_deviceSecurity"
             android:title="隐藏账号、设备安全" />
         <CheckBoxPreference
-            android:key="hide_setting_permission_privacy"
+            android:key="hide_setting_privacy"
             android:title="隐藏联系人、隐私" />
         <CheckBoxPreference
             android:key="hide_setting_assist"
             android:title="隐藏辅助功能" />
         <CheckBoxPreference
-            android:key="hide_setting_free_flow"
+            android:key="hide_setting_kingCard"
             android:title="隐藏免流量特权" />
         <CheckBoxPreference
             android:key="hide_setting_about"

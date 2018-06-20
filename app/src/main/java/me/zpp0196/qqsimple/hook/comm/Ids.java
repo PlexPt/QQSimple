@@ -41,16 +41,16 @@ public class Ids {
                 init763_850();
                 break;
             case 864:
-                init750_864();
+                init765_864();
                 break;
         }
     }
 
     public static boolean isSupport(int versionCode) {
-        if (versionCode > supportVersion[supportVersion.length - 1] || versionCode < 794) {
+        if (versionCode > supportVersion[supportVersion.length - 1]) {
             return false;
         }
-        if (versionCode >= 794 && versionCode <= 818) {
+        if (versionCode < supportVersion[0]) {
             return true;
         }
 
@@ -59,7 +59,6 @@ public class Ids {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -542,13 +541,13 @@ public class Ids {
         put("qz_feed_head_container", 0x7f0a2e35); // HotBannerManager i() LinearLayout
     }
 
-    private static void init750_864() {
+    private static void init765_864() {
         put("unchecked_msg_num", 0x7f0a0c66); // c6 .activity.MainFragment a(View view) _num
         put("adviewlayout", 0x7f0a0f40); // c6 .activity.recent.BannerManager e(View view) relativelayout
         put("contactHeader", 0x7f0a0813); // c6 .activity.Contacts o() findViewById
         put("search_container", 0x7f0a1ff8); // c6 .activity.Contacts o() findViewById2
-        put("newFriendEntry", 0x7f0a0869); // c6 .activity.Contacts o() a
         put("slidcards_container", 0x7f0a0867); // c6 .activity.contacts.base.CardController a(View view) FrameLayout
+        put("newFriendEntry", 0x7f0a0869); // c6 .activity.Contacts o() a
         put("createTroopEntry", 0x7f0a086a); // c6 .activity.Contacts o() b
         put("emotionLayout", 0x7f0a04ab); // c6 .activity.BaseChatPie EmotionKeywordHorizonListView
         put("btn_more_emoticon", 0x7f0a0ab2); // c4 .emoticonview.EmoticonMainPanel a(QQAppInterface int Context int String BaseChatPie boolean) ImageView a

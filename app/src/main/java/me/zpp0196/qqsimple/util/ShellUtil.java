@@ -17,7 +17,7 @@ import me.zpp0196.qqsimple.R;
 import me.zpp0196.qqsimple.activity.MainActivity;
 
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_VXP;
-import static me.zpp0196.qqsimple.util.CommUtil.isAppRunning;
+import static me.zpp0196.qqsimple.util.CommUtil.isVxpRunning;
 
 /**
  * Created by zpp0196 on 2018/5/27 0027.
@@ -91,7 +91,7 @@ public class ShellUtil {
     }
 
     private boolean checkVxpOperatingStatus(MainActivity mainActivity) {
-        if (isAppRunning(mainActivity, PACKAGE_NAME_VXP)) {
+        if (isVxpRunning(mainActivity)) {
             return true;
         }
         new MaterialDialog.Builder(mainActivity).title(R.string.title_tip)
@@ -154,7 +154,8 @@ public class ShellUtil {
                 output.append(buffer, 0, read);
             }
             reader.close();
-            return output.toString().trim();
+            return output.toString()
+                    .trim();
         } catch (IOException e) {
             e.printStackTrace();
             return e.getMessage();

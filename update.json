@@ -1,12 +1,30 @@
 {
-  "versionName": "2.2.0",
-  "versionCode": 48,
+  "versionName": "2.3.0",
+  "versionCode": 52,
   "updateLog": [
     {
-      "content": "适配稳定版 7.6.5.3595(864)"
+      "content": "重写了部分代码"
     },
     {
-      "content": "添加隐藏联系人界面坦白说"
+      "content": "移除了版本检测"
+    },
+    {
+      "content": "修复了部分小bug"
+    },
+    {
+      "content": "修复了部分卡顿问题"
+    },
+    {
+      "content": "修复了设置空白间隔"
+    },
+    {
+      "content": "改进了对Vxp的兼容性"
+    },
+    {
+      "content": "添加了聊天小尾巴功能"
+    },
+    {
+      "content": "添加了[有人送礼]等群相关提示"
     }
   ]
 }

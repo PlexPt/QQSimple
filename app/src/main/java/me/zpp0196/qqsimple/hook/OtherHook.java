@@ -1,18 +1,19 @@
 package me.zpp0196.qqsimple.hook;
 
+import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.os.SystemClock;
+import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +26,12 @@ import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.HookUtil;
 import me.zpp0196.qqsimple.hook.util.XPrefs;
 
-import static de.robv.android.xposed.XposedBridge.hookMethod;
+import static me.zpp0196.qqsimple.Common.PREFS_KEY_CHAT_TAIL;
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_FONT_SIZE;
+import static me.zpp0196.qqsimple.Common.PREFS_VALUE_CHAT_TAIL;
 import static me.zpp0196.qqsimple.Common.PREFS_VALUE_FONT_SIZE;
 import static me.zpp0196.qqsimple.hook.comm.Classes.AIOImageProviderService;
+import static me.zpp0196.qqsimple.hook.comm.Classes.BaseChatPie;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ContactUtils;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Conversation;
 import static me.zpp0196.qqsimple.hook.comm.Classes.CoreService;
@@ -40,7 +43,11 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.MessageRecord;
 import static me.zpp0196.qqsimple.hook.comm.Classes.MessageRecordFactory;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQAppInterface;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQMessageFacade;
+import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingSettingActivity;
 import static me.zpp0196.qqsimple.hook.comm.Classes.UpgradeController;
+import static me.zpp0196.qqsimple.hook.comm.Classes.UpgradeDetailWrapper;
+import static me.zpp0196.qqsimple.hook.comm.Classes.XEditTextEx;
+import static me.zpp0196.qqsimple.hook.comm.Maps.settingItem;
 
 /**
  * Created by zpp0196 on 2018/3/11.
@@ -59,6 +66,8 @@ class OtherHook extends BaseHook {
         simulateMenu();
         hookQQUpgrade();
         hookFontSize();
+        hookXEditTextEx();
+        hideSettingItem();
     }
 
     /**
@@ -75,19 +84,10 @@ class OtherHook extends BaseHook {
                 }
             }
         });
-        if (AIOImageProviderService != null) {
-            Method[] methods = AIOImageProviderService.getDeclaredMethods();
-            for (Method method : methods) {
-                Class<?>[] name = method.getParameterTypes();
-                if (method.getName()
-                            .equals("a") && method.getGenericReturnType()
-                            .toString()
-                            .equals("void") && name.length == 1 && name[0].getName()
-                            .equals("long")) {
-                    hookMethod(method, replaceNull("prevent_flash_disappear"));
-                }
-            }
-        }
+        Method method = findMethodIfExists(AIOImageProviderService, void.class, "a", long.class);
+        hookMethod(method, replaceNull("prevent_flash_disappear"));
+
+        // TODO 添加一个隐藏倒计时
         blockSecureFlag();
     }
 
@@ -95,13 +95,13 @@ class OtherHook extends BaseHook {
      * 允许闪照截图
      */
     private void blockSecureFlag() {
+        if (!getBool("prevent_flash_disappear")) {
+            return;
+        }
         findAndHookMethod(Window.class, "setFlags", int.class, int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                if (!getBool("prevent_flash_disappear")) {
-                    return;
-                }
                 if (Integer.parseInt(param.args[0].toString()) ==
                     WindowManager.LayoutParams.FLAG_SECURE) {
                     param.setResult(null);
@@ -112,9 +112,7 @@ class OtherHook extends BaseHook {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                if (getBool("prevent_flash_disappear")) {
-                    param.args[0] = false;
-                }
+                param.args[0] = false;
             }
         });
     }
@@ -123,7 +121,8 @@ class OtherHook extends BaseHook {
      * 防止消息撤回
      */
     private void preventMessagesWithdrawn() {
-        if(!getBool("prevent_messages_withdrawn")) return;
+        if (!getBool("prevent_messages_withdrawn"))
+            return;
         findAndHookMethod(QQMessageFacade, "a", ArrayList.class, boolean.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
@@ -141,7 +140,7 @@ class OtherHook extends BaseHook {
                 long shmsgseq = getObject(revokeMsgInfo, long.class, "a");
                 long time = getObject(revokeMsgInfo, long.class, "c");
 
-                Object qqAppInterface = findField(QQMessageFacade, QQAppInterface, "a").get(param.thisObject);
+                Object qqAppInterface = getObject(param.thisObject, QQAppInterface, "a");
                 String selfUin = (String) XposedHelpers.callMethod(qqAppInterface, "getCurrentAccountUin");
 
                 int msgType = (int) XposedHelpers.getStaticObjectField(MessageRecord, "MSG_TYPE_REVOKE_GRAY_TIPS");
@@ -191,16 +190,13 @@ class OtherHook extends BaseHook {
      * 模拟菜单
      */
     private void simulateMenu() {
+        if (!getBool("simulate_menu"))
+            return;
         findAndHookMethod(Conversation, "D", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                if (!getBool("simulate_menu")) {
-                    return;
-                }
-                Field field = findField(Conversation, RelativeLayout.class, "b");
-                ViewGroup viewGroup = (ViewGroup) field.get(param.thisObject);
-                viewGroup.setOnClickListener(v -> new Thread(() -> {
+                RelativeLayout relativeLayout = getObject(param.thisObject, RelativeLayout.class, "b");
+                relativeLayout.setOnClickListener(v -> new Thread(() -> {
                     try {
                         Instrumentation inst = new Instrumentation();
                         inst.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
@@ -216,17 +212,8 @@ class OtherHook extends BaseHook {
      * 隐藏QQ更新提示
      */
     private void hookQQUpgrade() {
-        if (UpgradeController != null) {
-            Method[] methods = UpgradeController.getDeclaredMethods();
-            for (Method method : methods) {
-                if (method.getName()
-                            .equals("a") && method.getGenericReturnType()
-                            .toString()
-                            .contains("UpgradeDetailWrapper")) {
-                    hookMethod(method, replaceNull("hook_qq_upgrade"));
-                }
-            }
-        }
+        Method method = findMethodIfExists(UpgradeController, UpgradeDetailWrapper, "a");
+        hookMethod(method, replaceNull("hook_qq_upgrade"));
     }
 
     /**
@@ -246,6 +233,61 @@ class OtherHook extends BaseHook {
                     log("Please enter a reasonable font size");
                 }
                 return 16.0f;
+            }
+        });
+    }
+
+    /**
+     * 聊天小尾巴
+     */
+    private void hookXEditTextEx() {
+        if (!getBool("hook_chat_tail")) {
+            return;
+        }
+        String append = XPrefs.getPref()
+                .getString(PREFS_KEY_CHAT_TAIL, PREFS_VALUE_CHAT_TAIL);
+        findAndHookMethod(BaseChatPie, HookUtil.isMoreThan750() ? "al" : "aj", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                EditText editText = getObject(param.thisObject, XEditTextEx, "a");
+                Editable editable = editText.getText();
+                String str = editable.toString();
+                if (isSymbol(str.charAt(str.length() - 1)))
+                    return;
+                if (!str.isEmpty() && !append.isEmpty() && !str.endsWith(append)) {
+                    editText.setText(editable.append(append));
+                }
+            }
+        });
+    }
+
+    private boolean isSymbol(char c) {
+        String str = "!@#$%^&*()'\"=_`.,:;?~|+-\\/[]{}<>“”·‘’，。；：‘’“”！？《》（）【】—";
+        for (char temp : str.toCharArray()) {
+            if (temp == c)
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * 隐藏设置界面内容
+     */
+    private void hideSettingItem() {
+        findAndHookMethod(QQSettingSettingActivity, "a", int.class, int.class, int.class, int.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Activity activity = (Activity) param.thisObject;
+                int viewId = Integer.parseInt(param.args[0].toString());
+                int strId = Integer.parseInt(param.args[1].toString());
+                String str = activity.getString(strId);
+                for (String key : settingItem.keySet()) {
+                    String value = settingItem.get(key);
+                    if (str.contains(value)) {
+                        hideView(activity.findViewById(viewId), key);
+                    }
+                }
             }
         });
     }

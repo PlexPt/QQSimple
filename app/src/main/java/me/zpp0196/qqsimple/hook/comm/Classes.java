@@ -15,11 +15,14 @@ public class Classes {
     public static Class<?> AbstractChatItemBuilder$ViewHolder;
     public static Class<?> AioAnimationConfigHelper;
     public static Class<?> AIOImageProviderService;
+    public static Class<?> AIOPanelUtiles;
     public static Class<?> ApolloManager$CheckApolloInfoResult;
     public static Class<?> BaseActivity;
     public static Class<?> BaseBubbleBuilder$ViewHolder;
+    public static Class<?> BaseChatPie;
     public static Class<?> BubbleManager;
     public static Class<?> BusinessInfoCheckUpdate$RedTypeInfo;
+    public static Class<?> CardController;
     public static Class<?> ChatActivityUtils;
     public static Class<?> ChatMessage;
     public static Class<?> Conversation;
@@ -30,6 +33,7 @@ public class Classes {
     public static Class<?> CoreService$KernelService;
     public static Class<?> CountDownProgressBar;
     public static Class<?> EmoticonManager;
+    public static Class<?> FileManagerUtil;
     public static Class<?> FontManager;
     public static Class<?> FontSettingManager;
     public static Class<?> FrameHelperActivity;
@@ -43,12 +47,15 @@ public class Classes {
     public static Class<?> MainFragment;
     public static Class<?> MedalNewsItemBuilder;
     public static Class<?> MessageForDeliverGiftTips;
+    public static Class<?> MessageInfo;
     public static Class<?> MessageRecord;
     public static Class<?> MessageRecordFactory;
     public static Class<?> OnLongClickAndTouchListener;
+    public static Class<?> PanelIconLinearLayout;
     public static Class<?> PopupMenuDialog;
     public static Class<?> PopupMenuDialog$MenuItem;
     public static Class<?> PopupMenuDialog$OnClickActionListener;
+    public static Class<?> PopupMenuDialog$OnDismissListener;
     public static Class<?> QQAppInterface;
     public static Class<?> QQMessageFacade;
     public static Class<?> QQSettingMe;
@@ -64,182 +71,149 @@ public class Classes {
     public static Class<?> TroopEnterEffectController;
     public static Class<?> TroopGiftAnimationController;
     public static Class<?> UpgradeController;
+    public static Class<?> UpgradeDetailWrapper;
+    public static Class<?> URLImageView;
     public static Class<?> VipSpecialCareGrayTips;
+    public static Class<?> XEditTextEx;
+
     private static ClassLoader qqClassLoader;
 
     public static void initClass(ClassLoader classLoader) {
         qqClassLoader = classLoader;
-
-        if (R$drawable == null) {
+        if (R$drawable == null)
             R$drawable = findClassInQQ(".R$drawable");
-        }
-        if (R$id == null) {
+        if (R$id == null)
             R$id = findClassInQQ(".R$id");
-        }
-
-        if (AbstractChatItemBuilder$ViewHolder == null) {
+        if (AbstractChatItemBuilder$ViewHolder == null)
             AbstractChatItemBuilder$ViewHolder = findClassInQQ(".activity.aio.AbstractChatItemBuilder$ViewHolder");
-        }
-        if (AioAnimationConfigHelper == null) {
+        if (AioAnimationConfigHelper == null)
             AioAnimationConfigHelper = findClassInQQ(".activity.aio.anim.AioAnimationConfigHelper");
-        }
-        if (AIOImageProviderService == null) {
+        if (AIOImageProviderService == null)
             AIOImageProviderService = findClassInQQ(".activity.aio.photo.AIOImageProviderService");
-        }
-        if (ApolloManager$CheckApolloInfoResult == null) {
+        if (AIOPanelUtiles == null)
+            AIOPanelUtiles = findClassInQQ(".activity.aio.panel.AIOPanelUtiles");
+        if (ApolloManager$CheckApolloInfoResult == null)
             ApolloManager$CheckApolloInfoResult = findClassInQQ(".apollo.ApolloManager$CheckApolloInfoResult");
-        }
-        if (BaseActivity == null) {
+        if (BaseActivity == null)
             BaseActivity = findClassInQQ(".app.BaseActivity");
-        }
-        if (BaseBubbleBuilder$ViewHolder == null) {
+        if (BaseBubbleBuilder$ViewHolder == null)
             BaseBubbleBuilder$ViewHolder = findClassInQQ(".activity.aio.BaseBubbleBuilder$ViewHolder");
-        }
-        if (BubbleManager == null) {
+        if (BaseChatPie == null)
+            BaseChatPie = findClassInQQ(".activity.BaseChatPie");
+        if (BubbleManager == null)
             BubbleManager = findClassInQQ(".bubble.BubbleManager");
-        }
-        if (BusinessInfoCheckUpdate$RedTypeInfo == null) {
+        if (BusinessInfoCheckUpdate$RedTypeInfo == null)
             BusinessInfoCheckUpdate$RedTypeInfo = findClassInQQ("com.tencent.pb.getbusiinfo.BusinessInfoCheckUpdate$RedTypeInfo");
-        }
-        if (ChatActivityUtils == null) {
+        if (CardController == null)
+            CardController = findClassInQQ(".activity.contacts.base.CardController");
+        if (ChatActivityUtils == null)
             ChatActivityUtils = findClassInQQ(".activity.ChatActivityUtils");
-        }
-        if (ChatMessage == null) {
+        if (ChatMessage == null)
             ChatMessage = findClassInQQ(".data.ChatMessage");
-        }
-        if (Conversation == null) {
+        if (Conversation == null)
             Conversation = findClassInQQ(".activity.Conversation");
-        }
-        if (ConversationNowController == null) {
+        if (ConversationNowController == null)
             ConversationNowController = findClassInQQ(".now.enter.ConversationNowController");
-        }
-        if (Contacts == null) {
+        if (Contacts == null)
             Contacts = findClassInQQ(".activity.Contacts");
-        }
-        if (ContactUtils == null) {
+        if (ContactUtils == null)
             ContactUtils = findClassInQQ(".utils.ContactUtils");
-        }
-        if (CoreService == null) {
+        if (CoreService == null)
             CoreService = findClassInQQ(".app.CoreService");
-        }
-        if (CoreService$KernelService == null) {
+        if (CoreService$KernelService == null)
             CoreService$KernelService = findClassInQQ(".app.CoreService$KernelService");
-        }
-        if (CountDownProgressBar == null) {
+        if (CountDownProgressBar == null)
             CountDownProgressBar = findClassInQQ("com.tencent.widget.CountDownProgressBar");
-        }
-        if (EmoticonManager == null) {
+        if (EmoticonManager == null)
             EmoticonManager = findClassInQQ(".model.EmoticonManager");
-        }
-        if (FontManager == null) {
+        if (FileManagerUtil == null)
+            FileManagerUtil = findClassInQQ(".filemanager.util.FileManagerUtil");
+        if (FontManager == null)
             FontManager = findClassInQQ("com.etrump.mixlayout.FontManager");
-        }
-        if (FontSettingManager == null) {
+        if (FontSettingManager == null)
             FontSettingManager = findClassInQQ(".app.FontSettingManager");
-        }
-        if (FrameHelperActivity == null) {
+        if (FrameHelperActivity == null)
             FrameHelperActivity = findClassInQQ(".app.FrameHelperActivity");
-        }
-        if (GatherContactsTips == null) {
+        if (GatherContactsTips == null)
             GatherContactsTips = findClassInQQ(".activity.aio.tips.GatherContactsTips");
-        }
-        if (GrayTipsItemBuilder == null) {
+        if (GrayTipsItemBuilder == null)
             GrayTipsItemBuilder = findClassInQQ(".activity.aio.item.GrayTipsItemBuilder");
-        }
-        if (HotChatFlashPicActivity == null) {
+        if (HotChatFlashPicActivity == null)
             HotChatFlashPicActivity = findClassInQQ(".dating.HotChatFlashPicActivity");
-        }
-        if (ItemBuilderFactory == null) {
+        if (ItemBuilderFactory == null)
             ItemBuilderFactory = findClassInQQ(".activity.aio.item.ItemBuilderFactory");
-        }
-        if (Leba == null) {
+        if (Leba == null)
             Leba = findClassInQQ(".activity.Leba");
-        }
-        if (LebaQZoneFacePlayHelper == null) {
+        if (LebaQZoneFacePlayHelper == null)
             LebaQZoneFacePlayHelper = findClassInQQ(".activity.LebaQZoneFacePlayHelper");
-        }
-        if (LocalSearchBar == null) {
+        if (LocalSearchBar == null)
             LocalSearchBar = findClassInQQ(".activity.recent.LocalSearchBar");
-        }
-        if (MainFragment == null) {
+        if (MainFragment == null)
             MainFragment = findClassInQQ(".activity.MainFragment");
-        }
-        if (MedalNewsItemBuilder == null) {
+        if (MedalNewsItemBuilder == null)
             MedalNewsItemBuilder = findClassInQQ(".activity.aio.item.MedalNewsItemBuilder");
-        }
-        if (MessageForDeliverGiftTips == null) {
+        if (MessageForDeliverGiftTips == null)
             MessageForDeliverGiftTips = findClassInQQ(".data.MessageForDeliverGiftTips");
-        }
-        if (MessageRecord == null) {
+        if (MessageInfo == null)
+            MessageInfo = findClassInQQ(".troop.data.MessageInfo");
+        if (MessageRecord == null)
             MessageRecord = findClassInQQ(".data.MessageRecord");
-        }
-        if (MessageRecordFactory == null) {
+        if (MessageRecordFactory == null)
             MessageRecordFactory = findClassInQQ(".service.message.MessageRecordFactory");
-        }
-        if (OnLongClickAndTouchListener == null) {
+        if (OnLongClickAndTouchListener == null)
             OnLongClickAndTouchListener = findClassInQQ(".activity.aio.OnLongClickAndTouchListener");
-        }
-        if (PopupMenuDialog == null) {
+        if (PanelIconLinearLayout == null)
+            PanelIconLinearLayout = findClassInQQ(".activity.aio.panel.PanelIconLinearLayout");
+        if (PopupMenuDialog == null)
             PopupMenuDialog = findClassInQQ("com.tencent.widget.PopupMenuDialog");
-        }
-        if (PopupMenuDialog$MenuItem == null) {
+        if (PopupMenuDialog$MenuItem == null)
             PopupMenuDialog$MenuItem = findClassInQQ("com.tencent.widget.PopupMenuDialog$MenuItem");
-        }
-        if (PopupMenuDialog$OnClickActionListener == null) {
+        if (PopupMenuDialog$OnClickActionListener == null)
             PopupMenuDialog$OnClickActionListener = findClassInQQ("com.tencent.widget.PopupMenuDialog$OnClickActionListener");
-        }
-        if (QQAppInterface == null) {
+        if (PopupMenuDialog$OnDismissListener == null)
+            PopupMenuDialog$OnDismissListener = findClassInQQ("com.tencent.widget.PopupMenuDialog$OnDismissListener");
+        if (QQAppInterface == null)
             QQAppInterface = findClassInQQ(".app.QQAppInterface");
-        }
-        if (QQMessageFacade == null) {
+        if (QQMessageFacade == null)
             QQMessageFacade = findClassInQQ(".app.message.QQMessageFacade");
-        }
-        if (QQSettingMe == null) {
+        if (QQSettingMe == null)
             QQSettingMe = findClassInQQ(".activity.QQSettingMe");
-        }
-        if (QQSettingSettingActivity == null) {
+        if (QQSettingSettingActivity == null)
             QQSettingSettingActivity = findClassInQQ(".activity.QQSettingSettingActivity");
-        }
-        if (QzoneFeedItemBuilder == null) {
+        if (QzoneFeedItemBuilder == null)
             QzoneFeedItemBuilder = findClassInQQ(".activity.aio.item.QzoneFeedItemBuilder");
-        }
-        if (QzonePluginProxyActivity == null) {
+        if (QzonePluginProxyActivity == null)
             QzonePluginProxyActivity = findClassInQQ("cooperation.qzone.QzonePluginProxyActivity");
-        }
-        if (RichStatItemBuilder == null) {
+        if (RichStatItemBuilder == null)
             RichStatItemBuilder = findClassInQQ(".activity.aio.item.RichStatItemBuilder");
-        }
-        if (SimpleSlidingIndicator == null) {
+        if (SimpleSlidingIndicator == null)
             SimpleSlidingIndicator = findClassInQQ(".activity.contacts.view.SimpleSlidingIndicator");
-        }
-        if (SougouInputGrayTips == null) {
+        if (SougouInputGrayTips == null)
             SougouInputGrayTips = findClassInQQ(".activity.aio.tips.SougouInputGrayTips");
-        }
-        if (TextItemBuilder == null) {
+        if (TextItemBuilder == null)
             TextItemBuilder = findClassInQQ(".activity.aio.item.TextItemBuilder");
-        }
-        if (TextPreviewActivity == null) {
+        if (TextPreviewActivity == null)
             TextPreviewActivity = findClassInQQ(".activity.TextPreviewActivity");
-        }
-        if (TListView == null) {
+        if (TListView == null)
             TListView = findClassInQQ("com.tencent.widget.ListView");
-        }
-        if (TroopEnterEffectController == null) {
+        if (TroopEnterEffectController == null)
             TroopEnterEffectController = findClassInQQ(".troop.enterEffect.TroopEnterEffectController");
-        }
-        if (TroopGiftAnimationController == null) {
+        if (TroopGiftAnimationController == null)
             TroopGiftAnimationController = findClassInQQ(".troopgift.TroopGiftAnimationController");
-        }
-        if (UpgradeController == null) {
+        if (UpgradeController == null)
             UpgradeController = findClassInQQ(".app.upgrade.UpgradeController");
-        }
-        if (VipSpecialCareGrayTips == null) {
+        if (UpgradeDetailWrapper == null)
+            UpgradeDetailWrapper = findClassInQQ(".app.upgrade.UpgradeDetailWrapper");
+        if (URLImageView == null)
+            URLImageView = findClassInQQ("com.tencent.image.URLImageView");
+        if (VipSpecialCareGrayTips == null)
             VipSpecialCareGrayTips = findClassInQQ(".activity.aio.tips.VipSpecialCareGrayTips");
-        }
+        if (XEditTextEx == null)
+            XEditTextEx = findClassInQQ("com.tencent.widget.XEditTextEx");
     }
 
     private static Class<?> findClassInQQ(String className) {
-        if (qqClassLoader == null || className.equals("")) {
+        if (qqClassLoader == null || className.isEmpty()) {
             return null;
         }
         if (className.startsWith(".")) {
@@ -251,7 +225,7 @@ public class Classes {
             if (!className.contains("com.tencent.mobileqq.R$")) {
                 HookUtil.log("Classes", String.format("Can't find the Class of name: %s!", className));
             }
+            return null;
         }
-        return null;
     }
 }

@@ -35,7 +35,6 @@ import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_XPOSED_INSTALLER;
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_CHECK_UPDATE_AUTO;
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_SWITCH_ALL;
-import static me.zpp0196.qqsimple.hook.comm.Ids.isSupport;
 import static me.zpp0196.qqsimple.util.CommUtil.getQQVersionCode;
 import static me.zpp0196.qqsimple.util.CommUtil.getQQVersionName;
 import static me.zpp0196.qqsimple.util.CommUtil.isInVxp;
@@ -100,7 +99,8 @@ public class MainFragment extends BaseFragment {
                         builder.onNegative((dialog, which) -> shellUtil.executeVxpCmd(ShellUtil.VXP_CMD_TYPE.LAUNCH, result.getPackageName(), result.getProgressName()));
                         break;
                 }
-                if(result.getResult().contains("denied")){
+                if (result.getResult()
+                        .contains("denied")) {
                     Toast.makeText(mainActivity, result.getResult(), Toast.LENGTH_LONG)
                             .show();
                     return;
@@ -139,7 +139,7 @@ public class MainFragment extends BaseFragment {
 
         device.addItem(manufacturer, android);
 
-        if (isInVxp(mainActivity)) {
+        if (isInVxp()) {
             qq.addItem(qqVersion);
         } else {
             qq.addItem(qqVersion, stopQQ, stopVxpQQ);
@@ -177,11 +177,6 @@ public class MainFragment extends BaseFragment {
             txtInstallContainer.setBackgroundColor(getResources().getColor(R.color.warning));
             txtInstallIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_error));
             disableWrapper.setVisibility(View.GONE);
-        } else if (!isSupport(getQQVersionCode(mainActivity))) {
-            txtInstallError.setText(R.string.module_not_support);
-            txtInstallError.setTextColor(getResources().getColor(R.color.amber_500));
-            txtInstallContainer.setBackgroundColor(getResources().getColor(R.color.amber_500));
-            txtInstallIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_warning));
         } else {
             txtInstallError.setText(R.string.module_active);
             txtInstallError.setTextColor(getResources().getColor(R.color.darker_green));
@@ -246,18 +241,22 @@ public class MainFragment extends BaseFragment {
                             .putExtra("section", "modules")
                             .putExtra("fragment", 1)
                             .putExtra("module", APPLICATION_ID);
+                    startActivity(intent);
                 }
-                startActivity(intent);
             } else {
                 txtInstallError.setText(R.string.tip_xposed_not_install);
             }
         } catch (Exception e) {
-            txtInstallError.setText(e.getMessage());
+            txtInstallError.setText(R.string.tip_xposed_open_failure);
         }
     }
 
     @SuppressLint ("HandlerLeak")
     public synchronized void checkUpdate(TextView textView, boolean isAutoUpdate) {
+        MainActivity mainActivity = getMainActivity();
+        if (mainActivity == null) {
+            return;
+        }
         textView.setText(R.string.item_card_module_update_check_ing);
         UpdateUtil.CheckUpdate(new Handler() {
             @SuppressLint ("LogConditional")
@@ -268,16 +267,21 @@ public class MainFragment extends BaseFragment {
                         boolean isUpdate = (boolean) msg.obj;
                         if (isUpdate) {
                             textView.setText(R.string.item_card_module_update_check_new);
-                            UpdateUtil.showUpdateDialog(getMainActivity());
+                            try {
+                                UpdateUtil.showUpdateDialog(mainActivity);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                textView.setOnClickListener(v -> mainActivity.openCoolApk());
+                            }
                         } else {
                             textView.setText(R.string.item_card_module_update_check_latest);
                         }
                         break;
                     case UpdateUtil.ERR:
                         textView.setText(R.string.item_card_module_update_check_err);
-                        Exception exception = (Exception)msg.obj;
-                        if(!(exception instanceof SocketTimeoutException) && !isAutoUpdate){
-                            getMainActivity().showThrowableDialog(exception);
+                        Exception exception = (Exception) msg.obj;
+                        if (!(exception instanceof SocketTimeoutException) && !isAutoUpdate) {
+                            mainActivity.showThrowableDialog(exception);
                         }
                         break;
                 }

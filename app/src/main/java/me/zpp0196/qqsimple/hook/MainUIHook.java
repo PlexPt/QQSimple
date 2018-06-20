@@ -13,20 +13,30 @@ import java.util.List;
 import de.robv.android.xposed.XC_MethodHook;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 
+import static android.view.View.GONE;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseActivity;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BusinessInfoCheckUpdate$RedTypeInfo;
+import static me.zpp0196.qqsimple.hook.comm.Classes.CardController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Contacts;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Conversation;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ConversationNowController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Leba;
+import static me.zpp0196.qqsimple.hook.comm.Classes.LebaQZoneFacePlayHelper;
 import static me.zpp0196.qqsimple.hook.comm.Classes.LocalSearchBar;
 import static me.zpp0196.qqsimple.hook.comm.Classes.MainFragment;
+import static me.zpp0196.qqsimple.hook.comm.Classes.MessageInfo;
+import static me.zpp0196.qqsimple.hook.comm.Classes.MessageRecord;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$MenuItem;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$OnClickActionListener;
+import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$OnDismissListener;
+import static me.zpp0196.qqsimple.hook.comm.Classes.QQAppInterface;
 import static me.zpp0196.qqsimple.hook.comm.Classes.SimpleSlidingIndicator;
 import static me.zpp0196.qqsimple.hook.comm.Classes.TListView;
+import static me.zpp0196.qqsimple.hook.comm.Classes.URLImageView;
+import static me.zpp0196.qqsimple.hook.comm.Maps.popouItem;
 import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan735;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan758;
 
 /**
  * Created by zpp0196 on 2018/3/12.
@@ -37,91 +47,28 @@ class MainUIHook extends BaseHook {
     @Override
     public void init() {
         hideMenuUAF();
-        hidePopupMenuEntry();
-        hidePopupMenuContacts();
         hideMainFragmentTab();
-        hideSearchContainer();
-        hideContactsConstant();
-        // 隐藏消息界面全民闯关入口
-        findAndHookMethod(ConversationNowController, "a", String.class, replaceNull("hide_national_entrance"));
-        if (isMoreThan735()) {
-            // 隐藏动态界面大家都在搜
-            findAndHookMethod(Leba, "a", List.class, replaceNull("hide_everyone_searching"));
-        }
+        hidePopupMenu();
+        hideConversationContent();
+        hideContactsContent();
+        hideLebaContent();
     }
 
     /**
      * 隐藏菜单更新和反馈
      */
     private void hideMenuUAF() {
+        if (!getBool("hide_menu_uaf"))
+            return;
         findAndHookMethod(MainFragment, "r", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                if (!getBool("hide_menu_uaf")) {
-                    return;
-                }
                 Dialog dialog = getObject(param.thisObject, Dialog.class, "b");
                 LinearLayout layout = getObject(dialog, LinearLayout.class, "a");
-                layout.getChildAt(0).setVisibility(View.GONE);
-                layout.getChildAt(1).setVisibility(View.GONE);
-            }
-        });
-    }
-
-    /**
-     * 隐藏消息列表右上角快捷入口
-     */
-    private void hidePopupMenuEntry() {
-        findAndHookMethod(Conversation, "D", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                if (!getBool("hide_popup_menu_entry")) {
-                    return;
-                }
-                ImageView imageView = getObject(param.thisObject, ImageView.class, "a");
-                imageView.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    /**
-     * 隐藏消息列表右上角快捷入口内容
-     */
-    @SuppressWarnings ("unchecked")
-    private void hidePopupMenuContacts() {
-        findAndHookMethod(PopupMenuDialog, "a", Activity.class, List.class, PopupMenuDialog$OnClickActionListener, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                List list = (List) param.args[1];
-                List needRemove = new ArrayList();
-                for (Object item : list) {
-                    String title = getObject(PopupMenuDialog$MenuItem, String.class, "a", item);
-                    if (title.equals("创建群聊") && getBool("hide_popup_multiChat")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("加好友/群") && getBool("hide_popup_add")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("扫一扫") && getBool("hide_popup_sweep")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("面对面快传") && getBool("hide_popup_face2face")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("付款") && getBool("hide_popup_pay")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("拍摄") && getBool("hide_popup_shoot")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("高能舞室") && getBool("hide_popup_videoDance")) {
-                        needRemove.add(item);
-                    }
-                }
-                list.removeAll(needRemove);
+                layout.getChildAt(0)
+                        .setVisibility(GONE);
+                layout.getChildAt(1)
+                        .setVisibility(GONE);
             }
         });
     }
@@ -133,20 +80,13 @@ class MainUIHook extends BaseHook {
         findAndHookMethod(MainFragment, "a", View.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 View[] views = getObject(param.thisObject, View[].class, "a");
                 // 联系人
-                if (getBool("hide_tab_contact")) {
-                    views[2].setVisibility(View.GONE);
-                }
+                hideView(views[2], "hide_tab_contact");
                 // 动态
-                if (getBool("hide_tab_dynamic")) {
-                    views[3].setVisibility(View.GONE);
-                }
+                hideView(views[3], "hide_tab_dynamic");
                 // 看点
-                if (getBool("hide_tab_readinjoy")) {
-                    views[6].setVisibility(View.GONE);
-                }
+                hideView(views[6], "hide_tab_readinjoy");
             }
         });
 
@@ -154,10 +94,9 @@ class MainUIHook extends BaseHook {
         findAndHookMethod(MainFragment, "a", int.class, BusinessInfoCheckUpdate$RedTypeInfo, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
                 int i = (int) param.args[0];
-                if ((i == 33 && getBool("hide_tab_contact_num")) ||
-                    (i == 34 && (getBool("hide_tab_dynamic_num")))) {
+                if ((i == 33 && getBool("hide_tab_num_contacts")) ||
+                    (i == 34 && (getBool("hide_tab_num_dynamic")))) {
                     param.setResult(null);
                 }
             }
@@ -165,41 +104,90 @@ class MainUIHook extends BaseHook {
     }
 
     /**
-     * 隐藏搜索框
+     * 隐藏消息列表右上角快捷入口内容
      */
-    private void hideSearchContainer() {
-        // 消息界面
-        findAndHookConstructor(LocalSearchBar, TListView, View.class, View.class, BaseActivity, View.class, int.class, new XC_MethodHook() {
+    @SuppressWarnings ("unchecked")
+    private void hidePopupMenu() {
+        // TODO 隐藏轻游戏入口
+
+        // 隐藏消息列表右上角快捷入口
+        findAndHookMethod(Conversation, "D", hideView(ImageView.class, "a", "hide_conversation_popupMenu"));
+        findAndHookMethod(PopupMenuDialog, "a", Activity.class, List.class, PopupMenuDialog$OnClickActionListener, PopupMenuDialog$OnDismissListener, int.class, boolean.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (!getBool("hide_search_conversation")) {
-                    return;
+                List list = (List) param.args[1];
+                ArrayList needRemove = new ArrayList();
+                for (Object item : list) {
+                    String title = getObject(PopupMenuDialog$MenuItem, String.class, "a", item);
+                    for (String key : popouItem.keySet()) {
+                        String value = popouItem.get(key);
+                        if (title.contains(value) && getBool(key)) {
+                            log(title);
+                            needRemove.add(item);
+                        }
+                    }
                 }
-                View view = (View) param.args[4];
-                view.setVisibility(View.GONE);
-                ViewGroup listView = (ViewGroup) param.args[0];
-                Activity activity = (Activity) param.args[3];
-                int paddingTop = (int) (activity.getResources()
-                                                .getDisplayMetrics().density * 43 + 0.5f);
-                listView.setPadding(0, -paddingTop, 0, 0);
+                if (needRemove.size() == list.size()) {
+                    needRemove.remove(0);
+                }
+                list.removeAll(needRemove);
             }
         });
+    }
 
-        // 联系人界面
+    /**
+     * 隐藏消息列表部分内容
+     */
+    private void hideConversationContent() {
+        // 隐藏搜索框
+        if (getBool("hide_conversation_search")) {
+            findAndHookConstructor(LocalSearchBar, TListView, View.class, View.class, BaseActivity, View.class, int.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    View view = (View) param.args[4];
+                    if (view == null)
+                        return;
+                    view.setVisibility(GONE);
+                    ViewGroup listView = (ViewGroup) param.args[0];
+                    Activity activity = (Activity) param.args[3];
+                    int paddingTop = (int) (activity.getResources()
+                                                    .getDisplayMetrics().density * 43 + 0.5f);
+                    listView.setPadding(0, -paddingTop, 0, 0);
+                }
+            });
+        }
+
+        // 隐藏全民闯关入口
+        findAndHookMethod(ConversationNowController, "a", String.class, replaceNull("hide_conversation_nowController"));
+
+        // 隐藏消息
+        findAndHookMethod(MessageInfo, "a", QQAppInterface, String.class, MessageInfo, Object.class, MessageRecord, boolean.class, replaceNull("hide_troopTip_all"));
+    }
+
+    /**
+     * 隐藏联系人界面部分内容
+     */
+    private void hideContactsContent() {
+        // TODO 联系人消息角标
+        // 隐藏坦白说
+        findAndHookMethod(CardController, "a", int.class, boolean.class, replaceNull("hide_contacts_slidCards"));
+
         findAndHookMethod(Contacts, "o", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                if (!getBool("hide_search_contacts")) {
-                    return;
-                }
-                LinearLayout layout = getObject(param.thisObject, LinearLayout.class, "a");
-                View view = layout.findViewById(getIdInQQ("contactHeader"))
-                        .findViewById(getIdInQQ("search_container"));
-                view.setVisibility(View.GONE);
+                View newFriendEntry = getObject(param.thisObject, View.class, "a");
+                View createTroopEntry = getObject(param.thisObject, View.class, "b");
+                View searchBox = ((LinearLayout) (newFriendEntry.getParent())).getChildAt(0);
+                // 隐藏搜索框
+                hideView(searchBox, "hide_contacts_search");
+                // TODO 联系人消息角标
+                // 隐藏新朋友
+                hideView(newFriendEntry, "hide_contacts_newFriend");
+                // 隐藏创建群聊
+                hideView(createTroopEntry, "hide_contacts_createTroop");
             }
         });
+        hideContactsConstant();
     }
 
     /**
@@ -209,13 +197,12 @@ class MainUIHook extends BaseHook {
         findAndHookMethod(SimpleSlidingIndicator, "a", int.class, View.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
                 int i = (int) param.args[0];
                 View v = (View) param.args[1];
                 if ((i == 2 && getBool("hide_contacts_tab_device")) ||
                     (i == 3 && getBool("hide_contacts_tab_phone")) ||
                     (i == 4 && getBool("hide_contacts_tab_pub_account"))) {
-                    v.setVisibility(View.GONE);
+                    v.setVisibility(GONE);
                 }
             }
         });
@@ -228,7 +215,6 @@ class MainUIHook extends BaseHook {
 
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
                 this.i = (int) param.args[0];
                 this.b = getObject(param.thisObject, int.class, "b");
                 this.param = param;
@@ -280,5 +266,52 @@ class MainUIHook extends BaseHook {
             }
 
         });
+    }
+
+    /**
+     * 隐藏动态界面部分内容
+     */
+    private void hideLebaContent() {
+        // 隐藏大家都在搜
+        if (isMoreThan735()) {
+            findAndHookMethod(Leba, "a", List.class, replaceNull("hide_leba_hotWordSearch"));
+        }
+
+        findAndHookMethod(Leba, "u", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                View qzoneEntry = getObject(param.thisObject, View.class, "c");
+                View nearEntry = getObject(param.thisObject, View.class, "d");
+                View tribalEntry = getObject(param.thisObject, View.class, "f");
+
+                // 隐藏空间入口
+                hideView(qzoneEntry, "hide_leba_qzone");
+                // 隐藏附近的人入口
+                hideView(nearEntry, "hide_leba_near");
+                // 隐藏兴趣部落入口
+                hideView(tribalEntry, "hide_leba_tribal");
+
+                // 隐藏空间头像提醒
+                if (!isMoreThan758()) {
+                    View qzoneSub = getObject(param.thisObject, ImageView.class, "b");
+                    hideView(qzoneSub, "hide_leba_qzoneRemind");
+                    hideView("qzone_feed_reddot");
+                }
+
+                // 隐藏附近的人提醒
+                View nearSub = getObject(param.thisObject, ImageView.class, "d");
+                hideView(nearSub, "hide_leba_nearRemind");
+
+                // 隐藏兴趣部落提醒
+                View tribalSub = getObject(param.thisObject, URLImageView, "a");
+                hideView(tribalSub, "hide_leba_tribalRemind");
+                hideView("xingqu_buluo_reddot", "hide_leba_tribalRemind");
+            }
+        });
+
+        // 隐藏空间提醒
+        if (isMoreThan758()) {
+            findAndHookMethod(Leba, "u", setFieldNullAfterMethod(Leba, LebaQZoneFacePlayHelper, "a", "hide_leba_qzoneRemind"));
+        }
     }
 }

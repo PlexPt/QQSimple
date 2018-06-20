@@ -1,6 +1,7 @@
 package me.zpp0196.qqsimple.hook.util;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 
 import de.robv.android.xposed.XSharedPreferences;
 import me.zpp0196.qqsimple.BuildConfig;
@@ -15,6 +16,8 @@ import static me.zpp0196.qqsimple.Common.PREFS_KEY_SWITCH_LOG;
 public class XPrefs {
 
     private static WeakReference<XSharedPreferences> xSharedPreferences = new WeakReference<>(null);
+    private static HashMap<String, Boolean> map = new HashMap<>();
+
 
     public static XSharedPreferences getPref() {
         XSharedPreferences preferences = xSharedPreferences.get();
@@ -30,15 +33,19 @@ public class XPrefs {
     }
 
     public static boolean getBoolean(String key) {
-        return getPref().getBoolean(key, false);
+        Boolean value = map.get(key);
+        if (value != null) {
+            return value;
+        }
+        value = getPref().getBoolean(key, false);
+        map.put(key, value);
+        return value;
     }
 
-    @SuppressWarnings ("all")
-    public static boolean isPrintLog() {
-        return getPref().getBoolean(PREFS_KEY_SWITCH_LOG, false);
+    static boolean isPrintLog() {
+        return getBoolean(PREFS_KEY_SWITCH_LOG);
     }
 
-    @SuppressWarnings ("all")
     public static boolean isEnableModule() {
         return getPref().getBoolean(PREFS_KEY_SWITCH_ALL, true);
     }

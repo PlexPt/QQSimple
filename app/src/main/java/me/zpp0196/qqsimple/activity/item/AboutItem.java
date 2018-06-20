@@ -59,4 +59,9 @@ public class AboutItem extends LinearLayout {
     public void setOnClickListener(@Nullable OnClickListener l) {
         this.rootView.setOnClickListener(l);
     }
+
+    @Override
+    public void setOnLongClickListener(@Nullable OnLongClickListener l) {
+        this.rootView.setOnLongClickListener(l);
+    }
 }

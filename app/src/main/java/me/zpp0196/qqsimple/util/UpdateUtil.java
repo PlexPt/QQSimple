@@ -3,6 +3,7 @@ package me.zpp0196.qqsimple.util;
 import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.ArrayRes;
 import android.util.Log;
 import android.webkit.WebView;
 
@@ -25,6 +26,7 @@ import me.zpp0196.qqsimple.activity.MainActivity;
 
 import static me.zpp0196.qqsimple.BuildConfig.VERSION_CODE;
 import static me.zpp0196.qqsimple.BuildConfig.VERSION_NAME;
+import static me.zpp0196.qqsimple.Common.PREFS_KEY_IS_SHOW_MATTERS;
 
 /**
  * Created by zpp0196 on 2018/5/11 0011.
@@ -103,9 +105,9 @@ public class UpdateUtil {
         return list;
     }
 
-    private static ArrayList<String> getThisVersionLogList(MainActivity mainActivity) {
+    private static ArrayList<String> getList(MainActivity mainActivity, @ArrayRes int arrayId) {
         String[] log = mainActivity.getResources()
-                .getStringArray(R.array.UpdateLog);
+                .getStringArray(arrayId);
         ArrayList<String> list = new ArrayList<>();
         Collections.addAll(list, log);
         return list;
@@ -116,13 +118,13 @@ public class UpdateUtil {
     }
 
     private static String getThisVersionLogHtml(MainActivity mainActivity) {
-        return getLogHtml(getThisVersionLogList(mainActivity), VERSION_NAME, VERSION_CODE);
+        return getLogHtml(getList(mainActivity, R.array.UpdateLog), VERSION_NAME, VERSION_CODE);
     }
 
-    private static String getLogString(ArrayList<String> logList) {
+    private static String list2String(ArrayList<String> logList) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < logList.size(); i++) {
-            sb.append(String.format("· %s\n", logList.get(i)));
+            sb.append(String.format("· %s%s", logList.get(i), i == logList.size() - 1 ? "" : "\n"));
         }
         return sb.toString();
     }
@@ -135,7 +137,7 @@ public class UpdateUtil {
         return String.format("<h3 style=\"padding-left:16px\">v%s(%s)</h3><ul>%s</ul>", versionName, versionCode, sb.toString());
     }
 
-    public static void showUpdateDialog(MainActivity mainActivity) {
+    public static void showUpdateDialog(MainActivity mainActivity) throws Exception {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity).cancelable(false)
                 .title(R.string.item_card_module_update_check_new)
                 .positiveText(R.string.item_card_module_update_check_update)
@@ -149,7 +151,7 @@ public class UpdateUtil {
             if (webView != null) {
                 builder.customView(webView, true);
             } else {
-                builder.content(getLogString(getNewVersionLogList()));
+                builder.content(list2String(getNewVersionLogList()));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -163,6 +165,7 @@ public class UpdateUtil {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity).cancelable(false)
                 .positiveText(R.string.button_close)
                 .negativeText(R.string.button_more)
+                .onPositive((dialog, which) -> showMatters(mainActivity))
                 .onNegative((dialog, which) -> mainActivity.openUrl("https://github.com/zpp0196/QQSimple/blob/master/Log.md"));
         WebView webView = getWebView(mainActivity, getThisVersionLogHtml(mainActivity));
         if (webView != null) {
@@ -170,9 +173,29 @@ public class UpdateUtil {
             builder.customView(webView, true);
         } else {
             builder.title(String.format("%s_v%s(%s)", mainActivity.getString(R.string.app_name), VERSION_NAME, VERSION_CODE));
-            builder.content(getLogString(getThisVersionLogList(mainActivity)));
+            builder.content(list2String(getList(mainActivity, R.array.UpdateLog)));
         }
         builder.show();
+    }
+
+    private static void showMatters(MainActivity mainActivity) {
+        ArrayList<String> matters = getList(mainActivity, R.array.Matters);
+        boolean isShowMatters = mainActivity.getPrefs()
+                .getBoolean(PREFS_KEY_IS_SHOW_MATTERS, true);
+        if (!matters.isEmpty() && isShowMatters) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < matters.size(); i++) {
+                sb.append(String.format("%s、%s。%s",
+                        i + 1, matters.get(i), i == matters.size() - 1 ? "" : "\n"));
+            }
+            new MaterialDialog.Builder(mainActivity).title(R.string.title_matters)
+                    .content(sb.toString())
+                    .positiveText(R.string.button_close)
+                    .checkBoxPromptRes(R.string.switch_not_prompt, false, (buttonView, isChecked) -> mainActivity.getEditor()
+                            .putBoolean(PREFS_KEY_IS_SHOW_MATTERS, !isChecked)
+                            .apply())
+                    .show();
+        }
     }
 
     private static WebView getWebView(MainActivity mainActivity, String html) {

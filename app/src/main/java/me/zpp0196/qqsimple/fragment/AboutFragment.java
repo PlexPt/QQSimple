@@ -1,10 +1,8 @@
 package me.zpp0196.qqsimple.fragment;
 
 import android.annotation.SuppressLint;
-import android.support.v7.widget.CardView;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,7 +29,7 @@ import static me.zpp0196.qqsimple.Common.PREFS_KEY_ENTER_MODULE_TIMES;
  * Created by zpp0196 on 2018/5/26 0026.
  */
 
-public class AboutFragment extends BaseFragment implements View.OnClickListener {
+public class AboutFragment extends BaseFragment {
 
     private long eggsClickNum;
 
@@ -45,16 +43,16 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener 
         return R.string.nav_item_about;
     }
 
+    private void setEggsClickNum() {
+        eggsClickNum = new Random().nextInt(8) + 4;
+        Log.i("AboutFragment", "eggsClickNum: " + eggsClickNum);
+    }
+
     @SuppressLint ("LogConditional")
     @Override
     protected void init() {
         addItems(getMainActivity());
-
-        eggsClickNum = (new Random().nextInt(10) + 5) * 2;
-        Log.i("AboutFragment", "eggsClickNum: " + eggsClickNum);
-
-        CardView eggs = findViewById(R.id.about_eggs);
-        eggs.setOnClickListener(this);
+        setEggsClickNum();
 
         TextView readme = findViewById(R.id.about_readme);
         TextView issues = findViewById(R.id.about_issues);
@@ -74,8 +72,22 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener 
         AboutItem log = new AboutItem(mainActivity, R.drawable.ic_item_about_log, R.string.about_item_log);
         AboutItem donate = new AboutItem(mainActivity, R.drawable.ic_item_about_donate, R.string.about_item_donate);
 
-        // 日志
-        version.setOnClickListener(v -> mainActivity.openCoolApk());
+        // 版本
+        version.setOnClickListener(v -> {
+            eggsClickNum -= 1;
+            if (eggsClickNum <= 0) {
+                new MaterialDialog.Builder(mainActivity).cancelable(false)
+                        .title(R.string.about_egg_title)
+                        .content(getEggsContent())
+                        .positiveText(R.string.about_egg_close)
+                        .show();
+                setEggsClickNum();
+            }
+        });
+        version.setOnLongClickListener(v -> {
+            mainActivity.openCoolApk();
+            return false;
+        });
         // 作者
         author.setOnClickListener(v -> mainActivity.openMyCoolapk());
         // 致谢
@@ -101,23 +113,6 @@ public class AboutFragment extends BaseFragment implements View.OnClickListener 
         aboutLayout.addView(github);
         aboutLayout.addView(log);
         aboutLayout.addView(donate);
-    }
-
-    @Override
-    public void onClick(View v) {
-        MainActivity mainActivity = getMainActivity();
-        switch (v.getId()) {
-            case R.id.about_eggs:
-                eggsClickNum -= 1;
-                if (eggsClickNum <= 0) {
-                    new MaterialDialog.Builder(mainActivity).cancelable(false)
-                            .title(R.string.about_egg_title)
-                            .content(getEggsContent())
-                            .positiveText(R.string.about_egg_close)
-                            .show();
-                }
-                break;
-        }
     }
 
     @SuppressLint ("SimpleDateFormat")

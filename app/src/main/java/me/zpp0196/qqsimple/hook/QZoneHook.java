@@ -1,7 +1,6 @@
 package me.zpp0196.qqsimple.hook;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -10,6 +9,8 @@ import de.robv.android.xposed.XC_MethodHook;
 import me.zpp0196.qqsimple.Common;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 
+import static me.zpp0196.qqsimple.hook.comm.Maps.qzoneMenuItem;
+import static me.zpp0196.qqsimple.hook.comm.Maps.qzoneNavItem;
 import static me.zpp0196.qqsimple.hook.util.HookUtil.getQQVersionName;
 import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan760;
 
@@ -29,7 +30,10 @@ class QZoneHook extends BaseHook {
     private Class<?> NavigatorItem;
     private Class<?> OperationItem;
     private Class<?> PlusMenuContainer;
+    private Class<?> QzoneAvatarDecorator;
+    private Class<?> QZoneFeedsHeader;
     private Class<?> QZoneFriendFeedFragment;
+
 
     QZoneHook(ClassLoader qqClassLoader, ClassLoader qzoneClassLoader) {
         this.qqClassLoader = qqClassLoader;
@@ -66,6 +70,12 @@ class QZoneHook extends BaseHook {
         if (PlusMenuContainer == null) {
             PlusMenuContainer = findClassInQzone("com.qzone.plusoperation.PlusMenuContainer");
         }
+        if (QzoneAvatarDecorator == null) {
+            QzoneAvatarDecorator = findClassInQzone("com.qzone.cover.ui.QzoneAvatarDecorator");
+        }
+        if (QZoneFeedsHeader == null) {
+            QZoneFeedsHeader = findClassInQzone("com.qzone.widget.QZoneFeedsHeader");
+        }
         if (QZoneFriendFeedFragment == null) {
             QZoneFriendFeedFragment = findClassInQzone("com.qzone.feed.ui.activity.QZoneFriendFeedFragment");
         }
@@ -80,33 +90,15 @@ class QZoneHook extends BaseHook {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                if (OperationItem == null) {
-                    return;
-                }
                 ArrayList arrayList = getObject(param.thisObject, ArrayList.class, "a");
-                if (arrayList == null || arrayList.isEmpty()) {
-                    return;
-                }
                 ArrayList needRemove = new ArrayList();
                 for (Object item : arrayList) {
-                    String title = (String) findField(OperationItem, String.class, "a").get(item);
-                    if (title.equals("说说") && getBool("hide_qzone_plus_mood")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("相册") && getBool("hide_qzone_plus_album")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("拍摄") && getBool("hide_qzone_plus_shoot")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("签到") && getBool("hide_qzone_plus_signIn")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("小红包") && getBool("hide_qzone_plus_redPacket")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("直播") && getBool("hide_qzone_plus_live")) {
-                        needRemove.add(item);
+                    String title = getObject(OperationItem, String.class, "a", item);
+                    for (String key : qzoneMenuItem.keySet()) {
+                        String value = qzoneMenuItem.get(key);
+                        if (title.equals(value) && getBool(key)) {
+                            needRemove.add(item);
+                        }
                     }
                 }
                 arrayList.removeAll(needRemove);
@@ -127,52 +119,23 @@ class QZoneHook extends BaseHook {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                if (entrance_cfg == null) {
-                    return;
-                }
-                ArrayList arrayList = (ArrayList) findField(NavigatorBar, ArrayList.class, "a").get(param.thisObject);
-                if (arrayList == null || arrayList.isEmpty()) {
-                    return;
-                }
+                ArrayList arrayList = getObject(param.thisObject, ArrayList.class, "a");
                 ArrayList needRemove = new ArrayList();
                 for (Object item : arrayList) {
-                    String title = (String) findField(entrance_cfg, String.class, "sEntranceName").get(item);
-                    if (title.equals("相册") && getBool("hide_qzone_nav_album")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("说说") && getBool("hide_qzone_nav_mood")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("个性化") && getBool("hide_qzone_nav_dress")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("小游戏") && getBool("hide_qzone_nav_game")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("小视频") && getBool("hide_qzone_nav_video")) {
-                        needRemove.add(item);
-                    }
-                    if (title.equals("消息") && getBool("hide_qzone_nav_news")) {
-                        needRemove.add(item);
+                    String title = getObject(entrance_cfg, String.class, "sEntranceName", item);
+                    for (String key : qzoneNavItem.keySet()) {
+                        String value = qzoneNavItem.get(key);
+                        if (title.equals(value) && getBool(key)) {
+                            needRemove.add(item);
+                        }
                     }
                 }
                 arrayList.removeAll(needRemove);
             }
         });
         // 隐藏消息
-        findAndHookMethod(QZoneFriendFeedFragment,
-                isMoreThan760() ? "n_" : "t_", new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        super.afterHookedMethod(param);
-                        if (getBool("hide_qzone_nav_news")) {
-                            ImageView imageView = getObject(param.thisObject, ImageView.class, "d");
-                            if (imageView != null) {
-                                imageView.setVisibility(View.GONE);
-                            }
-                        }
-                    }
-                });
+        findAndHookMethod(QZoneFriendFeedFragment, isMoreThan760() ? "n_" :
+                "t_", hideView(ImageView.class, "d", "hide_qzone_nav_news"));
     }
 
     private void hideOther() {
@@ -180,7 +143,6 @@ class QZoneHook extends BaseHook {
         findAndHookMethod(LocalConfig, "a", String.class, int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
                 if (getBool(Common.PREFS_KEY_HIDE_SOME_RED_DOT) && param.args[0].toString()
                         .contains("SuperFontRedIcon")) {
                     param.setResult(0);
@@ -191,7 +153,6 @@ class QZoneHook extends BaseHook {
         findAndHookMethod(DynamicPhotoAdapter, "c", boolean.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
                 if (getBool(Common.PREFS_KEY_HIDE_SOME_RED_DOT)) {
                     param.args[0] = false;
                 }

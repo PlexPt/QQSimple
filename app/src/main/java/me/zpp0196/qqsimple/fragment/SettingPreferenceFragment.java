@@ -87,7 +87,6 @@ public class SettingPreferenceFragment extends BasePreferenceFragment implements
                             .onPositive((dialog, which) -> backupPrefs())
                             .checkBoxPromptRes(R.string.switch_not_prompt, false, (buttonView, isChecked) -> getEditor().putBoolean(PREFS_KEY_IS_SHOW_BACKUP_TIP, !isChecked)
                                     .apply())
-                            .build()
                             .show();
                 } else {
                     backupPrefs();
@@ -186,7 +185,7 @@ public class SettingPreferenceFragment extends BasePreferenceFragment implements
                 .negativeText(R.string.button_cancel)
                 .onPositive((dialog, which) -> {
                     getPrefsFile(getMainActivity()).delete();
-                    showRestartDialog(R.string.tip_setting_restore_default_reboot_confirm);
+                    showRestartDialog(R.string.tip_setting_restore_default_reboot_tip);
                 })
                 .show();
     }

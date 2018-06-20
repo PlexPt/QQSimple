@@ -29,7 +29,6 @@
     <string name="enable_module">启用模块</string>
     <string name="module_active">模块已激活。</string>
     <string name="module_not_active">模块未激活！</string>
-    <string name="module_not_support">未兼容的QQ版本！</string>
 
     <string name="item_card_device">设备</string>
     <string name="item_card_device_android">Android %s(%s, API %d)</string>
@@ -66,6 +65,7 @@
     <string name="about_egg_content_not_donate">Too bad you didn\'t click the donation button once :-(</string>
 
     <string name="title_explain">说明</string>
+    <string name="title_matters">注意事项</string>
     <string name="title_tip">提示</string>
     <string name="title_execute_finish">执行完毕</string>
     <string name="title_open">打开「%s」</string>
@@ -89,8 +89,9 @@
     <string name="shell_vxp_update_finish">已更新 VirtualXposed 中的「%s」</string>
 
     <string name="tip_xposed_not_install">未找到 Xposed Installer！</string>
+    <string name="tip_xposed_open_failure">打开 Xposed Installer 失败，请手动打开激活！</string>
     <string name="tip_vxp_must_be_running">请先保持 VirtualXposed 在后台运行！</string>
-    <string name="tip_popup_menu">该分组里面虽然提供了 7 个开关，但至少需要关闭 1 个，如果全部开启会导致点击菜单时 QQ 闪退，如果你想全部隐藏可以直接开启上面的「隐藏快捷入口」，请根据自己实际情况选择性开启！</string>
+    <string name="tip_popup_menu">该分组如果全部开启会导致点击菜单时 QQ 闪退，请根据实际情况最少显示一项内容，如果你想全部隐藏可以直接开启上面的「隐藏快捷入口」，请根据自己实际情况选择性开启！</string>
     <string name="tip_qzone_menu">该分组里面虽然提供了 6 个开关，但却只能开启 3 个，多开一个都会导致点击菜单时空间闪退，请根据自己实际情况选择性开启！</string>
     <string name="tip_qzone_ad">该开关主要隐藏一些空间里面的小广告以及主页顶部的<b>猜你喜欢</b>、<b>最近在玩</b>、<b>好友生日</b>等包括<b>消息通知</b>在内的一些内容，所以会出现看不到消息通知的情况，空间主页顶部右上角加号左边的图标进去就是消息界面。</string>
     <string name="tip_other_fontSize">请输入[13.92 &#8211; 18.00]之间的数值！</string>
@@ -105,8 +106,22 @@
     <string name="time_days">days</string>
 
     <string-array name="UpdateLog">
-        <item>适配稳定版 7.6.5.3595(864)</item>
-        <item>添加隐藏联系人界面坦白说</item>
+        <item>重写了部分代码</item>
+        <item>移除了版本检测</item>
+        <item>修复了部分小bug</item>
+        <item>修复了部分卡顿问题</item>
+        <item>修复了设置空白间隔</item>
+        <item>改进了对Vxp的兼容性</item>
+        <item>添加了聊天小尾巴功能</item>
+        <item>添加了[有人送礼]等群相关提示</item>
+    </string-array>
+
+    <string-array name="Matters">
+        <item>本次更新后建议清除模块数据后再次重新配置</item>
+        <item>本次更新后所有的设置都将需要重启QQ才会生效</item>
+        <item>本次更新后添加的聊天小尾巴功能如果发送的消息末尾是一些常用的符号将不会显示</item>
+        <item>本次更新移除了群聊进场动画，如果需要该功能请手动进入群设置找到「进场Style」进行设置</item>
+        <item>本次更新移除了版本检测，并不是意味着支持所有的版本，只是QQ更新后失效的功能会相对少一些</item>
     </string-array>
 
 </resources>

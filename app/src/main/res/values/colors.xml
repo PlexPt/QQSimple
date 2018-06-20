@@ -9,6 +9,5 @@
     <color name="warning">@color/red_500</color>
     <color name="div">#2B2B2B2B</color>
     <color name="red_500">#F44336</color>
-    <color name="amber_500">#FFC107</color>
 
 </resources>

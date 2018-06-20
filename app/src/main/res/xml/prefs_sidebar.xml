@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
-        android:key="hide_sidebar_my_daily"
+        android:key="hide_sidebar_myDaily"
         android:title="隐藏打卡/每日任务" />
     <CheckBoxPreference
-        android:key="hide_sidebar_my_qr_code"
+        android:key="hide_sidebar_myQrCode"
         android:title="隐藏我的二维码" />
     <CheckBoxPreference
-        android:key="hide_sidebar_qq_info"
+        android:key="hide_sidebar_qqInfo"
         android:title="隐藏QQ信息" />
     <CheckBoxPreference
         android:key="hide_sidebar_vip"
@@ -16,34 +16,34 @@
         android:key="hide_sidebar_pocket"
         android:title="隐藏QQ钱包" />
     <CheckBoxPreference
-        android:key="hide_sidebar_dress_up"
-        android:title="隐藏个性装扮" />
-    <CheckBoxPreference
-        android:key="hide_sidebar_my_favorites"
+        android:key="hide_sidebar_myFavorites"
         android:title="隐藏我的收藏" />
     <CheckBoxPreference
-        android:key="hide_sidebar_my_photos"
-        android:title="隐藏我的相册" />
-    <CheckBoxPreference
-        android:key="hide_sidebar_my_files"
+        android:key="hide_sidebar_myFiles"
         android:title="隐藏我的文件" />
     <CheckBoxPreference
-        android:key="hide_sidebar_my_videos"
-        android:title="隐藏我的视频" />
+        android:key="hide_sidebar_myPhotos"
+        android:title="隐藏我的相册" />
     <CheckBoxPreference
-        android:key="hide_sidebar_my_cards"
+        android:key="hide_sidebar_dressUp"
+        android:title="隐藏个性装扮" />
+    <CheckBoxPreference
+        android:key="hide_sidebar_myCards"
         android:title="隐藏我的名片夹" />
     <CheckBoxPreference
-        android:key="hide_sidebar_free_flow"
+        android:key="hide_sidebar_myVideos"
+        android:title="隐藏我的视频" />
+    <CheckBoxPreference
+        android:key="hide_sidebar_kingCard"
         android:title="隐藏免流量特权" />
     <CheckBoxPreference
-        android:key="hide_sidebar_theme_night"
+        android:key="hide_sidebar_nightTheme"
         android:title="隐藏夜间模式" />
     <CheckBoxPreference
-        android:key="hide_sidebar_city_weather"
+        android:key="hide_sidebar_cityWeather"
         android:title="隐藏城市天气" />
     <CheckBoxPreference
-        android:key="hide_sidebar_my_city"
+        android:key="hide_sidebar_myCity"
         android:title="隐藏我的城市" />
     <CheckBoxPreference
         android:key="hide_sidebar_apollo"
@@ -54,7 +54,7 @@
             android:summary="长按设置按钮进入模块"
             android:title="侧滑栏添加模块入口" />
         <CheckBoxPreference
-            android:key="hide_tim_in_my_file"
+            android:key="hide_tim_in_myFile"
             android:title="隐藏我的文件里的 TIM 推广" />
     </PreferenceCategory>
 </PreferenceScreen>
