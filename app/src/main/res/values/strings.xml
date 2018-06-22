@@ -52,7 +52,7 @@
     <string name="about_item_github">源码</string>
     <string name="about_item_log">日志</string>
     <string name="about_item_thanks_title">特别鸣谢</string>
-    <string name="about_item_thanks_content">感谢<a href="http://www.coolapk.com/u/753785">祈无</a>提供的<a href="https://github.com/Qiwu2542284182/QQ_Simplity">QQ精简模块</a>源码以及<a href="http://www.coolapk.com/u/1257513">weishu</a>和<a href="http://www.coolapk.com/u/485448">YiTry</a>提供的技术支持，然后谢谢<a href="http://www.coolapk.com/u/491391">sftmi</a>帮我画的图标，还有谢谢<a href="http://www.coolapk.com/u/738446">静若兰亭</a>的帮忙，当然也不能少了酷安的一些大佬和所有捐赠过和支持过我的小伙伴们。Thank you very much!\n\n\n<b>致谢开源项目</b>：\n<a href="https://github.com/Qiwu2542284182/QQ_Simplity">QQ_Simplity</a>\n<a href="https://github.com/rovo89/XposedInstaller">Xposed Installer</a>\n<a href="https://github.com/afollestad/material-dialogs">Material Dialogs</a></string>
+    <string name="about_item_thanks_content">感谢<a href="http://www.coolapk.com/u/753785">祈无</a>提供的<a href="https://github.com/Qiwu2542284182/QQ_Simplity">QQ精简模块</a>源码以及<a href="http://www.coolapk.com/u/1257513">weishu</a>和<a href="http://www.coolapk.com/u/485448">YiTry</a>提供的技术支持，然后谢谢<a href="http://www.coolapk.com/u/491391">sftmi</a>帮我画的图标，还有谢谢<a href="http://www.coolapk.com/u/738446">静若兰亭</a>的帮忙，当然也不能少了酷安的一些大佬和所有捐赠过和支持过我的小伙伴们。Thank you very much!\n\n\n<b>致谢开源项目</b>：\n<a href="https://github.com/Qiwu2542284182/QQ_Simplity">QQ_Simplity</a>\n<a href="#">QQUnrecalled</a>\n<a href="https://github.com/rovo89/XposedInstaller">Xposed Installer</a>\n<a href="https://github.com/afollestad/material-dialogs">Material Dialogs</a></string>
     <string name="about_github_url">https://github.com/zpp0196/QQSimple</string>
     <string name="about_readme"><a href="https://github.com/zpp0196/QQSimple/blob/master/README.md">Readme</a></string>
     <string name="about_issues"><a href="https://github.com/zpp0196/QQSimple/issues">Issues</a></string>
@@ -69,7 +69,6 @@
     <string name="title_tip">提示</string>
     <string name="title_execute_finish">执行完毕</string>
     <string name="title_open">打开「%s」</string>
-    <string name="title_open_vxp">打开 VirtualXposed</string>
     <string name="title_update_log">更新日志</string>
     <string name="title_appear_exception">程序发生异常</string>
 
@@ -84,13 +83,9 @@
     <string name="button_releases">历史版本</string>
     <string name="switch_not_prompt">不再提示</string>
 
-    <string name="shell_stop_finish">已强行停止「%s」</string>
-    <string name="shell_vxp_reboot_finish">已强行停止 VirtualXposed 中的「%s」</string>
-    <string name="shell_vxp_update_finish">已更新 VirtualXposed 中的「%s」</string>
-
+    <string name="tip_stop_qq_finish">已强行停止「QQ」</string>
     <string name="tip_xposed_not_install">未找到 Xposed Installer！</string>
     <string name="tip_xposed_open_failure">打开 Xposed Installer 失败，请手动打开激活！</string>
-    <string name="tip_vxp_must_be_running">请先保持 VirtualXposed 在后台运行！</string>
     <string name="tip_popup_menu">该分组如果全部开启会导致点击菜单时 QQ 闪退，请根据实际情况最少显示一项内容，如果你想全部隐藏可以直接开启上面的「隐藏快捷入口」，请根据自己实际情况选择性开启！</string>
     <string name="tip_qzone_menu">该分组里面虽然提供了 6 个开关，但却只能开启 3 个，多开一个都会导致点击菜单时空间闪退，请根据自己实际情况选择性开启！</string>
     <string name="tip_qzone_ad">该开关主要隐藏一些空间里面的小广告以及主页顶部的<b>猜你喜欢</b>、<b>最近在玩</b>、<b>好友生日</b>等包括<b>消息通知</b>在内的一些内容，所以会出现看不到消息通知的情况，空间主页顶部右上角加号左边的图标进去就是消息界面。</string>
@@ -106,22 +101,18 @@
     <string name="time_days">days</string>
 
     <string-array name="UpdateLog">
-        <item>重写了部分代码</item>
-        <item>移除了版本检测</item>
-        <item>修复了部分小bug</item>
-        <item>修复了部分卡顿问题</item>
-        <item>修复了设置空白间隔</item>
-        <item>改进了对Vxp的兼容性</item>
-        <item>添加了聊天小尾巴功能</item>
-        <item>添加了[有人送礼]等群相关提示</item>
+        <item>移除了部分代码</item>
+        <item>添加了隐藏AR足球</item>
+        <item>添加了隐藏闪照倒计时</item>
+        <item>添加了隐藏快捷入口轻游戏</item>
+        <item>修复了不能隐藏字体特效的bug</item>
+        <item>修复了不能隐藏侧滑栏我的视频的bug</item>
+        <item>修复了不能隐藏设置免流量特权的bug</item>
+        <item>修复了自己撤回消息后会和出现和自己聊天的bug</item>
     </string-array>
 
     <string-array name="Matters">
-        <item>本次更新后建议清除模块数据后再次重新配置</item>
-        <item>本次更新后所有的设置都将需要重启QQ才会生效</item>
-        <item>本次更新后添加的聊天小尾巴功能如果发送的消息末尾是一些常用的符号将不会显示</item>
-        <item>本次更新移除了群聊进场动画，如果需要该功能请手动进入群设置找到「进场Style」进行设置</item>
-        <item>本次更新移除了版本检测，并不是意味着支持所有的版本，只是QQ更新后失效的功能会相对少一些</item>
+        <item>如果出现点击快捷菜单闪退请开启隐藏AR足球</item>
     </string-array>
 
 </resources>

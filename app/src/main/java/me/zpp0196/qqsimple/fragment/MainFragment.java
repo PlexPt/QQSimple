@@ -23,7 +23,6 @@ import me.zpp0196.qqsimple.activity.item.CardItem;
 import me.zpp0196.qqsimple.activity.item.CardItem.Item;
 import me.zpp0196.qqsimple.fragment.base.BaseFragment;
 import me.zpp0196.qqsimple.util.ShellUtil;
-import me.zpp0196.qqsimple.util.ShellUtil.Result;
 import me.zpp0196.qqsimple.util.UpdateUtil;
 
 import static android.os.Build.BRAND;
@@ -39,9 +38,9 @@ import static me.zpp0196.qqsimple.util.CommUtil.getQQVersionCode;
 import static me.zpp0196.qqsimple.util.CommUtil.getQQVersionName;
 import static me.zpp0196.qqsimple.util.CommUtil.isInVxp;
 import static me.zpp0196.qqsimple.util.CommUtil.isInstalled;
-import static me.zpp0196.qqsimple.util.ShellUtil.Result.DEFAULT;
-import static me.zpp0196.qqsimple.util.ShellUtil.Result.LAUNCH;
-import static me.zpp0196.qqsimple.util.ShellUtil.Result.VXP;
+import static me.zpp0196.qqsimple.util.ShellUtil.VXP_CMD_TYPE.LAUNCH;
+import static me.zpp0196.qqsimple.util.ShellUtil.VXP_CMD_TYPE.REBOOT;
+import static me.zpp0196.qqsimple.util.ShellUtil.VXP_CMD_TYPE.UPDATE;
 
 /**
  * Created by zpp0196 on 2018/5/25 0025.
@@ -61,7 +60,9 @@ public class MainFragment extends BaseFragment {
 
     @Override
     protected void init() {
-        addItems(getMainActivity());
+        MainActivity mainActivity = getMainActivity();
+        initStatus(mainActivity);
+        addItems(mainActivity);
     }
 
     @SuppressLint ("HandlerLeak")
@@ -84,45 +85,34 @@ public class MainFragment extends BaseFragment {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                Result result = (Result) msg.obj;
-                String negativeText = String.format(getString(R.string.title_open), result.getProgressName());
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
-                builder.title(R.string.title_execute_finish)
-                        .content(result.getResult())
-                        .negativeText(negativeText)
-                        .positiveText(R.string.button_close);
-                switch (msg.what) {
-                    case DEFAULT:
-                        builder.onNegative((dialog, which) -> mainActivity.launchApp(result.getPackageName()));
-                        break;
-                    case VXP:
-                        builder.onNegative((dialog, which) -> shellUtil.executeVxpCmd(ShellUtil.VXP_CMD_TYPE.LAUNCH, result.getPackageName(), result.getProgressName()));
-                        break;
-                }
-                if (result.getResult()
-                        .contains("denied")) {
-                    Toast.makeText(mainActivity, result.getResult(), Toast.LENGTH_LONG)
+                String result = (String) msg.obj;
+                if (result.contains("denied")) {
+                    Toast.makeText(mainActivity, result, Toast.LENGTH_LONG)
                             .show();
                     return;
                 }
-                if (msg.what != LAUNCH) {
-                    builder.show();
-                }
+                String negativeText = String.format(getString(R.string.title_open), getString(R.string.qq_name));
+                new MaterialDialog.Builder(mainActivity).title(R.string.title_execute_finish)
+                        .content(result)
+                        .negativeText(negativeText)
+                        .positiveText(R.string.button_close)
+                        .onNegative((dialog, which) -> mainActivity.launchApp(PACKAGE_NAME_QQ))
+                        .show();
             }
         });
 
         // 结束运行 QQ
-        stopQQ.setOnClickListener(v -> shellUtil.forceStop(PACKAGE_NAME_QQ, getString(R.string.qq_name)));
+        stopQQ.setOnClickListener(v -> shellUtil.forceStopQQ());
         // 打开 QQ
         stopQQ.setOnLongClickListener(v -> {
             mainActivity.launchApp(PACKAGE_NAME_QQ);
             return false;
         });
         // 结束运行 QQ(Vxp)
-        stopVxpQQ.setOnClickListener(v -> shellUtil.executeVxpCmd(ShellUtil.VXP_CMD_TYPE.REBOOT, PACKAGE_NAME_QQ, getString(R.string.qq_name)));
+        stopVxpQQ.setOnClickListener(v -> shellUtil.executeVxpCmd(REBOOT, PACKAGE_NAME_QQ));
         // 打开 QQ(Vxp)
         stopVxpQQ.setOnLongClickListener(v -> {
-            shellUtil.executeVxpCmd(ShellUtil.VXP_CMD_TYPE.LAUNCH, PACKAGE_NAME_QQ, getString(R.string.qq_name));
+            shellUtil.executeVxpCmd(LAUNCH, PACKAGE_NAME_QQ);
             return false;
         });
         // 打开酷安
@@ -130,10 +120,10 @@ public class MainFragment extends BaseFragment {
         // 检查更新
         checkUpdate.setOnClickListener(v -> checkUpdate(checkUpdate.getTitleView(), false));
         // 更新模块(Vxp)
-        updateVxp.setOnClickListener(v -> shellUtil.executeVxpCmd(ShellUtil.VXP_CMD_TYPE.UPDATE, APPLICATION_ID, getString(R.string.app_name)));
+        updateVxp.setOnClickListener(v -> shellUtil.executeVxpCmd(UPDATE, APPLICATION_ID));
         // 进入模块(Vxp)
         updateVxp.setOnLongClickListener(v -> {
-            shellUtil.executeVxpCmd(ShellUtil.VXP_CMD_TYPE.LAUNCH, APPLICATION_ID, getString(R.string.item_card_module));
+            shellUtil.executeVxpCmd(LAUNCH, APPLICATION_ID);
             return false;
         });
 
@@ -153,13 +143,7 @@ public class MainFragment extends BaseFragment {
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        refreshInstallStatus(getMainActivity());
-    }
-
-    private void refreshInstallStatus(MainActivity mainActivity) {
+    private void initStatus(MainActivity mainActivity) {
         TextView txtInstallError = findViewById(R.id.module_active_errors);
         View txtInstallContainer = findViewById(R.id.status_container);
         ImageView txtInstallIcon = findViewById(R.id.status_icon);

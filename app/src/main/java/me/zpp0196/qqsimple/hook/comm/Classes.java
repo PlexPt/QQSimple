@@ -3,6 +3,7 @@ package me.zpp0196.qqsimple.hook.comm;
 import me.zpp0196.qqsimple.hook.util.HookUtil;
 
 import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_QQ;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan763;
 
 /**
  * Created by zpp0196 on 2018/4/27 0027.
@@ -22,6 +23,7 @@ public class Classes {
     public static Class<?> BaseChatPie;
     public static Class<?> BubbleManager;
     public static Class<?> BusinessInfoCheckUpdate$RedTypeInfo;
+    public static Class<?> Card;
     public static Class<?> CardController;
     public static Class<?> ChatActivityUtils;
     public static Class<?> ChatMessage;
@@ -44,6 +46,7 @@ public class Classes {
     public static Class<?> Leba;
     public static Class<?> LebaQZoneFacePlayHelper;
     public static Class<?> LocalSearchBar;
+    public static Class<?> MainEntryAni;
     public static Class<?> MainFragment;
     public static Class<?> MedalNewsItemBuilder;
     public static Class<?> MessageForDeliverGiftTips;
@@ -62,13 +65,13 @@ public class Classes {
     public static Class<?> QQSettingSettingActivity;
     public static Class<?> QzoneFeedItemBuilder;
     public static Class<?> QzonePluginProxyActivity;
+    public static Class<?> RecentOptPopBar;
     public static Class<?> RichStatItemBuilder;
     public static Class<?> SimpleSlidingIndicator;
     public static Class<?> SougouInputGrayTips;
     public static Class<?> TextItemBuilder;
     public static Class<?> TextPreviewActivity;
     public static Class<?> TListView;
-    public static Class<?> TroopEnterEffectController;
     public static Class<?> TroopGiftAnimationController;
     public static Class<?> UpgradeController;
     public static Class<?> UpgradeDetailWrapper;
@@ -104,6 +107,8 @@ public class Classes {
             BubbleManager = findClassInQQ(".bubble.BubbleManager");
         if (BusinessInfoCheckUpdate$RedTypeInfo == null)
             BusinessInfoCheckUpdate$RedTypeInfo = findClassInQQ("com.tencent.pb.getbusiinfo.BusinessInfoCheckUpdate$RedTypeInfo");
+        if (Card == null)
+            Card = findClassInQQ(".data.Card");
         if (CardController == null)
             CardController = findClassInQQ(".activity.contacts.base.CardController");
         if (ChatActivityUtils == null)
@@ -148,6 +153,8 @@ public class Classes {
             LebaQZoneFacePlayHelper = findClassInQQ(".activity.LebaQZoneFacePlayHelper");
         if (LocalSearchBar == null)
             LocalSearchBar = findClassInQQ(".activity.recent.LocalSearchBar");
+        if (MainEntryAni == null && isMoreThan763())
+            MainEntryAni = findClassInQQ(".ar.config.MainEntryAni");
         if (MainFragment == null)
             MainFragment = findClassInQQ(".activity.MainFragment");
         if (MedalNewsItemBuilder == null)
@@ -184,6 +191,8 @@ public class Classes {
             QzoneFeedItemBuilder = findClassInQQ(".activity.aio.item.QzoneFeedItemBuilder");
         if (QzonePluginProxyActivity == null)
             QzonePluginProxyActivity = findClassInQQ("cooperation.qzone.QzonePluginProxyActivity");
+        if (RecentOptPopBar == null)
+            RecentOptPopBar = findClassInQQ(".activity.recent.RecentOptPopBar");
         if (RichStatItemBuilder == null)
             RichStatItemBuilder = findClassInQQ(".activity.aio.item.RichStatItemBuilder");
         if (SimpleSlidingIndicator == null)
@@ -196,8 +205,6 @@ public class Classes {
             TextPreviewActivity = findClassInQQ(".activity.TextPreviewActivity");
         if (TListView == null)
             TListView = findClassInQQ("com.tencent.widget.ListView");
-        if (TroopEnterEffectController == null)
-            TroopEnterEffectController = findClassInQQ(".troop.enterEffect.TroopEnterEffectController");
         if (TroopGiftAnimationController == null)
             TroopGiftAnimationController = findClassInQQ(".troopgift.TroopGiftAnimationController");
         if (UpgradeController == null)

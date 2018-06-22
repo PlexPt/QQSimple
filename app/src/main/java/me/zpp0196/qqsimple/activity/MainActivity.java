@@ -41,7 +41,6 @@ import static me.zpp0196.qqsimple.Common.PREFS_KEY_APP_VERSION_CODE;
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_ENTER_MODULE_TIMES;
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_OPEN_DRAWER;
 import static me.zpp0196.qqsimple.util.CommUtil.isInVxp;
-import static me.zpp0196.qqsimple.util.ShellUtil.Result.DEFAULT;
 
 /**
  * Created by zpp0196 on 2018/5/25 0025.
@@ -153,22 +152,18 @@ public class MainActivity extends BaseAppCompatActivity implements NavigationVie
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                ShellUtil.Result result = (ShellUtil.Result) msg.obj;
-                switch (msg.what) {
-                    case DEFAULT:
-                        if (result.getResult()
-                                .contains("停止")) {
-                            setWorldReadable();
-                            launchApp(PACKAGE_NAME_QQ);
-                        } else {
-                            Toast.makeText(MainActivity.this, result.getResult(), Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                        break;
+                String result = (String) msg.obj;
+                if (result.contains("停止")) {
+                    setWorldReadable();
+                    launchApp(PACKAGE_NAME_QQ);
+                } else {
+                    Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG)
+                            .show();
                 }
+
             }
         });
-        shellUtil.forceStop(PACKAGE_NAME_QQ, getString(R.string.qq_name));
+        shellUtil.forceStopQQ();
     }
 
     @SuppressWarnings ("StatementWithEmptyBody")

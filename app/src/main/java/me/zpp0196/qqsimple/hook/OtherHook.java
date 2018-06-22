@@ -3,6 +3,7 @@ package me.zpp0196.qqsimple.hook;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.os.SystemClock;
 import android.text.Editable;
 import android.view.KeyEvent;
@@ -32,6 +33,7 @@ import static me.zpp0196.qqsimple.Common.PREFS_VALUE_CHAT_TAIL;
 import static me.zpp0196.qqsimple.Common.PREFS_VALUE_FONT_SIZE;
 import static me.zpp0196.qqsimple.hook.comm.Classes.AIOImageProviderService;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseChatPie;
+import static me.zpp0196.qqsimple.hook.comm.Classes.Card;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ContactUtils;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Conversation;
 import static me.zpp0196.qqsimple.hook.comm.Classes.CoreService;
@@ -87,7 +89,18 @@ class OtherHook extends BaseHook {
         Method method = findMethodIfExists(AIOImageProviderService, void.class, "a", long.class);
         hookMethod(method, replaceNull("prevent_flash_disappear"));
 
-        // TODO 添加一个隐藏倒计时
+        // 隐藏倒计时
+        findAndHookMethod(CountDownProgressBar, "onDraw", Canvas.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if (getBool("prevent_flash_disappear")) {
+                    View view = (View) param.thisObject;
+                    view.setVisibility(View.GONE);
+                }
+            }
+        });
+
         blockSecureFlag();
     }
 
@@ -143,14 +156,18 @@ class OtherHook extends BaseHook {
                 Object qqAppInterface = getObject(param.thisObject, QQAppInterface, "a");
                 String selfUin = (String) XposedHelpers.callMethod(qqAppInterface, "getCurrentAccountUin");
 
+                if(selfUin.equals(fromUin)){
+                    return null;
+                }
+
                 int msgType = (int) XposedHelpers.getStaticObjectField(MessageRecord, "MSG_TYPE_REVOKE_GRAY_TIPS");
                 List tip = getRevokeTip(qqAppInterface, selfUin, friendUin, fromUin, msgUid, shmsgseq,
                         time + 1, msgType, isTroop);
                 if (tip != null && !tip.isEmpty()) {
                     try {
                         XposedHelpers.callMethod(param.thisObject, "a", tip, selfUin);
-                    } catch (Throwable t) {
-                        //
+                    } catch (Throwable ignored) {
+
                     }
                 }
                 return null;
@@ -290,5 +307,9 @@ class OtherHook extends BaseHook {
                 }
             }
         });
+        // 隐藏达人
+        findAndHookMethod(QQSettingSettingActivity, "c", Card, hideView(RelativeLayout.class, "a", "hide_setting_newXman"));
+        // 隐藏设置免流量特权
+        findAndHookMethod(QQSettingSettingActivity, "a", replaceNull("hide_setting_kingCard"));
     }
 }

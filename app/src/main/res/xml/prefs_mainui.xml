@@ -37,6 +37,9 @@
             android:key="hide_conversation_popupMenu"
             android:title="隐藏快捷入口" />
         <CheckBoxPreference
+            android:key="hide_conversation_popupWorldCup"
+            android:title="隐藏AR足球" />
+        <CheckBoxPreference
             android:key="hide_troopTip_all"
             android:title="隐藏[有人送礼]等群相关提示" />
     </PreferenceCategory>
@@ -62,6 +65,9 @@
         <CheckBoxPreference
             android:key="hide_popup_videoDance"
             android:title="隐藏高能舞室" />
+        <CheckBoxPreference
+            android:key="hide_popup_cmGame"
+            android:title="隐藏轻游戏" />
     </PreferenceCategory>
     <PreferenceCategory android:title="联系人界面">
         <CheckBoxPreference

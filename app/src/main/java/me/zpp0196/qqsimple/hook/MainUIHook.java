@@ -7,11 +7,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
+import me.zpp0196.qqsimple.hook.util.HookUtil;
 
 import static android.view.View.GONE;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseActivity;
@@ -23,6 +25,7 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.ConversationNowController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Leba;
 import static me.zpp0196.qqsimple.hook.comm.Classes.LebaQZoneFacePlayHelper;
 import static me.zpp0196.qqsimple.hook.comm.Classes.LocalSearchBar;
+import static me.zpp0196.qqsimple.hook.comm.Classes.MainEntryAni;
 import static me.zpp0196.qqsimple.hook.comm.Classes.MainFragment;
 import static me.zpp0196.qqsimple.hook.comm.Classes.MessageInfo;
 import static me.zpp0196.qqsimple.hook.comm.Classes.MessageRecord;
@@ -31,12 +34,14 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$MenuItem;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$OnClickActionListener;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$OnDismissListener;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQAppInterface;
+import static me.zpp0196.qqsimple.hook.comm.Classes.RecentOptPopBar;
 import static me.zpp0196.qqsimple.hook.comm.Classes.SimpleSlidingIndicator;
 import static me.zpp0196.qqsimple.hook.comm.Classes.TListView;
 import static me.zpp0196.qqsimple.hook.comm.Classes.URLImageView;
 import static me.zpp0196.qqsimple.hook.comm.Maps.popouItem;
 import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan735;
 import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan758;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan765;
 
 /**
  * Created by zpp0196 on 2018/3/12.
@@ -108,12 +113,30 @@ class MainUIHook extends BaseHook {
      */
     @SuppressWarnings ("unchecked")
     private void hidePopupMenu() {
-        // TODO 隐藏轻游戏入口
+        if (HookUtil.isMoreThan765()) {
+            Method method = findMethodIfExists(RecentOptPopBar, View.class, "a");
+            hookMethod(method, replaceNull("hide_popup_cmGame"));
+        }
 
-        // FIXME 闪退
         // 隐藏消息列表右上角快捷入口
         findAndHookMethod(Conversation, "D", hideView(ImageView.class, "a", "hide_conversation_popupMenu"));
-        findAndHookMethod(PopupMenuDialog, "a", Activity.class, List.class, PopupMenuDialog$OnClickActionListener, PopupMenuDialog$OnDismissListener, int.class, boolean.class, new XC_MethodHook() {
+
+        // 隐藏AR足球
+        if (MainEntryAni != null) {
+            Method[] methods = MainEntryAni.getDeclaredMethods();
+            for (Method method : methods) {
+                Class<?>[] clazz = method.getParameterTypes();
+                if (method.getName()
+                            .equals("b") && method.getReturnType() == void.class &&
+                    clazz.length == 1 && clazz[0].getClass() != MainEntryAni) {
+                    hookMethod(method, replaceNull("hide_conversation_popupWorldCup"));
+                    break;
+                }
+            }
+        }
+
+        // 隐藏Item
+        findAndHookMethod(PopupMenuDialog, "a", Activity.class, List.class, PopupMenuDialog$OnClickActionListener, PopupMenuDialog$OnDismissListener, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 List list = (List) param.args[1];
@@ -123,7 +146,6 @@ class MainUIHook extends BaseHook {
                     for (String key : popouItem.keySet()) {
                         String value = popouItem.get(key);
                         if (title.contains(value) && getBool(key)) {
-                            log(title);
                             needRemove.add(item);
                         }
                     }
@@ -159,8 +181,9 @@ class MainUIHook extends BaseHook {
         }
 
         // 隐藏全民闯关入口
-        findAndHookMethod(ConversationNowController, "a", String.class, replaceNull("hide_conversation_nowController"));
-
+        if (!isMoreThan765()) {
+            findAndHookMethod(ConversationNowController, "a", String.class, replaceNull("hide_conversation_nowController"));
+        }
         // 隐藏消息
         findAndHookMethod(MessageInfo, "a", QQAppInterface, String.class, MessageInfo, Object.class, MessageRecord, boolean.class, replaceNull("hide_troopTip_all"));
     }

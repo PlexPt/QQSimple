@@ -40,6 +40,12 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="设置界面">
         <CheckBoxPreference
+            android:key="hide_setting_phone"
+            android:title="隐藏手机号码" />
+        <CheckBoxPreference
+            android:key="hide_setting_newXman"
+            android:title="隐藏QQ达人" />
+        <CheckBoxPreference
             android:key="hide_setting_msgNotify"
             android:title="隐藏消息通知" />
         <CheckBoxPreference

@@ -45,6 +45,7 @@ public class Maps {
         }
         if (settingItem == null) {
             settingItem = new HashMap<>();
+            settingItem.put("hide_setting_newXman", "达人");
             settingItem.put("hide_setting_msgNotify", "通知");
             settingItem.put("hide_setting_msgHistory", "记录");
             settingItem.put("hide_setting_qqClean", "清理");

@@ -111,8 +111,8 @@ class ChatHook extends BaseHook {
      * 隐藏字体特效
      */
     private void hideFontEffect() {
-        findAndHookMethod(TextItemBuilder, "a", BaseBubbleBuilder$ViewHolder, ChatMessage, replaceNull("hide_font_effects"));
-        findAndHookMethod(TextPreviewActivity, "a", int.class, replaceNull("hide_font_effects"));
+        findAndHookMethod(TextItemBuilder, "a", BaseBubbleBuilder$ViewHolder, ChatMessage, replaceNull("hide_chat_fontEffects"));
+        findAndHookMethod(TextPreviewActivity, "a", int.class, replaceNull("hide_chat_fontEffects"));
 
         if (isMoreThan760()) {
             // 隐藏大字体特效

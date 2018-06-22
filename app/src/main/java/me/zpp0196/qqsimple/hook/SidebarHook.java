@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -38,11 +37,7 @@ public class SidebarHook extends BaseHook {
                 hideViews(param);
             }
         });
-        hideSidebarItems();
         hookOther();
-    }
-
-    private void hideSidebarItems() {
     }
 
     private void hideViews(XC_MethodHook.MethodHookParam param) {

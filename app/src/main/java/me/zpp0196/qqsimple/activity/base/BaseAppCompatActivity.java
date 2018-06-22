@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -26,6 +27,7 @@ import static me.zpp0196.qqsimple.Common.PACKAGE_NAME_ALIPAY;
 import static me.zpp0196.qqsimple.util.CommUtil.getPrefsDir;
 import static me.zpp0196.qqsimple.util.CommUtil.getPrefsFile;
 import static me.zpp0196.qqsimple.util.CommUtil.getThrowableMsg;
+import static me.zpp0196.qqsimple.util.CommUtil.isInstalled;
 
 /**
  * Created by zpp0196 on 2018/5/30 0030.
@@ -101,10 +103,15 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     }
 
     public void launchApp(String packageName) {
-        try {
-            startActivity(getPackageManager().getLaunchIntentForPackage(packageName));
-        } catch (Exception e) {
-            showThrowableDialog(e);
+        if (isInstalled(this, packageName)) {
+            try {
+                startActivity(getPackageManager().getLaunchIntentForPackage(packageName));
+            } catch (Exception e) {
+                showThrowableDialog(e);
+            }
+        } else {
+            Toast.makeText(this, packageName + " not find!", Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 

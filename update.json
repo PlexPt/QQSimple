@@ -1,30 +1,30 @@
 {
-  "versionName": "2.3.0",
-  "versionCode": 52,
+  "versionName": "2.3.5",
+  "versionCode": 57,
   "updateLog": [
     {
-      "content": "重写了部分代码"
+      "content": "移除了部分代码"
     },
     {
-      "content": "移除了版本检测"
+      "content": "添加了隐藏AR足球"
     },
     {
-      "content": "修复了部分小bug"
+      "content": "添加了隐藏闪照倒计时"
     },
     {
-      "content": "修复了部分卡顿问题"
+      "content": "添加了隐藏快捷入口轻游戏"
     },
     {
-      "content": "修复了设置空白间隔"
+      "content": "修复了不能隐藏字体特效的bug"
     },
     {
-      "content": "改进了对Vxp的兼容性"
+      "content": "修复了不能隐藏侧滑栏我的视频的bug"
     },
     {
-      "content": "添加了聊天小尾巴功能"
+      "content": "修复了不能隐藏设置免流量特权的bug"
     },
     {
-      "content": "添加了[有人送礼]等群相关提示"
+      "content": "修复了自己撤回消息后会和出现和自己聊天的bug"
     }
   ]
 }

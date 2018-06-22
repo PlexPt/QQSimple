@@ -62,8 +62,8 @@ class RemoveImagine extends BaseHook {
         hideView("chat_item_troop_member_glamour_level", "hide_troop_memberGlamourLevel");
         // 隐藏群消息里的小视频
         hideView("troop_assistant_feeds_title_small_video", "hide_troopAssistant_smallVideo");
-        // 隐藏设置免流量特权
-        hideView("cu_open_card_guide_entry", "hide_setting_kingCard");
+        // 隐藏设置手机号码
+        hideView("qqsetting2_phone_unity_info", "hide_setting_phone");
         if (isMoreThan735()) {
             // 隐藏贴表情
             hideView("pic_light_emoj", "hide_troop_lightEmoji");
