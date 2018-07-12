@@ -66,7 +66,7 @@ public class MainHook implements IXposedHookLoadPackage {
             startQzoneHook(classLoader);
         }
 
-        log(getClass(), String.format("loading %s(%s)", lpparam.processName, lpparam.appInfo.uid));
+        // log(getClass(), String.format("loading %s(%s)", lpparam.processName, lpparam.appInfo.uid));
 
         List<BaseHook> hooks = new ArrayList<>();
         hooks.add(new RemoveImagine());

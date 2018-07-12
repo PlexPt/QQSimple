@@ -2,7 +2,6 @@ package me.zpp0196.qqsimple.hook.base;
 
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.lang.reflect.Field;
@@ -21,7 +20,6 @@ import me.zpp0196.qqsimple.hook.util.XPrefs;
 
 import static de.robv.android.xposed.XposedHelpers.getStaticIntField;
 import static me.zpp0196.qqsimple.hook.comm.Classes.R$drawable;
-import static me.zpp0196.qqsimple.hook.comm.Classes.R$id;
 
 /**
  * Created by zpp0196 on 2018/3/18.
@@ -30,10 +28,8 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.R$id;
 public abstract class BaseHook {
 
     // 是否已经Hook过View
-    private volatile boolean hasHookedView = false;
     private volatile boolean hasHookedDrawable = false;
     // 把要Hook的view的ID全部提前保存
-    private Set<Integer> idsToHide = new HashSet<>();
     private Set<Integer> drawablesToHide = new HashSet<>();
 
     public abstract void init();
@@ -44,19 +40,6 @@ public abstract class BaseHook {
 
     protected void log(String format, Object... args) {
         HookUtil.log(getClass(), format, args);
-    }
-
-    private int getIdInQQ(String name) {
-        Integer id = Ids.getId(name);
-        if (id != null && id != 0) {
-            return id;
-        }
-        try {
-            return getStaticIntField(R$id, name);
-        } catch (Throwable e) {
-            log("Can't find the id of name: %s!", name);
-            return 0;
-        }
     }
 
     private int getDrawableIdInQQ(String name) {
@@ -76,42 +59,6 @@ public abstract class BaseHook {
         if (view != null && getBool(key)) {
             view.setVisibility(View.GONE);
         }
-    }
-
-    protected void hideView(String name) {
-        hideView(getIdInQQ(name), true);
-    }
-
-    protected void hideView(String name, String key) {
-        hideView(getIdInQQ(name), getBool(key));
-    }
-
-    private void hideView(int id, boolean isHide) {
-        if (id == 0 || !isHide) {
-            return;
-        }
-        if (!idsToHide.contains(id)) {
-            idsToHide.add(id);
-        }
-        if (!hasHookedView) {
-            hasHookedView = true;
-            hookView();
-        }
-    }
-
-    private void hookView() {
-        findAndHookMethod(View.class, "setLayoutParams", ViewGroup.LayoutParams.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                View view = (View) param.thisObject;
-                if (idsToHide.contains(view.getId())) {
-                    ViewGroup.LayoutParams layoutParams = (ViewGroup.LayoutParams) param.args[0];
-                    layoutParams.height = 1;
-                    layoutParams.width = 0;
-                    view.setVisibility(View.GONE);
-                }
-            }
-        });
     }
 
     protected void hideDrawable(String name) {
@@ -161,7 +108,7 @@ public abstract class BaseHook {
         }
     }
 
-    private Field findField(Class<?> clazz, Class<?> type, String name) {
+    protected Field findField(Class<?> clazz, Class<?> type, String name) {
         if (clazz != null && type != null && !name.isEmpty()) {
             Class<?> clz = clazz;
             do {
@@ -247,13 +194,25 @@ public abstract class BaseHook {
     }
 
     protected XC_MethodHook hideView(Class<?> type, String name, String key) {
-        return new XC_MethodHook() {
+        return getBool(key) ? new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                View view = getObject(param.thisObject, type, name);
-                hideView(view, key);
+                hideView(param.thisObject, type, name);
             }
-        };
+        } : null;
+    }
+
+    protected void hideView(Object obj, Class<?> type, String name) {
+        View view = getObject(obj, type, name);
+        if (view != null) {
+            view.setVisibility(View.GONE);
+        }
+    }
+
+    protected void hideView(Object obj, Class<?> type, String name, String key) {
+        if (getBool(key)) {
+            hideView(obj, type, name);
+        }
     }
 
     protected XC_MethodHook setFieldNullAfterMethod(Class<?> clazz, Class<?> type, String name, String key) {

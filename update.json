@@ -1,30 +1,33 @@
 {
-  "versionName": "2.3.5",
-  "versionCode": 57,
+  "versionName": "2.5.0",
+  "versionCode": 64,
   "updateLog": [
     {
-      "content": "移除了部分代码"
+      "content": "适配新版QQ"
     },
     {
-      "content": "添加了隐藏AR足球"
+      "content": "移除了部分功能"
     },
     {
-      "content": "添加了隐藏闪照倒计时"
+      "content": "更换了隐藏气泡方法"
     },
     {
-      "content": "添加了隐藏快捷入口轻游戏"
+      "content": "修复了空间闪退的bug"
     },
     {
-      "content": "修复了不能隐藏字体特效的bug"
+      "content": "增加了隐藏好友小视频"
     },
     {
-      "content": "修复了不能隐藏侧滑栏我的视频的bug"
+      "content": "增加了聊天图片背景透明"
     },
     {
-      "content": "修复了不能隐藏设置免流量特权的bug"
+      "content": "增加聊天小尾巴设置屏蔽词"
     },
     {
-      "content": "修复了自己撤回消息后会和出现和自己聊天的bug"
+      "content": "增加了群聊界面隐藏在线人数"
+    },
+    {
+      "content": "自定义字体大小可任意设置大小"
     }
   ]
 }

@@ -13,7 +13,7 @@ public class Ids {
 
     private static HashMap<String, Integer> id;
 
-    private static int[] supportVersion = new int[]{818, 828, 832, 836, 850, 852, 864};
+    private static int[] supportVersion = new int[]{818, 828, 832, 836, 850, 852, 864, 872};
 
     public static void init() {
         if (id == null) {
@@ -42,6 +42,9 @@ public class Ids {
                 break;
             case 864:
                 init765_864();
+                break;
+            case 872:
+                init768_872();
                 break;
         }
     }
@@ -634,6 +637,14 @@ public class Ids {
         put("qzone_feed_commwidget_hide_btn", 0x7f0a2e2b); // AsyncImageView b
         put("qzone_feed_commwidget_stub", 0x7f0a2b49); // QZoneFriendFeedFragment new QZoneCommWidget( View d
         put("qz_feed_head_container", 0x7f0a2e50); // HotBannerManager i() LinearLayout
+    }
+
+    private static void init768_872() {
+        // drawable
+        put("skin_tips_dot", 0x7f0221b5); // c3 .redtouch.RedTouch a(int i)
+        // put("skin_tips_dot_small", 0x7f0221b6); // +1
+        put("skin_tips_new", 0x7f0221b7); // +2
+        put("shortvideo_redbag_outicon", 0x7f021fdc); // c3 .redtouch.RedTouch a(boolean z) parseRedBagTouch
     }
 
     private static void put(String key, Integer value) {

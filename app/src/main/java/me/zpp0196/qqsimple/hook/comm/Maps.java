@@ -27,11 +27,15 @@ public class Maps {
         }
         if (sidebarItem == null) {
             sidebarItem = new HashMap<>();
+            sidebarItem.put("hide_sidebar_vip", "会员");
             sidebarItem.put("hide_sidebar_pocket", "钱包");
             sidebarItem.put("hide_sidebar_myFavorites", "收藏");
             sidebarItem.put("hide_sidebar_myFiles", "文件");
             sidebarItem.put("hide_sidebar_myPhotos", "相册");
             sidebarItem.put("hide_sidebar_dressUp", "装扮");
+            sidebarItem.put("hide_sidebar_myCards", "名片");
+            sidebarItem.put("hide_sidebar_myVideos", "视频");
+            sidebarItem.put("hide_sidebar_kingCard", "流量");
         }
         if (popouItem == null) {
             popouItem = new HashMap<>();

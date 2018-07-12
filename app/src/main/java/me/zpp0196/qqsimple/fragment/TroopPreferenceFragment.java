@@ -18,4 +18,14 @@ public class TroopPreferenceFragment extends BasePreferenceFragment {
     public int getTitleId() {
         return R.string.nav_item_group;
     }
+
+    @Override
+    protected void initData() {
+        findPreference("hide_troopTip_all").setOnPreferenceChangeListener((preference, newValue) -> {
+            if ((boolean) newValue) {
+                getMainActivity().showMsgDialog(R.string.title_explain, R.string.tip_troop_tip);
+            }
+            return true;
+        });
+    }
 }

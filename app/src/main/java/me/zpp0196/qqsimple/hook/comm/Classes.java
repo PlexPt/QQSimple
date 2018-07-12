@@ -12,19 +12,21 @@ import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan763;
 public class Classes {
 
     public static Class<?> R$drawable;
-    public static Class<?> R$id;
     public static Class<?> AbstractChatItemBuilder$ViewHolder;
+    public static Class<?> AbstractGalleryScene;
     public static Class<?> AioAnimationConfigHelper;
     public static Class<?> AIOImageProviderService;
     public static Class<?> AIOPanelUtiles;
     public static Class<?> ApolloManager$CheckApolloInfoResult;
+    public static Class<?> BannerManager;
     public static Class<?> BaseActivity;
     public static Class<?> BaseBubbleBuilder$ViewHolder;
+    public static Class<?> BaseChatItemLayout;
     public static Class<?> BaseChatPie;
+    public static Class<?> BaseTroopChatPie;
     public static Class<?> BubbleManager;
     public static Class<?> BusinessInfoCheckUpdate$RedTypeInfo;
     public static Class<?> Card;
-    public static Class<?> CardController;
     public static Class<?> ChatActivityUtils;
     public static Class<?> ChatMessage;
     public static Class<?> Conversation;
@@ -34,13 +36,16 @@ public class Classes {
     public static Class<?> CoreService;
     public static Class<?> CoreService$KernelService;
     public static Class<?> CountDownProgressBar;
+    public static Class<?> EmoticonMainPanel;
     public static Class<?> EmoticonManager;
     public static Class<?> FileManagerUtil;
+    public static Class<?> FriendFragment;
     public static Class<?> FontManager;
     public static Class<?> FontSettingManager;
     public static Class<?> FrameHelperActivity;
     public static Class<?> GatherContactsTips;
     public static Class<?> GrayTipsItemBuilder;
+    public static Class<?> HonestSayController;
     public static Class<?> HotChatFlashPicActivity;
     public static Class<?> ItemBuilderFactory;
     public static Class<?> Leba;
@@ -50,11 +55,14 @@ public class Classes {
     public static Class<?> MainFragment;
     public static Class<?> MedalNewsItemBuilder;
     public static Class<?> MessageForDeliverGiftTips;
+    public static Class<?> MessageForPic;
     public static Class<?> MessageInfo;
     public static Class<?> MessageRecord;
     public static Class<?> MessageRecordFactory;
     public static Class<?> OnLongClickAndTouchListener;
     public static Class<?> PanelIconLinearLayout;
+    public static Class<?> PicItemBuilder;
+    public static Class<?> PicItemBuilder$Holder;
     public static Class<?> PopupMenuDialog;
     public static Class<?> PopupMenuDialog$MenuItem;
     public static Class<?> PopupMenuDialog$OnClickActionListener;
@@ -72,6 +80,8 @@ public class Classes {
     public static Class<?> TextItemBuilder;
     public static Class<?> TextPreviewActivity;
     public static Class<?> TListView;
+    public static Class<?> TroopAssistantActivity;
+    public static Class<?> TroopEnterEffectController;
     public static Class<?> TroopGiftAnimationController;
     public static Class<?> UpgradeController;
     public static Class<?> UpgradeDetailWrapper;
@@ -85,10 +95,10 @@ public class Classes {
         qqClassLoader = classLoader;
         if (R$drawable == null)
             R$drawable = findClassInQQ(".R$drawable");
-        if (R$id == null)
-            R$id = findClassInQQ(".R$id");
         if (AbstractChatItemBuilder$ViewHolder == null)
             AbstractChatItemBuilder$ViewHolder = findClassInQQ(".activity.aio.AbstractChatItemBuilder$ViewHolder");
+        if (AbstractGalleryScene == null)
+            AbstractGalleryScene = findClassInQQ("com.tencent.common.galleryactivity.AbstractGalleryScene");
         if (AioAnimationConfigHelper == null)
             AioAnimationConfigHelper = findClassInQQ(".activity.aio.anim.AioAnimationConfigHelper");
         if (AIOImageProviderService == null)
@@ -97,20 +107,24 @@ public class Classes {
             AIOPanelUtiles = findClassInQQ(".activity.aio.panel.AIOPanelUtiles");
         if (ApolloManager$CheckApolloInfoResult == null)
             ApolloManager$CheckApolloInfoResult = findClassInQQ(".apollo.ApolloManager$CheckApolloInfoResult");
+        if (BannerManager == null)
+            BannerManager = findClassInQQ(".activity.recent.BannerManager");
         if (BaseActivity == null)
             BaseActivity = findClassInQQ(".app.BaseActivity");
         if (BaseBubbleBuilder$ViewHolder == null)
             BaseBubbleBuilder$ViewHolder = findClassInQQ(".activity.aio.BaseBubbleBuilder$ViewHolder");
+        if (BaseChatItemLayout == null)
+            BaseChatItemLayout = findClassInQQ(".activity.aio.BaseChatItemLayout");
         if (BaseChatPie == null)
             BaseChatPie = findClassInQQ(".activity.BaseChatPie");
+        if (BaseTroopChatPie == null)
+            BaseTroopChatPie = findClassInQQ(".activity.aio.rebuild.BaseTroopChatPie");
         if (BubbleManager == null)
             BubbleManager = findClassInQQ(".bubble.BubbleManager");
         if (BusinessInfoCheckUpdate$RedTypeInfo == null)
             BusinessInfoCheckUpdate$RedTypeInfo = findClassInQQ("com.tencent.pb.getbusiinfo.BusinessInfoCheckUpdate$RedTypeInfo");
         if (Card == null)
             Card = findClassInQQ(".data.Card");
-        if (CardController == null)
-            CardController = findClassInQQ(".activity.contacts.base.CardController");
         if (ChatActivityUtils == null)
             ChatActivityUtils = findClassInQQ(".activity.ChatActivityUtils");
         if (ChatMessage == null)
@@ -129,10 +143,14 @@ public class Classes {
             CoreService$KernelService = findClassInQQ(".app.CoreService$KernelService");
         if (CountDownProgressBar == null)
             CountDownProgressBar = findClassInQQ("com.tencent.widget.CountDownProgressBar");
+        if (EmoticonMainPanel == null)
+            EmoticonMainPanel = findClassInQQ(".emoticonview.EmoticonMainPanel");
         if (EmoticonManager == null)
             EmoticonManager = findClassInQQ(".model.EmoticonManager");
         if (FileManagerUtil == null)
             FileManagerUtil = findClassInQQ(".filemanager.util.FileManagerUtil");
+        if (FriendFragment == null)
+            FriendFragment = findClassInQQ(".activity.contacts.fragment.FriendFragment");
         if (FontManager == null)
             FontManager = findClassInQQ("com.etrump.mixlayout.FontManager");
         if (FontSettingManager == null)
@@ -143,6 +161,8 @@ public class Classes {
             GatherContactsTips = findClassInQQ(".activity.aio.tips.GatherContactsTips");
         if (GrayTipsItemBuilder == null)
             GrayTipsItemBuilder = findClassInQQ(".activity.aio.item.GrayTipsItemBuilder");
+        if (HonestSayController == null)
+            HonestSayController = findClassInQQ(".activity.contacts.base.HonestSayController");
         if (HotChatFlashPicActivity == null)
             HotChatFlashPicActivity = findClassInQQ(".dating.HotChatFlashPicActivity");
         if (ItemBuilderFactory == null)
@@ -161,6 +181,8 @@ public class Classes {
             MedalNewsItemBuilder = findClassInQQ(".activity.aio.item.MedalNewsItemBuilder");
         if (MessageForDeliverGiftTips == null)
             MessageForDeliverGiftTips = findClassInQQ(".data.MessageForDeliverGiftTips");
+        if (MessageForPic == null)
+            MessageForPic = findClassInQQ(".data.MessageForPic");
         if (MessageInfo == null)
             MessageInfo = findClassInQQ(".troop.data.MessageInfo");
         if (MessageRecord == null)
@@ -171,6 +193,10 @@ public class Classes {
             OnLongClickAndTouchListener = findClassInQQ(".activity.aio.OnLongClickAndTouchListener");
         if (PanelIconLinearLayout == null)
             PanelIconLinearLayout = findClassInQQ(".activity.aio.panel.PanelIconLinearLayout");
+        if (PicItemBuilder == null)
+            PicItemBuilder = findClassInQQ(".activity.aio.item.PicItemBuilder");
+        if (PicItemBuilder$Holder == null)
+            PicItemBuilder$Holder = findClassInQQ(".activity.aio.item.PicItemBuilder$Holder");
         if (PopupMenuDialog == null)
             PopupMenuDialog = findClassInQQ("com.tencent.widget.PopupMenuDialog");
         if (PopupMenuDialog$MenuItem == null)
@@ -205,6 +231,10 @@ public class Classes {
             TextPreviewActivity = findClassInQQ(".activity.TextPreviewActivity");
         if (TListView == null)
             TListView = findClassInQQ("com.tencent.widget.ListView");
+        if (TroopAssistantActivity == null)
+            TroopAssistantActivity = findClassInQQ(".activity.TroopAssistantActivity");
+        if (TroopEnterEffectController == null)
+            TroopEnterEffectController = findClassInQQ(".troop.enterEffect.TroopEnterEffectController");
         if (TroopGiftAnimationController == null)
             TroopGiftAnimationController = findClassInQQ(".troopgift.TroopGiftAnimationController");
         if (UpgradeController == null)

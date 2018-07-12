@@ -1,8 +1,11 @@
 package me.zpp0196.qqsimple.hook;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.widget.ImageView;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -12,7 +15,9 @@ import me.zpp0196.qqsimple.hook.base.BaseHook;
 import static me.zpp0196.qqsimple.hook.comm.Maps.qzoneMenuItem;
 import static me.zpp0196.qqsimple.hook.comm.Maps.qzoneNavItem;
 import static me.zpp0196.qqsimple.hook.util.HookUtil.getQQVersionName;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan758;
 import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan760;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan765;
 
 /**
  * Created by zpp0196 on 2018/4/1.
@@ -23,16 +28,34 @@ class QZoneHook extends BaseHook {
     private ClassLoader qqClassLoader;
     private ClassLoader qzoneClassLoader;
 
+    private Class<?> AsyncImageView;
+    private Class<?> BusinessFeedData;
+    private Class<?> CanvasCellCommentView;
     private Class<?> DynamicPhotoAdapter;
     private Class<?> entrance_cfg;
+    private Class<?> FeedComment;
+    private Class<?> FeedOperation;
+    private Class<?> FeedView;
+    private Class<?> GuideCommentBar;
+    private Class<?> HotBannerManager;
     private Class<?> LocalConfig;
     private Class<?> NavigatorBar;
     private Class<?> NavigatorItem;
     private Class<?> OperationItem;
     private Class<?> PlusMenuContainer;
+    private Class<?> PraiseListView;
     private Class<?> QzoneAvatarDecorator;
+    private Class<?> QZoneCommWidget;
     private Class<?> QZoneFeedsHeader;
+    private Class<?> QzoneFacadeDecorator;
     private Class<?> QZoneFriendFeedFragment;
+    private Class<?> QZonePublishMoodActivity;
+    private Class<?> QzoneQbossDecorator;
+    private Class<?> QZoneUploadPhotoActivity;
+    private Class<?> QZoneUploadQualityActivity;
+    private Class<?> QzoneVipDecorator;
+    private Class<?> SuperLikeView;
+    private Class<?> VisitAndPraiseAvatarsView;
 
 
     QZoneHook(ClassLoader qqClassLoader, ClassLoader qzoneClassLoader) {
@@ -44,16 +67,43 @@ class QZoneHook extends BaseHook {
     public void init() {
         initClass();
         hidePlusMenuConstants();
+        hideDecorator();
+        hideFeedContent();
         hideNavConstants();
+        hideAd();
         hideOther();
     }
 
     private void initClass() {
+        if (AsyncImageView == null) {
+            AsyncImageView = findClassInQzone("com.qzone.widget.AsyncImageView");
+        }
+        if (BusinessFeedData == null) {
+            BusinessFeedData = findClassInQzone("com.qzone.proxy.feedcomponent.model.BusinessFeedData");
+        }
+        if (CanvasCellCommentView == null) {
+            CanvasCellCommentView = findClassInQzone("com.qzone.module.feedcomponent.ui.canvasui.CanvasCellCommentView");
+        }
         if (DynamicPhotoAdapter == null) {
             DynamicPhotoAdapter = findClassInQzone("com.qzone.publish.ui.adapter.DynamicPhotoAdapter");
         }
         if (entrance_cfg == null) {
             entrance_cfg = findClassInQQ("NS_UNDEAL_COUNT.entrance_cfg");
+        }
+        if (FeedComment == null) {
+            FeedComment = findClassInQzone("com.qzone.module.feedcomponent.ui.FeedComment");
+        }
+        if (FeedOperation == null) {
+            FeedOperation = findClassInQzone("com.qzone.module.feedcomponent.ui.FeedOperation");
+        }
+        if (FeedView == null) {
+            FeedView = findClassInQzone("com.qzone.module.feedcomponent.ui.FeedView");
+        }
+        if (GuideCommentBar == null) {
+            GuideCommentBar = findClassInQzone("com.qzone.module.feedcomponent.ui.GuideCommentBar");
+        }
+        if (HotBannerManager == null) {
+            HotBannerManager = findClassInQzone("com.qzone.component.banner.manager.HotBannerManager");
         }
         if (LocalConfig == null) {
             LocalConfig = findClassInQzone("com.qzone.config.LocalConfig");
@@ -70,14 +120,44 @@ class QZoneHook extends BaseHook {
         if (PlusMenuContainer == null) {
             PlusMenuContainer = findClassInQzone("com.qzone.plusoperation.PlusMenuContainer");
         }
+        if (PraiseListView == null) {
+            PraiseListView = findClassInQzone("com.qzone.module.feedcomponent.ui.PraiseListView");
+        }
         if (QzoneAvatarDecorator == null) {
             QzoneAvatarDecorator = findClassInQzone("com.qzone.cover.ui.QzoneAvatarDecorator");
+        }
+        if (QZoneCommWidget == null) {
+            QZoneCommWidget = findClassInQzone("com.qzone.commwidget.QZoneCommWidget");
         }
         if (QZoneFeedsHeader == null) {
             QZoneFeedsHeader = findClassInQzone("com.qzone.widget.QZoneFeedsHeader");
         }
+        if (QzoneFacadeDecorator == null) {
+            QzoneFacadeDecorator = findClassInQzone("com.qzone.cover.ui.QzoneFacadeDecorator");
+        }
         if (QZoneFriendFeedFragment == null) {
             QZoneFriendFeedFragment = findClassInQzone("com.qzone.feed.ui.activity.QZoneFriendFeedFragment");
+        }
+        if (QZonePublishMoodActivity == null) {
+            QZonePublishMoodActivity = findClassInQzone("com.qzone.publish.ui.activity.QZonePublishMoodActivity");
+        }
+        if (QzoneQbossDecorator == null) {
+            QzoneQbossDecorator = findClassInQzone("com.qzone.cover.ui.QzoneQbossDecorator");
+        }
+        if (QZoneUploadPhotoActivity == null) {
+            QZoneUploadPhotoActivity = findClassInQzone("com.qzone.publish.ui.activity.QZoneUploadPhotoActivity");
+        }
+        if (QZoneUploadQualityActivity == null) {
+            QZoneUploadQualityActivity = findClassInQzone("com.qzone.publish.ui.activity.QZoneUploadQualityActivity");
+        }
+        if (QzoneVipDecorator == null) {
+            QzoneVipDecorator = findClassInQzone("com.qzone.cover.ui.QzoneVipDecorator");
+        }
+        if (SuperLikeView == null) {
+            SuperLikeView = findClassInQzone("com.qzone.module.feedcomponent.ui.common.SuperLikeView");
+        }
+        if (VisitAndPraiseAvatarsView == null) {
+            VisitAndPraiseAvatarsView = findClassInQzone("com.qzone.module.feedcomponent.ui.VisitAndPraiseAvatarsView");
         }
     }
 
@@ -102,6 +182,46 @@ class QZoneHook extends BaseHook {
                     }
                 }
                 arrayList.removeAll(needRemove);
+            }
+        });
+    }
+
+    private void hideDecorator() {
+        Method method = findMethodIfExists(QZoneFeedsHeader, void.class, "a");
+        // 隐藏头像装扮
+        hookMethod(method, hideView(QzoneFacadeDecorator, "a", "hide_qzone_facadeDecorator"));
+        // 隐藏我的黄钻
+        hookMethod(method, hideView(QzoneQbossDecorator, "a", "hide_qzone_vipDecorator"));
+        hookMethod(method, hideView(QzoneVipDecorator, "a", "hide_qzone_vipDecorator"));
+        Method method1 = findMethodIfExists(QzoneQbossDecorator, void.class, "a");
+        hookMethod(method1, replaceNull("hide_qzone_vipDecorator"));
+    }
+
+    private void hideFeedContent() {
+        // 隐藏点赞按钮
+        Method method = findMethodIfExists(FeedOperation, boolean.class, "a", BusinessFeedData);
+        hookMethod(method, hideView(SuperLikeView, "a", "hide_qzone_btn_like"));
+        findAndHookMethod(FeedOperation, "d", hideView(SuperLikeView, "a", "hide_qzone_btn_like"));
+
+        findAndHookMethod(FeedComment, "b", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                // 隐藏点赞列表
+                hideView(param.thisObject, VisitAndPraiseAvatarsView, "a", "hide_qzone_likeList");
+                hideView(param.thisObject, PraiseListView, "a", "hide_qzone_likeList");
+                // 隐藏评论框
+                hideView(param.thisObject, GuideCommentBar, "a", "hide_qzone_et_comment");
+                // 隐藏评论内容
+                hideView(param.thisObject, CanvasCellCommentView, "a", "hide_qzone_et_comment_content");
+            }
+        });
+
+        findAndHookMethod(FeedComment, "a", BusinessFeedData, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                // 隐藏点赞列表
+                hideView(param.thisObject, VisitAndPraiseAvatarsView, "a", "hide_qzone_likeList");
+                hideView(param.thisObject, PraiseListView, "a", "hide_qzone_likeList");
             }
         });
     }
@@ -136,6 +256,29 @@ class QZoneHook extends BaseHook {
         // 隐藏消息
         findAndHookMethod(QZoneFriendFeedFragment, isMoreThan760() ? "n_" :
                 "t_", hideView(ImageView.class, "d", "hide_qzone_nav_news"));
+    }
+
+    /**
+     * 隐藏广告
+     */
+    private void hideAd() {
+        String key = "hide_qzone_AD";
+        XC_MethodHook hideQuality = hideView(AsyncImageView, "c", key);
+        String methodName = isMoreThan758() ? "aU" : "aX";
+        methodName = isMoreThan765() ? "aY" : methodName;
+        findAndHookMethod(QZonePublishMoodActivity, methodName, hideQuality);
+        findAndHookMethod(QZonePublishMoodActivity, "e", Bundle.class, hideQuality);
+        findAndHookMethod(QZoneUploadQualityActivity, "a", String.class, String.class, String.class, String.class, String.class, String.class, String.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                hideView(param.thisObject, AsyncImageView, "a");
+                hideView(param.thisObject, AsyncImageView, "b");
+                hideView(param.thisObject, AsyncImageView, "c");
+            }
+        });
+        findAndHookMethod(QZoneUploadPhotoActivity, "a", String.class, String.class, hideView(AsyncImageView, "c", key));
+        findAndHookMethod(HotBannerManager, "i", replaceNull(key));
+        findAndHookMethod(QZoneCommWidget, "a", Drawable.class, replaceNull(key));
     }
 
     private void hideOther() {

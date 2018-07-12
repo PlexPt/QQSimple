@@ -6,8 +6,8 @@ android {
         applicationId "me.zpp0196.qqsimple"
         minSdkVersion 16
         targetSdkVersion 19
-        versionCode 57
-        versionName "2.3.5"
+        versionCode 64
+        versionName "2.5.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

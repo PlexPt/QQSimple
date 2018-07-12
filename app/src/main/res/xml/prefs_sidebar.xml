@@ -43,9 +43,6 @@
         android:key="hide_sidebar_cityWeather"
         android:title="隐藏城市天气" />
     <CheckBoxPreference
-        android:key="hide_sidebar_myCity"
-        android:title="隐藏我的城市" />
-    <CheckBoxPreference
         android:key="hide_sidebar_apollo"
         android:title="隐藏厘米秀" />
     <PreferenceCategory android:title="其他">

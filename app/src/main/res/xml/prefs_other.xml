@@ -24,6 +24,7 @@
     <PreferenceCategory android:title="辅助功能">
         <SwitchPreference
             android:key="hook_font_size"
+            android:summary="自定义应用内DPI"
             android:title="自定义字体大小" />
         <EditTextPreference
             android:dependency="hook_font_size"
@@ -37,11 +38,22 @@
             android:dependency="hook_chat_tail"
             android:key="chat_tail"
             android:title="小尾巴" />
+        <EditTextPreference
+            android:dependency="hook_chat_tail"
+            android:key="chat_tail_keywords"
+            android:summary="包含屏蔽词将不会添加小尾巴(多个屏蔽词以单个空格隔开)"
+            android:title="屏蔽词" />
+        <SwitchPreference
+            android:key="transparent_chat_img_background"
+            android:summary="查看聊天图片时的背景透明"
+            android:title="聊天图片背景透明" />
+        <EditTextPreference
+            android:dependency="transparent_chat_img_background"
+            android:inputType="numberDecimal"
+            android:key="chat_img_alpha"
+            android:title="背景透明度" />
     </PreferenceCategory>
     <PreferenceCategory android:title="设置界面">
-        <CheckBoxPreference
-            android:key="hide_setting_phone"
-            android:title="隐藏手机号码" />
         <CheckBoxPreference
             android:key="hide_setting_newXman"
             android:title="隐藏QQ达人" />

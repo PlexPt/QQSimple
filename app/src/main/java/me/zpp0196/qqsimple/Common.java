@@ -25,6 +25,8 @@ public class Common {
     public static final String PREFS_KEY_ENTER_DONATE_TIMES = "enter_donate_times";
     public static final String PREFS_KEY_FONT_SIZE = "qq_font_size";
     public static final String PREFS_KEY_CHAT_TAIL = "chat_tail";
+    public static final String PREFS_KEY_IMG_ALPHA = "chat_img_alpha";
     public static final String PREFS_VALUE_FONT_SIZE = "16.0";
     public static final String PREFS_VALUE_CHAT_TAIL = "";
+    public static final String PREFS_VALUE_CHAT_IMG_ALPHA = "1.0";
 }

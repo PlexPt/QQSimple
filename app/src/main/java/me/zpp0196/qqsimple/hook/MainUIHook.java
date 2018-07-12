@@ -6,7 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,19 +18,19 @@ import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.HookUtil;
 
 import static android.view.View.GONE;
+import static me.zpp0196.qqsimple.hook.comm.Classes.BannerManager;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseActivity;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BusinessInfoCheckUpdate$RedTypeInfo;
-import static me.zpp0196.qqsimple.hook.comm.Classes.CardController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Contacts;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Conversation;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ConversationNowController;
+import static me.zpp0196.qqsimple.hook.comm.Classes.FriendFragment;
+import static me.zpp0196.qqsimple.hook.comm.Classes.HonestSayController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Leba;
 import static me.zpp0196.qqsimple.hook.comm.Classes.LebaQZoneFacePlayHelper;
 import static me.zpp0196.qqsimple.hook.comm.Classes.LocalSearchBar;
 import static me.zpp0196.qqsimple.hook.comm.Classes.MainEntryAni;
 import static me.zpp0196.qqsimple.hook.comm.Classes.MainFragment;
-import static me.zpp0196.qqsimple.hook.comm.Classes.MessageInfo;
-import static me.zpp0196.qqsimple.hook.comm.Classes.MessageRecord;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$MenuItem;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$OnClickActionListener;
@@ -106,6 +108,17 @@ class MainUIHook extends BaseHook {
                 }
             }
         });
+
+        // 隐藏消息列表底部消息数量
+        findAndHookMethod(MainFragment, "a", int.class, int.class, Object.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                int i = (int) param.args[0];
+                if (i == 32 && getBool("hide_tab_num_conversation")) {
+                    param.setResult(null);
+                }
+            }
+        });
     }
 
     /**
@@ -162,6 +175,9 @@ class MainUIHook extends BaseHook {
      * 隐藏消息列表部分内容
      */
     private void hideConversationContent() {
+        // 隐藏好友小视频
+        findAndHookMethod(Conversation, "g", boolean.class, replaceNull("hide_conversation_video"));
+
         // 隐藏搜索框
         if (getBool("hide_conversation_search")) {
             findAndHookConstructor(LocalSearchBar, TListView, View.class, View.class, BaseActivity, View.class, int.class, new XC_MethodHook() {
@@ -184,8 +200,7 @@ class MainUIHook extends BaseHook {
         if (!isMoreThan765()) {
             findAndHookMethod(ConversationNowController, "a", String.class, replaceNull("hide_conversation_nowController"));
         }
-        // 隐藏消息
-        findAndHookMethod(MessageInfo, "a", QQAppInterface, String.class, MessageInfo, Object.class, MessageRecord, boolean.class, replaceNull("hide_troopTip_all"));
+        findAndHookMethod(BannerManager, "e", View.class, replaceNull("hide_conversation_headAd"));
     }
 
     /**
@@ -194,7 +209,7 @@ class MainUIHook extends BaseHook {
     private void hideContactsContent() {
         // TODO 联系人消息角标
         // 隐藏坦白说
-        findAndHookMethod(CardController, "a", int.class, boolean.class, replaceNull("hide_contacts_slidCards"));
+        findAndHookMethod(HonestSayController, "b", QQAppInterface, replaceNull("hide_contacts_slidCards"));
 
         findAndHookMethod(Contacts, "o", new XC_MethodHook() {
             @Override
@@ -212,6 +227,10 @@ class MainUIHook extends BaseHook {
             }
         });
         hideContactsConstant();
+
+        // 隐藏不常用联系人
+        findAndHookMethod(FriendFragment, "i", hideView(View.class, "b", "hide_contacts_unusualContacts"));
+        findAndHookMethod(FriendFragment, "j", hideView(View.class, "b", "hide_contacts_unusualContacts"));
     }
 
     /**
@@ -301,25 +320,32 @@ class MainUIHook extends BaseHook {
             findAndHookMethod(Leba, "a", List.class, replaceNull("hide_leba_hotWordSearch"));
         }
 
+        // 隐藏搜索框
+        Method method = findMethodIfExists(Leba, void.class, "b");
+        hookMethod(method, hideView(LinearLayout.class, "a", "hide_leba_search"));
+
         findAndHookMethod(Leba, "u", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                View qzoneEntry = getObject(param.thisObject, View.class, "c");
-                View nearEntry = getObject(param.thisObject, View.class, "d");
-                View tribalEntry = getObject(param.thisObject, View.class, "f");
+                final Object obj = param.thisObject;
 
+                // 隐藏搜索框
+                hideView(obj, LinearLayout.class, "a", "hide_leba_search");
                 // 隐藏空间入口
-                hideView(qzoneEntry, "hide_leba_qzone");
+                hideView(obj, View.class, "c", "hide_leba_qzone");
                 // 隐藏附近的人入口
-                hideView(nearEntry, "hide_leba_near");
+                hideView(obj, View.class, "d", "hide_leba_near");
                 // 隐藏兴趣部落入口
-                hideView(tribalEntry, "hide_leba_tribal");
+                hideView(obj, View.class, "f", "hide_leba_tribal");
 
                 // 隐藏空间头像提醒
                 if (!isMoreThan758()) {
-                    View qzoneSub = getObject(param.thisObject, ImageView.class, "b");
-                    hideView(qzoneSub, "hide_leba_qzoneRemind");
-                    hideView("qzone_feed_reddot");
+                    hideView(obj, ImageView.class, "b", "hide_leba_qzoneRemind");
+                }
+
+                if (getBool("hide_leba_qzoneRemind")) {
+                    Field field = findField(Leba, TextView.class, "b");
+                    field.set(param.thisObject, null);
                 }
 
                 // 隐藏附近的人提醒
@@ -329,7 +355,10 @@ class MainUIHook extends BaseHook {
                 // 隐藏兴趣部落提醒
                 View tribalSub = getObject(param.thisObject, URLImageView, "a");
                 hideView(tribalSub, "hide_leba_tribalRemind");
-                hideView("xingqu_buluo_reddot", "hide_leba_tribalRemind");
+                if (getBool("hide_leba_tribalRemind")) {
+                    Field field = findField(Leba, TextView.class, "d");
+                    field.set(param.thisObject, null);
+                }
             }
         });
 

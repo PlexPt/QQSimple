@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -29,9 +30,12 @@ import me.zpp0196.qqsimple.hook.util.XPrefs;
 
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_CHAT_TAIL;
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_FONT_SIZE;
+import static me.zpp0196.qqsimple.Common.PREFS_KEY_IMG_ALPHA;
+import static me.zpp0196.qqsimple.Common.PREFS_VALUE_CHAT_IMG_ALPHA;
 import static me.zpp0196.qqsimple.Common.PREFS_VALUE_CHAT_TAIL;
 import static me.zpp0196.qqsimple.Common.PREFS_VALUE_FONT_SIZE;
 import static me.zpp0196.qqsimple.hook.comm.Classes.AIOImageProviderService;
+import static me.zpp0196.qqsimple.hook.comm.Classes.AbstractGalleryScene;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseChatPie;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Card;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ContactUtils;
@@ -50,6 +54,7 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.UpgradeController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.UpgradeDetailWrapper;
 import static me.zpp0196.qqsimple.hook.comm.Classes.XEditTextEx;
 import static me.zpp0196.qqsimple.hook.comm.Maps.settingItem;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan755;
 
 /**
  * Created by zpp0196 on 2018/3/11.
@@ -59,17 +64,22 @@ class OtherHook extends BaseHook {
 
     @Override
     public void init() {
-        // 禁用 CoreService
-        findAndHookMethod(CoreService, "startCoreService", boolean.class, replaceNull("disable_coreservice"));
-        findAndHookMethod(CoreService, "startTempService", replaceNull("disable_coreservice"));
-        findAndHookMethod(CoreService$KernelService, "onCreate", replaceNull("disable_coreservice"));
+        hookService();
         preventFlashDisappear();
         preventMessagesWithdrawn();
         simulateMenu();
         hookQQUpgrade();
         hookFontSize();
         hookXEditTextEx();
+        transBg();
         hideSettingItem();
+    }
+
+    private void hookService() {
+        // 禁用 CoreService
+        findAndHookMethod(CoreService, "startCoreService", boolean.class, replaceNull("disable_coreservice"));
+        findAndHookMethod(CoreService, "startTempService", replaceNull("disable_coreservice"));
+        findAndHookMethod(CoreService$KernelService, "onCreate", replaceNull("disable_coreservice"));
     }
 
     /**
@@ -80,7 +90,6 @@ class OtherHook extends BaseHook {
         findAndHookMethod(HotChatFlashPicActivity, "onTouch", View.class, MotionEvent.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
                 if (getBool("prevent_flash_disappear")) {
                     param.args[1] = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0);
                 }
@@ -93,11 +102,7 @@ class OtherHook extends BaseHook {
         findAndHookMethod(CountDownProgressBar, "onDraw", Canvas.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                if (getBool("prevent_flash_disappear")) {
-                    View view = (View) param.thisObject;
-                    view.setVisibility(View.GONE);
-                }
+                hideView((View) param.thisObject, "prevent_flash_disappear");
             }
         });
 
@@ -114,7 +119,6 @@ class OtherHook extends BaseHook {
         findAndHookMethod(Window.class, "setFlags", int.class, int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
                 if (Integer.parseInt(param.args[0].toString()) ==
                     WindowManager.LayoutParams.FLAG_SECURE) {
                     param.setResult(null);
@@ -124,7 +128,6 @@ class OtherHook extends BaseHook {
         findAndHookMethod(SurfaceView.class, "setSecure", boolean.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
                 param.args[0] = false;
             }
         });
@@ -156,7 +159,7 @@ class OtherHook extends BaseHook {
                 Object qqAppInterface = getObject(param.thisObject, QQAppInterface, "a");
                 String selfUin = (String) XposedHelpers.callMethod(qqAppInterface, "getCurrentAccountUin");
 
-                if(selfUin.equals(fromUin)){
+                if (selfUin.equals(fromUin)) {
                     return null;
                 }
 
@@ -229,6 +232,7 @@ class OtherHook extends BaseHook {
      * 隐藏QQ更新提示
      */
     private void hookQQUpgrade() {
+        // FIXME
         Method method = findMethodIfExists(UpgradeController, UpgradeDetailWrapper, "a");
         hookMethod(method, replaceNull("hook_qq_upgrade"));
     }
@@ -240,16 +244,13 @@ class OtherHook extends BaseHook {
         if (!getBool("hook_font_size")) {
             return;
         }
-        findAndHookMethod(FontSettingManager, "a", Context.class, new XC_MethodReplacement() {
+        float fontSize = Float.parseFloat(XPrefs.getPref()
+                .getString(PREFS_KEY_FONT_SIZE, PREFS_VALUE_FONT_SIZE));
+        findAndHookMethod(FontSettingManager, "a", float.class, replaceObj(true, "hook_font_size"));
+        findAndHookMethod(FontSettingManager, "a", Context.class, float.class, boolean.class, new XC_MethodHook() {
             @Override
-            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    return Float.parseFloat(XPrefs.getPref()
-                            .getString(PREFS_KEY_FONT_SIZE, PREFS_VALUE_FONT_SIZE));
-                } catch (Exception e) {
-                    log("Please enter a reasonable font size");
-                }
-                return 16.0f;
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                param.args[1] = fontSize;
             }
         });
     }
@@ -261,31 +262,56 @@ class OtherHook extends BaseHook {
         if (!getBool("hook_chat_tail")) {
             return;
         }
-        String append = XPrefs.getPref()
+        String tail = XPrefs.getPref()
                 .getString(PREFS_KEY_CHAT_TAIL, PREFS_VALUE_CHAT_TAIL);
-        findAndHookMethod(BaseChatPie, HookUtil.isMoreThan750() ? "al" : "aj", new XC_MethodHook() {
+        String[] keyWords = XPrefs.getPref()
+                .getString("chat_tail_keywords", "")
+                .split(" ");
+        findAndHookMethod(BaseChatPie, isMoreThan755() ? "ak" : "ai", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
                 EditText editText = getObject(param.thisObject, XEditTextEx, "a");
                 Editable editable = editText.getText();
-                String str = editable.toString();
-                if (isSymbol(str.charAt(str.length() - 1)))
-                    return;
-                if (!str.isEmpty() && !append.isEmpty() && !str.endsWith(append)) {
-                    editText.setText(editable.append(append));
+                if (isAddTail(editable.toString())) {
+                    editText.setText(editable.append(tail));
                 }
+            }
+
+            private boolean isAddTail(String text) {
+                if (text.endsWith(tail))
+                    return false;
+                for (String str : keyWords) {
+                    if (text.contains(str))
+                        return false;
+                }
+                return true;
             }
         });
     }
 
-    private boolean isSymbol(char c) {
-        String str = "!@#$%^&*()'\"=_`.,:;?~|+-\\/[]{}<>“”·‘’，。；：‘’“”！？《》（）【】—";
-        for (char temp : str.toCharArray()) {
-            if (temp == c)
-                return true;
+    /**
+     * 聊天图片背景透明
+     */
+    private void transBg() {
+        if (!getBool("transparent_chat_img_background")) {
+            return;
         }
-        return false;
+        float range = Float.parseFloat(XPrefs.getPref()
+                .getString(PREFS_KEY_IMG_ALPHA, PREFS_VALUE_CHAT_IMG_ALPHA));
+        findAndHookMethod(AbstractGalleryScene, "a", ViewGroup.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                View d = getObject(param.thisObject, View.class, "d");
+                if (d != null) {
+                    d.setAlpha(range);
+                }
+                RelativeLayout root = getObject(param.thisObject, RelativeLayout.class, "a");
+                View view = root.getChildAt(root.getChildCount() - 1);
+                if (view != null) {
+                    view.setAlpha(range);
+                }
+            }
+        });
     }
 
     /**

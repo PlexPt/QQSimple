@@ -1,8 +1,12 @@
 package me.zpp0196.qqsimple.hook;
 
+import android.graphics.drawable.Drawable;
+import android.text.Editable;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -16,8 +20,11 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.AIOPanelUtiles;
 import static me.zpp0196.qqsimple.hook.comm.Classes.AbstractChatItemBuilder$ViewHolder;
 import static me.zpp0196.qqsimple.hook.comm.Classes.AioAnimationConfigHelper;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseBubbleBuilder$ViewHolder;
+import static me.zpp0196.qqsimple.hook.comm.Classes.BaseChatItemLayout;
+import static me.zpp0196.qqsimple.hook.comm.Classes.BaseChatPie;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BubbleManager;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ChatMessage;
+import static me.zpp0196.qqsimple.hook.comm.Classes.EmoticonMainPanel;
 import static me.zpp0196.qqsimple.hook.comm.Classes.EmoticonManager;
 import static me.zpp0196.qqsimple.hook.comm.Classes.FontManager;
 import static me.zpp0196.qqsimple.hook.comm.Classes.GatherContactsTips;
@@ -47,8 +54,7 @@ class ChatHook extends BaseHook {
         hideEmotion();
         hidePanelLinearLayout();
         hideFontEffect();
-        // 隐藏个性气泡
-        findAndHookMethod(BubbleManager, "a", int.class, boolean.class, replaceNull("hide_chat_bubble"));
+        hideItemLayout();
         // 隐藏好友新动态
         hideItemBuilder(QzoneFeedItemBuilder, "hide_chat_newFeed");
         // 隐藏好友新签名
@@ -61,18 +67,28 @@ class ChatHook extends BaseHook {
         hideGrayTips(SougouInputGrayTips, "hide_chatTip_sougouInput");
         // 隐藏会员相关广告
         hideGrayTipsItem("hide_chatTip_vipAd", ".+会员.+");
-        // 隐藏进场动画提示
-        hideGrayTipsItem("hide_troop_enterAnim", ".+进场.+");
-        // 隐藏加入群提示
-        hideGrayTipsItem("hide_chatTip_joinTroop", ".+加入了本群.+", ".+邀请.+加入.+");
-        // 隐藏获得新头衔
-        hideGrayTipsItem("hide_chatTip_newLevel", ".+获得.+头衔.+");
-        // 隐藏礼物相关提示
-        hideGrayTipsItem("hide_chatTip_troopGift", ".+礼物.+成为.+守护.+", ".+成为.+魅力.+", ".+成为.+豪气.+", ".+送给.+朵.+");
         if (isMoreThan732()) {
             // 隐藏好友获得了新徽章
             hideItemBuilder(MedalNewsItemBuilder, "hide_chat_newBadge");
         }
+    }
+
+    private void hideItemLayout() {
+        // 隐藏头像挂件
+        findAndHookMethod(BaseChatItemLayout, "setPendantImage", Drawable.class, replaceNull("hide_chat_avatarPendant"));
+
+        // 隐藏个性气泡
+        Method method = findMethodIfExists(BubbleManager, File.class, "a");
+        hookMethod(method, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                if (getBool("hide_chat_bubble")) {
+                    String oldDir = ((File) param.getResult()).getAbsolutePath();
+                    File file = new File(oldDir.replace("bubble_info", "imei"));
+                    param.setResult(file);
+                }
+            }
+        });
     }
 
     private void hideEmotion() {
@@ -80,6 +96,10 @@ class ChatHook extends BaseHook {
             // 隐藏推荐表情
             findAndHookMethod(EmoticonManager, "a", boolean.class, int.class, boolean.class, replaceObj(new ArrayList<>(), "hide_chat_hotExpression"));
         }
+        // 隐藏表情联想
+        findAndHookMethod(BaseChatPie, "a", Editable.class, replaceNull("hide_chat_associatedExpression"));
+        // 隐藏表情商城
+        findAndHookMethod(EmoticonMainPanel, "d", int.class, hideView(ImageView.class, "a", "hide_btn_more_emoticon"));
         // 隐藏表情掉落
         findAndHookMethod(AioAnimationConfigHelper, "a", replaceNull("hide_chat_dropExpression"));
     }
@@ -129,7 +149,7 @@ class ChatHook extends BaseHook {
         findAndHookMethod(Tips, "a", Object[].class, replaceNull(key));
     }
 
-    private void hideGrayTipsItem(String key, String... regex) {
+    void hideGrayTipsItem(String key, String... regex) {
         if (!getBool(key))
             return;
         findAndHookMethod(GrayTipsItemBuilder, "a", MessageRecord, AbstractChatItemBuilder$ViewHolder, View.class, LinearLayout.class, OnLongClickAndTouchListener, new XC_MethodHook() {

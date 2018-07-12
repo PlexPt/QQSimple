@@ -88,8 +88,10 @@
     <string name="tip_xposed_open_failure">打开 Xposed Installer 失败，请手动打开激活！</string>
     <string name="tip_popup_menu">该分组如果全部开启会导致点击菜单时 QQ 闪退，请根据实际情况最少显示一项内容，如果你想全部隐藏可以直接开启上面的「隐藏快捷入口」，请根据自己实际情况选择性开启！</string>
     <string name="tip_qzone_menu">该分组里面虽然提供了 6 个开关，但却只能开启 3 个，多开一个都会导致点击菜单时空间闪退，请根据自己实际情况选择性开启！</string>
+    <string name="tip_troop_tip">该功能可以屏蔽掉消息列表出现的<b>[有人@我]</b>、<b>[有新回复]</b>、<b>[有全体消息]</b>(可以防止在群里被@，被别人@或回复消息后不会收到提醒)、<b>[有人送礼]</b>、<b>[有新文件]</b>等提示，并不会屏蔽<b>[有新公告]</b>，而且该消息仍然会出现在消息列表！</string>
     <string name="tip_qzone_ad">该开关主要隐藏一些空间里面的小广告以及主页顶部的<b>猜你喜欢</b>、<b>最近在玩</b>、<b>好友生日</b>等包括<b>消息通知</b>在内的一些内容，所以会出现看不到消息通知的情况，空间主页顶部右上角加号左边的图标进去就是消息界面。</string>
-    <string name="tip_other_fontSize">请输入[13.92 &#8211; 18.00]之间的数值！</string>
+    <string name="tip_other_size">建议输入[12.00&#8211;20.00]之间的数值！</string>
+    <string name="tip_other_alpha">请输入[0.00&#8211;1.00]之间的数值！</string>
     <string name="tip_setting_backup">该功能需要「存储空间」权限，如果没有权限请先授予该应用权限！\n\n该功能会将本软件的应用数据保存到 %s/Android/data/%s/%s_preferences.xml ，请自行保存（如果已存在备份会直接覆盖）如不保存卸载模块后备份将会被自动删除！\n\n如需恢复数据将备份好的 .xml 文件改好名放进上面的目录里面然后在本软件里面恢复即可。</string>
     <string name="tip_setting_backup_finish">已备份到：%s</string>
     <string name="tip_setting_backup_not_find_file">未找到备份文件！</string>
@@ -101,18 +103,20 @@
     <string name="time_days">days</string>
 
     <string-array name="UpdateLog">
-        <item>移除了部分代码</item>
-        <item>添加了隐藏AR足球</item>
-        <item>添加了隐藏闪照倒计时</item>
-        <item>添加了隐藏快捷入口轻游戏</item>
-        <item>修复了不能隐藏字体特效的bug</item>
-        <item>修复了不能隐藏侧滑栏我的视频的bug</item>
-        <item>修复了不能隐藏设置免流量特权的bug</item>
-        <item>修复了自己撤回消息后会和出现和自己聊天的bug</item>
+        <item>适配新版QQ</item>
+        <item>移除了部分功能</item>
+        <item>更换了隐藏气泡方法</item>
+        <item>修复了空间闪退的bug</item>
+        <item>增加了隐藏好友小视频</item>
+        <item>增加了聊天图片背景透明</item>
+        <item>增加聊天小尾巴设置屏蔽词</item>
+        <item>增加了群聊界面隐藏在线人数</item>
+        <item>自定义字体大小可任意设置大小</item>
     </string-array>
 
     <string-array name="Matters">
-        <item>如果出现点击快捷菜单闪退请开启隐藏AR足球</item>
+        <item>本次更新后理论可以自动适配新版除隐藏小红点外其他的功能，并不保证向下兼任，如果新版本失效了再来找我反馈</item>
+        <item>感谢大家四个月以来的支持，我可能会暂停更新一段时间，有缘再见</item>
     </string-array>
 
 </resources>

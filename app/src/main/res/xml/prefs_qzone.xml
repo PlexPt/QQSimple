@@ -45,9 +45,6 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="说说内容">
         <CheckBoxPreference
-            android:key="hide_qzone_mood_attach"
-            android:title="隐藏机型" />
-        <CheckBoxPreference
             android:key="hide_qzone_btn_like"
             android:title="隐藏点赞按钮" />
         <CheckBoxPreference

@@ -25,6 +25,9 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="消息列表界面">
         <CheckBoxPreference
+            android:key="hide_conversation_video"
+            android:title="隐藏好友小视频" />
+        <CheckBoxPreference
             android:key="hide_conversation_search"
             android:title="隐藏搜索框" />
         <CheckBoxPreference
@@ -39,9 +42,6 @@
         <CheckBoxPreference
             android:key="hide_conversation_popupWorldCup"
             android:title="隐藏AR足球" />
-        <CheckBoxPreference
-            android:key="hide_troopTip_all"
-            android:title="隐藏[有人送礼]等群相关提示" />
     </PreferenceCategory>
     <PreferenceCategory android:title="快捷入口">
         <CheckBoxPreference

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
+        android:key="hide_troopTip_all"
+        android:title="防止被@" />
+    <CheckBoxPreference
+        android:key="hide_online_number"
+        android:title="隐藏在线人数" />
+    <CheckBoxPreference
         android:key="simple_troop_sign"
         android:title="签到文本化" />
     <CheckBoxPreference
@@ -12,6 +18,9 @@
     <CheckBoxPreference
         android:key="hide_troop_giftAnim"
         android:title="隐藏礼物动画" />
+    <CheckBoxPreference
+        android:key="hide_troop_enterAnim"
+        android:title="隐藏入场动画" />
     <CheckBoxPreference
         android:key="hide_troopAssistant_smallVideo"
         android:title="隐藏群助手里的小视频" />

@@ -8,6 +8,8 @@ import me.zpp0196.qqsimple.fragment.base.BasePreferenceFragment;
 
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_CHAT_TAIL;
 import static me.zpp0196.qqsimple.Common.PREFS_KEY_FONT_SIZE;
+import static me.zpp0196.qqsimple.Common.PREFS_KEY_IMG_ALPHA;
+import static me.zpp0196.qqsimple.Common.PREFS_VALUE_CHAT_IMG_ALPHA;
 import static me.zpp0196.qqsimple.Common.PREFS_VALUE_CHAT_TAIL;
 import static me.zpp0196.qqsimple.Common.PREFS_VALUE_FONT_SIZE;
 
@@ -35,6 +37,9 @@ public class OtherPreferenceFragment extends BasePreferenceFragment implements P
         EditTextPreference tail = findPreference(PREFS_KEY_CHAT_TAIL);
         tail.setSummary(getPrefs().getString(PREFS_KEY_CHAT_TAIL, PREFS_VALUE_CHAT_TAIL));
         tail.setOnPreferenceChangeListener(this);
+        EditTextPreference alpha = findPreference(PREFS_KEY_IMG_ALPHA);
+        alpha.setSummary(getPrefs().getString(PREFS_KEY_IMG_ALPHA, PREFS_VALUE_CHAT_IMG_ALPHA));
+        alpha.setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -42,8 +47,15 @@ public class OtherPreferenceFragment extends BasePreferenceFragment implements P
         if (preference.getKey()
                 .equals(PREFS_KEY_FONT_SIZE)) {
             float size = Float.parseFloat((String) newValue);
-            if (size < 13.92 || size > 18.0) {
-                showToast(R.string.tip_other_fontSize);
+            if (size < 12 || size > 20) {
+                showToast(R.string.tip_other_size);
+            }
+        }
+        if (preference.getKey()
+                .equals(PREFS_KEY_IMG_ALPHA)) {
+            float alpha = Float.parseFloat((String) newValue);
+            if (alpha < 0 || alpha > 1) {
+                showToast(R.string.tip_other_alpha);
                 return false;
             }
         }

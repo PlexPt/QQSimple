@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import me.zpp0196.qqsimple.activity.MainActivity;
@@ -21,6 +24,7 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.FrameHelperActivity;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQAppInterface;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingMe;
 import static me.zpp0196.qqsimple.hook.comm.Maps.sidebarItem;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan755;
 
 /**
  * Created by zpp0196 on 2018/5/11 0011.
@@ -37,19 +41,67 @@ public class SidebarHook extends BaseHook {
                 hideViews(param);
             }
         });
+        XC_MethodHook hideTask = hideView(LinearLayout.class, "a", "hide_sidebar_myDaily");
+        // 隐藏打卡/每日任务
+        findAndHookMethod(QQSettingMe, "F", hideTask);
+        if (isMoreThan755()) {
+            findAndHookMethod(QQSettingMe, "G", hideTask);
+        }
+        hideItems();
         hookOther();
+    }
+
+    private void hideItems() {
+        // index: 0,  title: 了解会员特权
+        // index: 1,  title: QQ钱包
+        // index: 2,  title: 我的收藏
+        // index: 3,  title: 我的文件
+        // index: 4,  title: 我的相册
+        // index: 5,  title: 个性装扮
+        // index: 6,  title: 网上营业厅
+        // index: 7,  title: 我的日程
+        // index: 8,  title: 我的名片夹
+        // index: 9,  title: 我的视频
+        // index: 10, title: TIM免费云盘
+        // index: 11, title: 免流量特权
+
+        // 会员
+        findAndHookMethod(QQSettingMe, "a", boolean.class, boolean.class, int.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                View[] items = getObject(param.thisObject, View[].class, "a");
+                hideView(items[0], "hide_sidebar_vip");
+            }
+        });
+
+        Method method = findMethodIfExists(QQSettingMe, void.class, "a");
+        hookMethod(method, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                View[] items = getObject(param.thisObject, View[].class, "a");
+                // 我的名片夹
+                hideView(items[8], "hide_sidebar_myCards");
+                // 我的视频
+                hideView(items[9], "hide_sidebar_myVideos");
+                // 城市天气
+                hideView(param.thisObject, LinearLayout.class, "b", "hide_sidebar_cityWeather");
+            }
+        });
+
+        // 免流量特权
+        findAndHookMethod(QQSettingMe, "P", replaceNull("hide_sidebar_kingCard"));
     }
 
     private void hideViews(XC_MethodHook.MethodHookParam param) {
         final Object obj = param.thisObject;
-        ImageView qrCode = getObject(obj, ImageView.class, "d");
-        View qqInfo = getObject(obj, View.class, "a");
-        View nightTheme = getObject(obj, View.class, "d");
 
+        // 隐藏打卡/每日任务
+        hideView(obj, LinearLayout.class, "a", "hide_sidebar_myDaily");
         // 隐藏二维码
-        hideView(qrCode, "hide_sidebar_myQrCode");
+        hideView(obj, ImageView.class, "d", "hide_sidebar_myQrCode");
         // 隐藏QQ信息
         if (getBool("hide_sidebar_qqInfo")) {
+            View qqInfo = getObject(obj, View.class, "a");
             qqInfo.setVisibility(View.INVISIBLE);
         }
 
@@ -69,7 +121,11 @@ public class SidebarHook extends BaseHook {
         }
 
         // 隐藏夜间模式
+        View nightTheme = getObject(obj, View.class, "d");
         hideView(nightTheme, "hide_sidebar_nightTheme");
+        // 隐藏天气
+        hideView(obj, LinearLayout.class, "b", "hide_sidebar_cityWeather");
+
         addEntryInSidebar((Activity) param.args[0], (ViewGroup) nightTheme.getParent());
     }
 
