@@ -13,9 +13,11 @@ import android.widget.TextView;
 import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.activity.MainActivity;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 
+import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
 import static me.zpp0196.qqsimple.BuildConfig.APPLICATION_ID;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ApolloManager$CheckApolloInfoResult;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseActivity;
@@ -23,8 +25,11 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.FileManagerUtil;
 import static me.zpp0196.qqsimple.hook.comm.Classes.FrameHelperActivity;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQAppInterface;
 import static me.zpp0196.qqsimple.hook.comm.Classes.QQSettingMe;
+import static me.zpp0196.qqsimple.hook.comm.Classes.QZoneHelper;
+import static me.zpp0196.qqsimple.hook.comm.Classes.QzonePluginProxyActivity;
 import static me.zpp0196.qqsimple.hook.comm.Maps.sidebarItem;
 import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan755;
+import static me.zpp0196.qqsimple.hook.util.HookUtil.isMoreThan770;
 
 /**
  * Created by zpp0196 on 2018/5/11 0011.
@@ -37,7 +42,6 @@ public class SidebarHook extends BaseHook {
         findAndHookConstructor(QQSettingMe, BaseActivity, QQAppInterface, FrameHelperActivity, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 hideViews(param);
             }
         });
@@ -126,14 +130,38 @@ public class SidebarHook extends BaseHook {
         // 隐藏天气
         hideView(obj, LinearLayout.class, "b", "hide_sidebar_cityWeather");
 
-        addEntryInSidebar((Activity) param.args[0], (ViewGroup) nightTheme.getParent());
+        Activity activity = (Activity) param.args[0];
+        addQzoneEntry(activity, param);
+        addEntryInSidebar(activity, (ViewGroup) nightTheme.getParent());
     }
 
     private void hookOther() {
         // 隐藏侧滑栏厘米秀
         findAndHookMethod(QQSettingMe, "a", ApolloManager$CheckApolloInfoResult, replaceNull("hide_sidebar_apollo"));
-        // 隐藏我的文件里面的TIM推广
-        findAndHookMethod(FileManagerUtil, "a", QQAppInterface, boolean.class, replaceFalse("hide_tim_in_myFile"));
+        if(!isMoreThan770()){
+            // 隐藏我的文件里面的TIM推广
+            findAndHookMethod(FileManagerUtil, "a", QQAppInterface, boolean.class, replaceFalse("hide_tim_in_myFile"));
+        }
+    }
+
+    /**
+     * 侧滑栏添加空间入口
+     */
+    @SuppressLint ("WrongConstant")
+    private void addQzoneEntry(Activity activity, XC_MethodHook.MethodHookParam param) {
+        if (!getBool("sidebar_add_qzoneEntry"))
+            return;
+        View view = getObject(param.thisObject, View.class, "a");
+        view.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.putExtra("newflag", true);
+            intent.putExtra("refer", "schemeActiveFeeds");
+            callStaticMethod(QzonePluginProxyActivity, "a", intent, "com.qzone.feed.ui.activity.QZoneFriendFeedActivity");
+            intent.addFlags(0x30000000);
+            Object qqAppInterface = getObject(param.thisObject, QQAppInterface, "a");
+            String uin = (String) XposedHelpers.callMethod(qqAppInterface, "getCurrentAccountUin");
+            callStaticMethod(QZoneHelper, "b", activity, uin, intent, -1);
+        });
     }
 
     /**
@@ -141,9 +169,8 @@ public class SidebarHook extends BaseHook {
      */
     @SuppressLint ("ResourceType")
     private void addEntryInSidebar(Activity activity, ViewGroup bottomBtn) {
-        if (!getBool("sidebar_add_entry")) {
+        if (!getBool("sidebar_add_moduleEntry"))
             return;
-        }
         View settingLayout = bottomBtn.getChildAt(0);
         settingLayout.setOnLongClickListener(v -> {
             Intent intent = new Intent(APPLICATION_ID);

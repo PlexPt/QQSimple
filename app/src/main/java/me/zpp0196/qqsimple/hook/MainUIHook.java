@@ -2,6 +2,8 @@ package me.zpp0196.qqsimple.hook;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,11 +23,12 @@ import static android.view.View.GONE;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BannerManager;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BaseActivity;
 import static me.zpp0196.qqsimple.hook.comm.Classes.BusinessInfoCheckUpdate$RedTypeInfo;
+import static me.zpp0196.qqsimple.hook.comm.Classes.CardController;
+import static me.zpp0196.qqsimple.hook.comm.Classes.CommonCardEntry;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Contacts;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Conversation;
 import static me.zpp0196.qqsimple.hook.comm.Classes.ConversationNowController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.FriendFragment;
-import static me.zpp0196.qqsimple.hook.comm.Classes.HonestSayController;
 import static me.zpp0196.qqsimple.hook.comm.Classes.Leba;
 import static me.zpp0196.qqsimple.hook.comm.Classes.LebaQZoneFacePlayHelper;
 import static me.zpp0196.qqsimple.hook.comm.Classes.LocalSearchBar;
@@ -35,7 +38,8 @@ import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$MenuItem;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$OnClickActionListener;
 import static me.zpp0196.qqsimple.hook.comm.Classes.PopupMenuDialog$OnDismissListener;
-import static me.zpp0196.qqsimple.hook.comm.Classes.QQAppInterface;
+import static me.zpp0196.qqsimple.hook.comm.Classes.RecentBaseData;
+import static me.zpp0196.qqsimple.hook.comm.Classes.RecentEfficientItemBuilder;
 import static me.zpp0196.qqsimple.hook.comm.Classes.RecentOptPopBar;
 import static me.zpp0196.qqsimple.hook.comm.Classes.SimpleSlidingIndicator;
 import static me.zpp0196.qqsimple.hook.comm.Classes.TListView;
@@ -55,6 +59,7 @@ class MainUIHook extends BaseHook {
     public void init() {
         hideMenuUAF();
         hideMainFragmentTab();
+        hideDivider();
         hidePopupMenu();
         hideConversationContent();
         hideContactsContent();
@@ -116,6 +121,25 @@ class MainUIHook extends BaseHook {
                 int i = (int) param.args[0];
                 if (i == 32 && getBool("hide_tab_num_conversation")) {
                     param.setResult(null);
+                }
+            }
+        });
+    }
+
+    /**
+     * 隐藏分割线
+     */
+    private void hideDivider() {
+        if(!getBool("hide_conversation_divider"))
+            return;
+        findAndHookMethod(RecentEfficientItemBuilder, "a", View.class, RecentBaseData, Context.class, Drawable.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                View args0 = (View) param.args[0];
+                Object tag = args0.getTag();
+                if(tag.getClass().getName().contains("RecentEfficientItemBuilder$RecentEfficientItemBuilderHolder")){
+                    View view = getObject(tag, View.class, "f");
+                    view.setBackground(null);
                 }
             }
         });
@@ -207,9 +231,9 @@ class MainUIHook extends BaseHook {
      * 隐藏联系人界面部分内容
      */
     private void hideContactsContent() {
-        // TODO 联系人消息角标
         // 隐藏坦白说
-        findAndHookMethod(HonestSayController, "b", QQAppInterface, replaceNull("hide_contacts_slidCards"));
+        findAndHookMethod(CardController, "a", int.class, CommonCardEntry, int.class, replaceNull("hide_contacts_slidCards"));
+        findAndHookMethod(CardController, "a", int.class, CommonCardEntry, replaceNull("hide_contacts_slidCards"));
 
         findAndHookMethod(Contacts, "o", new XC_MethodHook() {
             @Override

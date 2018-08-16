@@ -21,6 +21,7 @@ public class Classes {
     public static Class<?> BannerManager;
     public static Class<?> BaseActivity;
     public static Class<?> BaseBubbleBuilder$ViewHolder;
+    public static Class<?> CardController;
     public static Class<?> BaseChatItemLayout;
     public static Class<?> BaseChatPie;
     public static Class<?> BaseTroopChatPie;
@@ -29,6 +30,7 @@ public class Classes {
     public static Class<?> Card;
     public static Class<?> ChatActivityUtils;
     public static Class<?> ChatMessage;
+    public static Class<?> CommonCardEntry;
     public static Class<?> Conversation;
     public static Class<?> ConversationNowController;
     public static Class<?> Contacts;
@@ -45,7 +47,6 @@ public class Classes {
     public static Class<?> FrameHelperActivity;
     public static Class<?> GatherContactsTips;
     public static Class<?> GrayTipsItemBuilder;
-    public static Class<?> HonestSayController;
     public static Class<?> HotChatFlashPicActivity;
     public static Class<?> ItemBuilderFactory;
     public static Class<?> Leba;
@@ -73,6 +74,9 @@ public class Classes {
     public static Class<?> QQSettingSettingActivity;
     public static Class<?> QzoneFeedItemBuilder;
     public static Class<?> QzonePluginProxyActivity;
+    public static Class<?> QZoneHelper;
+    public static Class<?> RecentBaseData;
+    public static Class<?> RecentEfficientItemBuilder;
     public static Class<?> RecentOptPopBar;
     public static Class<?> RichStatItemBuilder;
     public static Class<?> SimpleSlidingIndicator;
@@ -113,6 +117,8 @@ public class Classes {
             BaseActivity = findClassInQQ(".app.BaseActivity");
         if (BaseBubbleBuilder$ViewHolder == null)
             BaseBubbleBuilder$ViewHolder = findClassInQQ(".activity.aio.BaseBubbleBuilder$ViewHolder");
+        if (CardController == null)
+            CardController = findClassInQQ(".activity.contacts.base.CardController");
         if (BaseChatItemLayout == null)
             BaseChatItemLayout = findClassInQQ(".activity.aio.BaseChatItemLayout");
         if (BaseChatPie == null)
@@ -129,6 +135,8 @@ public class Classes {
             ChatActivityUtils = findClassInQQ(".activity.ChatActivityUtils");
         if (ChatMessage == null)
             ChatMessage = findClassInQQ(".data.ChatMessage");
+        if (CommonCardEntry  == null)
+            CommonCardEntry = findClassInQQ(".activity.contacts.base.CommonCardEntry");
         if (Conversation == null)
             Conversation = findClassInQQ(".activity.Conversation");
         if (ConversationNowController == null)
@@ -161,8 +169,6 @@ public class Classes {
             GatherContactsTips = findClassInQQ(".activity.aio.tips.GatherContactsTips");
         if (GrayTipsItemBuilder == null)
             GrayTipsItemBuilder = findClassInQQ(".activity.aio.item.GrayTipsItemBuilder");
-        if (HonestSayController == null)
-            HonestSayController = findClassInQQ(".activity.contacts.base.HonestSayController");
         if (HotChatFlashPicActivity == null)
             HotChatFlashPicActivity = findClassInQQ(".dating.HotChatFlashPicActivity");
         if (ItemBuilderFactory == null)
@@ -217,6 +223,12 @@ public class Classes {
             QzoneFeedItemBuilder = findClassInQQ(".activity.aio.item.QzoneFeedItemBuilder");
         if (QzonePluginProxyActivity == null)
             QzonePluginProxyActivity = findClassInQQ("cooperation.qzone.QzonePluginProxyActivity");
+        if (QZoneHelper == null)
+            QZoneHelper = findClassInQQ("cooperation.qzone.QZoneHelper");
+        if (RecentBaseData == null)
+            RecentBaseData = findClassInQQ(".activity.recent.RecentBaseData");
+        if (RecentEfficientItemBuilder == null)
+            RecentEfficientItemBuilder = findClassInQQ(".activity.recent.RecentEfficientItemBuilder");
         if (RecentOptPopBar == null)
             RecentOptPopBar = findClassInQQ(".activity.recent.RecentOptPopBar");
         if (RichStatItemBuilder == null)

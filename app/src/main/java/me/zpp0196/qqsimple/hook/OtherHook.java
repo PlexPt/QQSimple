@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.os.SystemClock;
 import android.text.Editable;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -23,6 +24,7 @@ import java.util.Random;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqsimple.hook.base.BaseHook;
 import me.zpp0196.qqsimple.hook.util.HookUtil;
@@ -64,12 +66,12 @@ class OtherHook extends BaseHook {
 
     @Override
     public void init() {
+        hookFontSize();
         hookService();
         preventFlashDisappear();
         preventMessagesWithdrawn();
         simulateMenu();
         hookQQUpgrade();
-        hookFontSize();
         hookXEditTextEx();
         transBg();
         hideSettingItem();
@@ -281,7 +283,7 @@ class OtherHook extends BaseHook {
                 if (text.endsWith(tail))
                     return false;
                 for (String str : keyWords) {
-                    if (text.contains(str))
+                    if (!str.isEmpty() && text.contains(str))
                         return false;
                 }
                 return true;

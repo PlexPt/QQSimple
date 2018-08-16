@@ -52,7 +52,7 @@
     <string name="about_item_github">源码</string>
     <string name="about_item_log">日志</string>
     <string name="about_item_thanks_title">特别鸣谢</string>
-    <string name="about_item_thanks_content">感谢<a href="http://www.coolapk.com/u/753785">祈无</a>提供的<a href="https://github.com/Qiwu2542284182/QQ_Simplity">QQ精简模块</a>源码以及<a href="http://www.coolapk.com/u/1257513">weishu</a>和<a href="http://www.coolapk.com/u/485448">YiTry</a>提供的技术支持，然后谢谢<a href="http://www.coolapk.com/u/491391">sftmi</a>帮我画的图标，还有谢谢<a href="http://www.coolapk.com/u/738446">静若兰亭</a>的帮忙，当然也不能少了酷安的一些大佬和所有捐赠过和支持过我的小伙伴们。Thank you very much!\n\n\n<b>致谢开源项目</b>：\n<a href="https://github.com/Qiwu2542284182/QQ_Simplity">QQ_Simplity</a>\n<a href="#">QQUnrecalled</a>\n<a href="https://github.com/rovo89/XposedInstaller">Xposed Installer</a>\n<a href="https://github.com/afollestad/material-dialogs">Material Dialogs</a></string>
+    <string name="about_item_thanks_content">感谢<a href="http://www.coolapk.com/u/753785">祈无</a>提供的<a href="https://github.com/Qiwu2542284182/QQ_Simplity">QQ精简模块</a>源码以及<a href="http://www.coolapk.com/u/1257513">weishu</a>和<a href="http://www.coolapk.com/u/485448">YiTry</a>提供的技术支持，还有<a href="http://www.coolapk.com/u/524939">消失١</a>等酷基大佬们提供的教程，然后谢谢<a href="http://www.coolapk.com/u/491391">sftmi</a>帮我画的图标，还有谢谢<a href="http://www.coolapk.com/u/738446">静若兰亭</a>的帮忙，当然也不能少了所有捐赠过和支持过我的小伙伴们。Thank you very much!\n\n\n<b>致谢开源项目</b>：\n<a href="https://github.com/Qiwu2542284182/QQ_Simplity">QQ_Simplity</a>\n<a href="#">QQUnrecalled</a>\n<a href="https://github.com/rovo89/XposedInstaller">Xposed Installer</a>\n<a href="https://github.com/afollestad/material-dialogs">Material Dialogs</a></string>
     <string name="about_github_url">https://github.com/zpp0196/QQSimple</string>
     <string name="about_readme"><a href="https://github.com/zpp0196/QQSimple/blob/master/README.md">Readme</a></string>
     <string name="about_issues"><a href="https://github.com/zpp0196/QQSimple/issues">Issues</a></string>
@@ -103,20 +103,13 @@
     <string name="time_days">days</string>
 
     <string-array name="UpdateLog">
-        <item>适配新版QQ</item>
-        <item>移除了部分功能</item>
-        <item>更换了隐藏气泡方法</item>
-        <item>修复了空间闪退的bug</item>
-        <item>增加了隐藏好友小视频</item>
-        <item>增加了聊天图片背景透明</item>
-        <item>增加聊天小尾巴设置屏蔽词</item>
-        <item>增加了群聊界面隐藏在线人数</item>
-        <item>自定义字体大小可任意设置大小</item>
+        <item>添加了侧滑栏进入QQ空间</item>
+        <item>添加了隐藏消息列表分割线</item>
+        <item>添加了隐藏输入框的嗨爆字体按钮</item>
+        <item>修复了小尾巴不能正常显示的bug</item>
+        <item>修复了隐藏坦白说后仍会出现小红点的bug</item>
     </string-array>
 
-    <string-array name="Matters">
-        <item>本次更新后理论可以自动适配新版除隐藏小红点外其他的功能，并不保证向下兼任，如果新版本失效了再来找我反馈</item>
-        <item>感谢大家四个月以来的支持，我可能会暂停更新一段时间，有缘再见</item>
-    </string-array>
+    <string-array name="Matters"/>
 
 </resources>

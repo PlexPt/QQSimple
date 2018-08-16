@@ -2,7 +2,9 @@ package me.zpp0196.qqsimple.hook;
 
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -55,6 +57,8 @@ class ChatHook extends BaseHook {
         hidePanelLinearLayout();
         hideFontEffect();
         hideItemLayout();
+        // 隐藏嗨爆字体按钮
+        findAndHookMethod(BaseChatPie, "afterTextChanged",Editable.class, hideView(ImageButton.class, "a", "hide_chat_hiBoomFont"));
         // 隐藏好友新动态
         hideItemBuilder(QzoneFeedItemBuilder, "hide_chat_newFeed");
         // 隐藏好友新签名

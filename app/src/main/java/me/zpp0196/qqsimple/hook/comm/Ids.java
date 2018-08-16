@@ -13,7 +13,7 @@ public class Ids {
 
     private static HashMap<String, Integer> id;
 
-    private static int[] supportVersion = new int[]{818, 828, 832, 836, 850, 852, 864, 872};
+    private static int[] supportVersion = new int[]{818, 828, 832, 836, 850, 852, 864, 872, 884};
 
     public static void init() {
         if (id == null) {
@@ -45,6 +45,9 @@ public class Ids {
                 break;
             case 872:
                 init768_872();
+                break;
+            case 884:
+                init770_884();
                 break;
         }
     }
@@ -645,6 +648,13 @@ public class Ids {
         // put("skin_tips_dot_small", 0x7f0221b6); // +1
         put("skin_tips_new", 0x7f0221b7); // +2
         put("shortvideo_redbag_outicon", 0x7f021fdc); // c3 .redtouch.RedTouch a(boolean z) parseRedBagTouch
+    }
+
+    private static void init770_884() {
+        // drawable
+        put("skin_tips_dot", 0x7f0221f3); // c3 .redtouch.RedTouch a(int i)
+        put("skin_tips_new", 0x7f0221f5); // +2
+        put("shortvideo_redbag_outicon", 0x7f02201d); // c3 .redtouch.RedTouch a(boolean z) parseRedBagTouch
     }
 
     private static void put(String key, Integer value) {

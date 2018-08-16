@@ -31,6 +31,9 @@
             android:key="hide_conversation_search"
             android:title="隐藏搜索框" />
         <CheckBoxPreference
+            android:key="hide_conversation_divider"
+            android:title="隐藏分割线" />
+        <CheckBoxPreference
             android:key="hide_conversation_headAd"
             android:title="隐藏横幅广告" />
         <CheckBoxPreference

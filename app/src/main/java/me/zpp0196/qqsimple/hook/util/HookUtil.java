@@ -54,6 +54,10 @@ public class HookUtil {
         return getQQVersionName().compareTo("7.6.5") >= 0;
     }
 
+    public static boolean isMoreThan770() {
+        return getQQVersionName().compareTo("7.7.0") >= 0;
+    }
+
     public static void log(Throwable throwable) {
         if (XPrefs.isPrintLog()) {
             XposedBridge.log(throwable);

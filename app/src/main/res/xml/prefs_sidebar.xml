@@ -47,11 +47,15 @@
         android:title="隐藏厘米秀" />
     <PreferenceCategory android:title="其他">
         <CheckBoxPreference
-            android:key="sidebar_add_entry"
-            android:summary="长按设置按钮进入模块"
+            android:key="sidebar_add_moduleEntry"
+            android:summary="长按侧滑栏左下角设置按钮进入模块"
             android:title="侧滑栏添加模块入口" />
         <CheckBoxPreference
+            android:key="sidebar_add_qzoneEntry"
+            android:summary="点击侧滑栏顶部背景图进入QQ空间，如需进入资料卡请点击QQ头像或昵称"
+            android:title="侧滑栏添加空间入口" />
+        <CheckBoxPreference
             android:key="hide_tim_in_myFile"
-            android:title="隐藏我的文件里的 TIM 推广" />
+            android:title="隐藏我的文件里的TIM推广" />
     </PreferenceCategory>
 </PreferenceScreen>
