@@ -1,33 +1,21 @@
 {
-  "versionName": "2.5.0",
-  "versionCode": 64,
+  "versionName": "2.6.0",
+  "versionCode": 66,
   "updateLog": [
     {
-      "content": "适配新版QQ"
+      "content": "添加了侧滑栏进入QQ空间"
     },
     {
-      "content": "移除了部分功能"
+      "content": "添加了隐藏消息列表分割线"
     },
     {
-      "content": "更换了隐藏气泡方法"
+      "content": "添加了隐藏输入框的嗨爆字体按钮"
     },
     {
-      "content": "修复了空间闪退的bug"
+      "content": "修复了小尾巴不能正常显示的bug"
     },
     {
-      "content": "增加了隐藏好友小视频"
-    },
-    {
-      "content": "增加了聊天图片背景透明"
-    },
-    {
-      "content": "增加聊天小尾巴设置屏蔽词"
-    },
-    {
-      "content": "增加了群聊界面隐藏在线人数"
-    },
-    {
-      "content": "自定义字体大小可任意设置大小"
+      "content": "修复了隐藏坦白说后仍会出现小红点的bug"
     }
   ]
 }
