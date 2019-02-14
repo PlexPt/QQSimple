@@ -2,114 +2,28 @@
 <resources>
 
     <string name="app_name">QQ净化</string>
-    <string name="author_name">zpp0196</string>
-    <string name="qq_name">QQ</string>
+    <string name="xposed_description">Hide QQ garish dress up</string>
 
     <string name="menu_reboot_qq">重启QQ</string>
+    <string name="menu_exit">退出</string>
 
-    <string name="img_description_app_icon">应用图标</string>
-    <string name="img_description_check_state">检查模块状态图标</string>
-    <string name="img_description_item_about">About item icon</string>
-    <string name="img_description_item_card_item_icon">CardItem icon</string>
+    <string name="dialog_title_tip">提示</string>
+    <string name="dialog_title_update">更新说明</string>
+    <string name="dialog_button_confirm">确定</string>
+    <string name="dialog_button_cancel">取消</string>
+    <string name="dialog_button_close">关闭</string>
+    <string name="dialog_button_donate">支持一下</string>
+    <string name="dialog_button_updlog">更新日志</string>
+    <string name="dialog_button_reboot">重启</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="nav_item_main">@string/app_name</string>
-    <string name="nav_item_mainui">主界面</string>
-    <string name="nav_item_sidebar">侧滑栏</string>
-    <string name="nav_item_qzone">QQ空间</string>
-    <string name="nav_item_chat">聊天界面</string>
-    <string name="nav_item_group">群聊界面</string>
-    <string name="nav_item_other">其他功能</string>
-    <string name="nav_item_setting">设置</string>
-    <string name="nav_item_about">关于</string>
-    <string name="nav_item_exit">退出</string>
-
-    <string name="enable_module">启用模块</string>
-    <string name="module_active">模块已激活。</string>
-    <string name="module_not_active">模块未激活！</string>
-
-    <string name="item_card_device">设备</string>
-    <string name="item_card_device_android">Android %s(%s, API %d)</string>
-    <string name="item_card_comm_version">版本：%s(%d)</string>
-    <string name="item_card_qq">@string/qq_name</string>
-    <string name="item_card_qq_stop">结束运行</string>
-    <string name="item_card_qq_stop_vxp">结束运行(VirtualXposed)</string>
-    <string name="item_card_module">@string/app_name</string>
-    <string name="item_card_module_update_check">检查更新</string>
-    <string name="item_card_module_update_check_ing">正在检查更新</string>
-    <string name="item_card_module_update_check_latest">当前已是最新版本！</string>
-    <string name="item_card_module_update_check_update">立即更新</string>
-    <string name="item_card_module_update_check_new">发现新版本</string>
-    <string name="item_card_module_update_check_err">检查更新失败，请稍后再试！</string>
-    <string name="item_card_module_update_vxp">更新模块(VirtualXposed)</string>
-
-    <string name="about_item_version">版本</string>
-    <string name="about_item_author">作者</string>
-    <string name="about_item_thanks">致谢</string>
-    <string name="about_item_donate">捐赠</string>
-    <string name="about_item_github">源码</string>
-    <string name="about_item_log">日志</string>
-    <string name="about_item_thanks_title">特别鸣谢</string>
-    <string name="about_item_thanks_content">感谢<a href="http://www.coolapk.com/u/753785">祈无</a>提供的<a href="https://github.com/Qiwu2542284182/QQ_Simplity">QQ精简模块</a>源码以及<a href="http://www.coolapk.com/u/1257513">weishu</a>和<a href="http://www.coolapk.com/u/485448">YiTry</a>提供的技术支持，还有<a href="http://www.coolapk.com/u/524939">消失١</a>等酷基大佬们提供的教程，然后谢谢<a href="http://www.coolapk.com/u/491391">sftmi</a>帮我画的图标，还有谢谢<a href="http://www.coolapk.com/u/738446">静若兰亭</a>的帮忙，当然也不能少了所有捐赠过和支持过我的小伙伴们。Thank you very much!\n\n\n<b>致谢开源项目</b>：\n<a href="https://github.com/Qiwu2542284182/QQ_Simplity">QQ_Simplity</a>\n<a href="#">QQUnrecalled</a>\n<a href="https://github.com/rovo89/XposedInstaller">Xposed Installer</a>\n<a href="https://github.com/afollestad/material-dialogs">Material Dialogs</a></string>
-    <string name="about_github_url">https://github.com/zpp0196/QQSimple</string>
-    <string name="about_readme"><a href="https://github.com/zpp0196/QQSimple/blob/master/README.md">Readme</a></string>
-    <string name="about_issues"><a href="https://github.com/zpp0196/QQSimple/issues">Issues</a></string>
-    <string name="about_releases"><a href="https://github.com/zpp0196/QQSimple/releases">Releases</a></string>
-    <string name="about_copyright">Copyright © zpp0196. All Rights Reserved.</string>
-    <string name="about_egg_title">Who am I?</string>
-    <string name="about_egg_close">Close</string>
-    <string name="about_egg_content">Hello! My name is Easter egg, I\'m %d %s old that I was born on %s.\n\nYou have used me for %d %s since you installed me on %s, and you have opened me %d times. %s \n\nAnyway, have a good time :-P</string>
-    <string name="about_egg_content_has_donate">All I know is that you clicked the donation button %d times, but I don\'t know if you did or didn\'t $_$</string>
-    <string name="about_egg_content_not_donate">Too bad you didn\'t click the donation button once :-(</string>
-
-    <string name="title_explain">说明</string>
-    <string name="title_matters">注意事项</string>
-    <string name="title_tip">提示</string>
-    <string name="title_execute_finish">执行完毕</string>
-    <string name="title_open">打开「%s」</string>
-    <string name="title_update_log">更新日志</string>
-    <string name="title_appear_exception">程序发生异常</string>
-
-    <string name="button_close">关闭</string>
-    <string name="button_ok">确定</string>
-    <string name="button_cancel">取消</string>
-    <string name="button_more">更多</string>
-    <string name="button_backup">备份</string>
-    <string name="button_get_permission">授权</string>
-    <string name="button_reboot">重启</string>
-    <string name="button_copy">复制</string>
-    <string name="button_releases">历史版本</string>
-    <string name="switch_not_prompt">不再提示</string>
-
-    <string name="tip_stop_qq_finish">已强行停止「QQ」</string>
-    <string name="tip_xposed_not_install">未找到 Xposed Installer！</string>
-    <string name="tip_xposed_open_failure">打开 Xposed Installer 失败，请手动打开激活！</string>
-    <string name="tip_popup_menu">该分组如果全部开启会导致点击菜单时 QQ 闪退，请根据实际情况最少显示一项内容，如果你想全部隐藏可以直接开启上面的「隐藏快捷入口」，请根据自己实际情况选择性开启！</string>
-    <string name="tip_qzone_menu">该分组里面虽然提供了 6 个开关，但却只能开启 3 个，多开一个都会导致点击菜单时空间闪退，请根据自己实际情况选择性开启！</string>
-    <string name="tip_troop_tip">该功能可以屏蔽掉消息列表出现的<b>[有人@我]</b>、<b>[有新回复]</b>、<b>[有全体消息]</b>(可以防止在群里被@，被别人@或回复消息后不会收到提醒)、<b>[有人送礼]</b>、<b>[有新文件]</b>等提示，并不会屏蔽<b>[有新公告]</b>，而且该消息仍然会出现在消息列表！</string>
-    <string name="tip_qzone_ad">该开关主要隐藏一些空间里面的小广告以及主页顶部的<b>猜你喜欢</b>、<b>最近在玩</b>、<b>好友生日</b>等包括<b>消息通知</b>在内的一些内容，所以会出现看不到消息通知的情况，空间主页顶部右上角加号左边的图标进去就是消息界面。</string>
-    <string name="tip_other_size">建议输入[12.00&#8211;20.00]之间的数值！</string>
-    <string name="tip_other_alpha">请输入[0.00&#8211;1.00]之间的数值！</string>
-    <string name="tip_setting_backup">该功能需要「存储空间」权限，如果没有权限请先授予该应用权限！\n\n该功能会将本软件的应用数据保存到 %s/Android/data/%s/%s_preferences.xml ，请自行保存（如果已存在备份会直接覆盖）如不保存卸载模块后备份将会被自动删除！\n\n如需恢复数据将备份好的 .xml 文件改好名放进上面的目录里面然后在本软件里面恢复即可。</string>
-    <string name="tip_setting_backup_finish">已备份到：%s</string>
-    <string name="tip_setting_backup_not_find_file">未找到备份文件！</string>
-    <string name="tip_setting_restore_reboot_tip">已恢复备份文件需要重启应用生效！</string>
-    <string name="tip_setting_restore_default_reboot_tip">已清空所有设置需要重启应用生效！</string>
-    <string name="tip_setting_restore_default_reboot_confirm">你确定清空所有设置吗？</string>
-    <string name="tip_setting_failure">设置失败！</string>
-
-    <string name="time_days">days</string>
-
-    <string-array name="UpdateLog">
-        <item>添加了侧滑栏进入QQ空间</item>
-        <item>添加了隐藏消息列表分割线</item>
-        <item>添加了隐藏输入框的嗨爆字体按钮</item>
-        <item>修复了小尾巴不能正常显示的bug</item>
-        <item>修复了隐藏坦白说后仍会出现小红点的bug</item>
-    </string-array>
-
-    <string-array name="Matters"/>
+    <string name="tip_module_update">感谢你使用本软件，如果需要了解更新内容请点击左下角的更新日志在里面找对应的版本查看更新日志，如果在使用过程中遇到了什么问题请先去看一下关于模块里面的更多内容，如果你喜欢这个模块请务必支持一下我，你们的支持就是我开发的动力。</string>
+    <string name="tip_module_active_error">模块未激活！</string>
+    <string name="tip_start_qq_failure">启动QQ失败！</string>
+    <string name="tip_reboot_qq_start">正在重启QQ&#8230;</string>
+    <string name="tip_reboot_qq_failure">获取Root权限失败，请手动强行停止QQ！</string>
+    <string name="tip_setting_backup_finish_success">已备份到：%s</string>
+    <string name="tip_setting_restore_default_confirm">你确定恢复默认设置吗？</string>
+    <string name="tip_setting_restore_reboot">恢复成功，重启应用生效！</string>
+    <string name="tip_setting_restore_file_not_find">未找到备份文件！</string>
 
 </resources>

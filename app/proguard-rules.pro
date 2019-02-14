@@ -20,7 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep public class me.zpp0196.qqsimple.hook.InitHook
--keepclassmembernames class me.zpp0196.qqsimple.activity.MainActivity {
+-keep public class me.zpp0196.qqpurify.hook.InitHook
+-keepclassmembernames class me.zpp0196.qqpurify.activity.SettingsActivity {
     boolean isModuleActive();
 }

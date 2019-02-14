@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="module_switch"
+        android:title="启用模块" />
+    <SwitchPreference
+        android:key="module_hide_desktopIcon"
+        android:persistent="false"
+        android:summary="隐藏后可以通过 Xposed 框架或 QQ 打开本软件"
+        android:title="隐藏桌面图标" />
+    <PreferenceCategory android:title="数据管理">
+        <Preference
+            android:key="module_backupData"
+            android:title="备份软件数据" />
+        <Preference
+            android:key="module_restoreBackup"
+            android:title="恢复软件数据" />
+        <Preference
+            android:key="module_restoreDefault"
+            android:title="恢复默认设置" />
+    </PreferenceCategory>
+</PreferenceScreen>

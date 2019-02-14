@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="顶部">
+        <SwitchPreference
+            android:key="troop_hide_totalNumber"
+            android:title="隐藏顶部总人数" />
+        <SwitchPreference
+            android:key="troop_hide_onlineNumber"
+            android:title="隐藏顶部在线人数" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="聊天">
+        <SwitchPreference
+            android:key="troop_prevent_at"
+            android:title="防止被@" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="troop_simple_sign"
+            android:title="签到文本化" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="头衔">
+        <SwitchPreference
+            android:key="troop_hide_level"
+            android:title="隐藏群头衔" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="troop_hide_glamourLevel"
+            android:title="隐藏魅力等级" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="troop_hide_colorNick"
+            android:title="隐藏炫彩昵称" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="动画">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="troop_hide_giftAnim"
+            android:title="隐藏礼物动画" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="troop_hide_enterAnim"
+            android:title="隐藏入场动画" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="群助手">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="troopAssistant_hide_smallVideo"
+            android:title="隐藏群助手里的小视频" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="troopAssistant_hide_removeTips"
+            android:title="隐藏移出群助手提示" />
+    </PreferenceCategory>
+</PreferenceScreen>

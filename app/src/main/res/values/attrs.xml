@@ -1,8 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="CardItem">
-        <attr name="title" />
+    <declare-styleable name="me.zpp0196.qqpurify.fragment.custom.SeekBarPreferences">
+        <attr name="minValue" format="integer" />
+        <attr name="maxValue" format="integer" />
     </declare-styleable>
+
+    <string-array name="conversation_hide_popupMenuItem_titles">
+        <item>创建群聊</item>
+        <item>加好友/群</item>
+        <item>扫一扫</item>
+        <item>面对面快传</item>
+        <item>收付款</item>
+        <item>拍摄</item>
+        <item>高能舞室</item>
+        <item>轻游戏</item>
+    </string-array>
+
+    <string-array name="contacts_hide_tabs_titles">
+        <item>设备</item>
+        <item>通讯录</item>
+        <item>公众号</item>
+    </string-array>
+
+    <string-array name="contacts_hide_tabs_values">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="sidebar_hide_items_titles">
+        <item>会员栏</item>
+        <item>QQ钱包</item>
+        <item>我的收藏</item>
+        <item>我的文件</item>
+        <item>我的相册</item>
+        <item>个性装扮</item>
+        <item>网上营业厅</item>
+        <item>我的日程</item>
+        <item>我的名片夹</item>
+        <item>我的视频</item>
+        <item>腾讯文档</item>
+        <item>免流量特权</item>
+    </string-array>
+
+    <string-array name="sidebar_hide_items_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+    </string-array>
+
+    <string-array name="setting_hide_items_titles">
+        <item>手机号码</item>
+        <item>QQ达人</item>
+        <item>消息通知</item>
+        <item>聊天记录</item>
+        <item>空间清理</item>
+        <item>帐号、设备安全</item>
+        <item>联系人、隐私</item>
+        <item>通用</item>
+        <item>辅助功能</item>
+        <item>免流量特权</item>
+        <item>关于QQ与帮助</item>
+    </string-array>
+
+    <string-array name="chat_hide_panel_titles">
+        <item>语音</item>
+        <item>图片</item>
+        <item>拍照</item>
+        <item>红包</item>
+    </string-array>
+
+    <string-array name="chat_hide_panel_values">
+        <item>abc</item>
+        <item>ghi</item>
+        <item>jklm</item>
+        <item>q</item>
+    </string-array>
 
 </resources>
