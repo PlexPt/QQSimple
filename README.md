@@ -1,1 +1,1 @@
-#[Wiki](https://github.com/zpp0196/QQPurify/wiki)
+# [Wiki](https://github.com/zpp0196/QQPurify/wiki)
