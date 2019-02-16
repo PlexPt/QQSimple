@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedHelpers;
 import me.zpp0196.qqpurify.utils.ReflectionUtils;
 
 /**
@@ -22,6 +23,7 @@ public class TroopHook extends AbstractHook {
         hideChatItemLayout();
         hideTroopAnim();
         hideTroopAssistantContent();
+        hideTroopNoticeContent();
     }
 
     private void hideTopContent() {
@@ -97,7 +99,7 @@ public class TroopHook extends AbstractHook {
     }
 
     private void hideTroopAssistantContent() {
-        // 隐藏群消息里的小视频
+        // 隐藏群助手里面的小视频
         if (getBool("troopAssistant_hide_smallVideo", true)) {
             findAndHookMethod(TroopAssistantActivity, "h", hideViewAfterMethod(View.class, "c"));
         }
@@ -109,6 +111,21 @@ public class TroopHook extends AbstractHook {
                     String str = param.args[1].toString();
                     if (str.contains("移出群助手")) {
                         param.setResult(null);
+                    }
+                }
+            });
+        }
+    }
+
+    private void hideTroopNoticeContent() {
+        // 隐藏群通知里面的群推荐
+        if (getBool("troopNotice_hide_recommend", true)) {
+            findAndHookMethod(NotifyAndRecAdapter, "getView", int.class, View.class, ViewGroup.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    int itemViewType = (int) XposedHelpers.callMethod(param.thisObject, "getItemViewType", param.args[0]);
+                    if (itemViewType == 1 || itemViewType == 6) {
+                        param.setResult(new View(((View) param.args[1]).getContext()));
                     }
                 }
             });

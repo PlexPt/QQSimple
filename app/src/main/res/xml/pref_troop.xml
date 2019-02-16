@@ -44,10 +44,16 @@
         <SwitchPreference
             android:defaultValue="true"
             android:key="troopAssistant_hide_smallVideo"
-            android:title="隐藏群助手里的小视频" />
+            android:title="隐藏群助手里面的小视频" />
         <SwitchPreference
             android:defaultValue="true"
             android:key="troopAssistant_hide_removeTips"
             android:title="隐藏移出群助手提示" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="群通知">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="troopNotice_hide_recommend"
+            android:title="隐藏群通知里面的群推荐" />
     </PreferenceCategory>
 </PreferenceScreen>

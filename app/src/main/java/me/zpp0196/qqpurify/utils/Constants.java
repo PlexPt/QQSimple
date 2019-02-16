@@ -49,6 +49,7 @@ public class Constants {
         protected final String MessageInfo = "com.tencent.mobileqq.troop.data.MessageInfo";
         protected final String MessageRecord = "com.tencent.mobileqq.data.MessageRecord";
         protected final String MessageRecordFactory = "com.tencent.mobileqq.service.message.MessageRecordFactory";
+        protected final String NotifyAndRecAdapter = "com.tencent.mobileqq.activity.contact.troop.NotifyAndRecAdapter";
         protected final String OnLongClickAndTouchListener = "com.tencent.mobileqq.activity.aio.OnLongClickAndTouchListener";
         protected final String PanelIconLinearLayout = "com.tencent.mobileqq.activity.aio.panel.PanelIconLinearLayout";
         protected final String PicItemBuilder = "com.tencent.mobileqq.activity.aio.item.PicItemBuilder";
