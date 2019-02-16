@@ -120,11 +120,11 @@ public class ExtensionHook extends AbstractHook {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 View[] views = getObjectIfExists(param.thisObject, View[].class, "a");
                 // 联系人
-                if (!getBool("contacts_display_tab")) {
+                if (!getBool("contacts_display_tab", true)) {
                     hideView(views[2]);
                 }
                 // 动态
-                if (!getBool("leba_display_tab")) {
+                if (!getBool("leba_display_tab", true)) {
                     hideView(views[3]);
                 }
             }
@@ -134,8 +134,8 @@ public class ExtensionHook extends AbstractHook {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 int i = (int) param.args[0];
-                if ((i == 33 && getBool("contacts_hide_tabNum")) ||
-                    (i == 34 && (getBool("leba_hide_tabNum")))) {
+                if ((i == 33 && (getBool("contacts_hide_tabNum") || getBool("contacts_hide_newFriend"))) ||
+                    (i == 34 && getBool("leba_hide_tabNum"))) {
                     param.setResult(null);
                 }
             }
