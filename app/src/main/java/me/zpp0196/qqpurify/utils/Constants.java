@@ -23,6 +23,7 @@ public class Constants {
         protected final String BaseChatPie = "com.tencent.mobileqq.activity.BaseChatPie";
         protected final String BaseTroopChatPie = "com.tencent.mobileqq.activity.aio.rebuild.BaseTroopChatPie";
         protected final String BubbleManager = "com.tencent.mobileqq.bubble.BubbleManager";
+        protected final String BuddyListAdapter = "com.tencent.mobileqq.adapter.BuddyListAdapter";
         protected final String BusinessInfoCheckUpdate$RedTypeInfo = "com.tencent.pb.getbusiinfo.BusinessInfoCheckUpdate$RedTypeInfo";
         protected final String Card = "com.tencent.mobileqq.data.Card";
         protected final String ChatActivityUtils = "com.tencent.mobileqq.activity.ChatActivityUtils";

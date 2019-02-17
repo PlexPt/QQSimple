@@ -1,8 +1,11 @@
 package me.zpp0196.qqpurify.hook;
 
+import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -15,9 +18,10 @@ import me.zpp0196.qqpurify.utils.XPrefUtils;
 public class ContactsHook extends AbstractHook {
     @Override
     public void init() throws Throwable {
-        if(getBool("contacts_display_tab", true)) {
+        if (getBool("contacts_display_tab", true)) {
             hideTopContent();
             hideContactsTabs();
+            hideFriendGroups();
             // 隐藏不常用联系人
             if (getBool("contacts_hide_unusualContacts")) {
                 findAndHookMethod(FriendFragment, "i", hideViewAfterMethod(View.class, "b"));
@@ -110,6 +114,27 @@ public class ContactsHook extends AbstractHook {
 
             private void m(int left, int right) {
                 param.args[0] = b == left ? right : b == right ? left : param.args[0];
+            }
+        });
+    }
+
+    private void hideFriendGroups() {
+        // 隐藏好友分组
+        findAndHookMethod(BuddyListAdapter, "a", ArrayList.class, SparseArray.class, SparseIntArray.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                ArrayList groupsList = (ArrayList) param.args[0];
+                Object specialCare = null;
+                for (Object groups : groupsList) {
+                    String groupName = getObjectIfExists(groups, String.class, "group_name");
+                    // 同理可以隐藏任何一个好友分组
+                    if ("特别关心".equals(groupName) && getBool("contacts_hide_specialCare ")) {
+                        specialCare = groups;
+                        break;
+                    }
+                }
+                // groupsList.remove(0);
+                groupsList.remove(specialCare);
             }
         });
     }

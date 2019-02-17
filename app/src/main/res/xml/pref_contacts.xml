@@ -23,6 +23,9 @@
             android:key="contacts_hide_tabs"
             android:title="隐藏联系人分组" />
         <SwitchPreference
+            android:key="contacts_hide_specialCare"
+            android:title="隐藏特别关心分组" />
+        <SwitchPreference
             android:key="contacts_hide_unusualContacts"
             android:title="隐藏不常用联系人" />
     </PreferenceCategory>
