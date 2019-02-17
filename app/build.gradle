@@ -6,8 +6,8 @@ android {
         applicationId "me.zpp0196.qqpurify"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 19021417
-        versionName "3.3.7"
+        versionCode 19021717
+        versionName "3.4.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
