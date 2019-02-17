@@ -128,7 +128,7 @@ public class ContactsHook extends AbstractHook {
                 for (Object groups : groupsList) {
                     String groupName = getObjectIfExists(groups, String.class, "group_name");
                     // 同理可以隐藏任何一个好友分组
-                    if ("特别关心".equals(groupName) && getBool("contacts_hide_specialCare ")) {
+                    if ("特别关心".equals(groupName) && getBool("contacts_hide_specialCare")) {
                         specialCare = groups;
                         break;
                     }
