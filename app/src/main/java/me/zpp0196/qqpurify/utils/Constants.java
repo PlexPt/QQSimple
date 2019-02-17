@@ -43,7 +43,6 @@ public class Constants {
         protected final String ItemBuilderFactory = "com.tencent.mobileqq.activity.aio.item.ItemBuilderFactory";
         protected final String Leba = "com.tencent.mobileqq.activity.Leba";
         protected final String LebaGridManager = "com.tencent.mobileqq.leba.LebaGridManager";
-        protected final String LebaQZoneFacePlayHelper = "com.tencent.mobileqq.activity.LebaQZoneFacePlayHelper";
         protected final String MainFragment = "com.tencent.mobileqq.activity.MainFragment";
         protected final String MessageForDeliverGiftTips = "com.tencent.mobileqq.data.MessageForDeliverGiftTips";
         protected final String MessageInfo = "com.tencent.mobileqq.troop.data.MessageInfo";
@@ -74,7 +73,6 @@ public class Constants {
         protected final String TroopChatPie = "com.tencent.mobileqq.activity.aio.rebuild.TroopChatPie";
         protected final String TroopEnterEffectController = "com.tencent.mobileqq.troop.enterEffect.TroopEnterEffectController";
         protected final String TroopGiftAnimationController = "com.tencent.mobileqq.troopgift.TroopGiftAnimationController";
-        protected final String URLImageView = "com.tencent.image.URLImageView";
         protected final String VipSpecialCareGrayTips = "com.tencent.mobileqq.activity.aio.tips.VipSpecialCareGrayTips";
         protected final String VipUtils = "com.tencent.mobileqq.utils.VipUtils";
     }

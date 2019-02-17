@@ -16,42 +16,15 @@
             android:defaultValue="true"
             android:key="leba_hide_hotSearch"
             android:title="隐藏热搜" />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:dependency="leba_use_older"
-        android:title="好友动态">
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="leba_display_qzoneEntry"
-            android:title="显示好友动态入口" />
+            android:key="leba_hide_qzoneEntry"
+            android:title="隐藏好友动态入口" />
         <SwitchPreference
-            android:dependency="leba_display_qzoneEntry"
-            android:key="leba_hide_qzoneRemind"
-            android:title="隐藏动态头像提醒" />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:dependency="leba_use_older"
-        android:title="附近的人">
+            android:key="leba_hide_nearEntry"
+            android:title="隐藏附近的人入口" />
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="leba_display_nearEntry"
-            android:title="显示附近的人入口" />
-        <SwitchPreference
-            android:dependency="leba_display_nearEntry"
-            android:key="leba_hide_nearRemind"
-            android:title="隐藏附近头像提醒" />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:dependency="leba_use_older"
-        android:title="兴趣部落">
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="leba_display_tribalEntry"
-            android:title="显示兴趣部落入口" />
-        <SwitchPreference
-            android:dependency="leba_display_tribalEntry"
-            android:key="leba_hide_tribalRemind"
-            android:title="隐藏部落头像提醒" />
+            android:key="leba_hide_tribalEntry"
+            android:title="隐藏兴趣部落入口" />
     </PreferenceCategory>
     <PreferenceCategory
         android:dependency="leba_use_older"
