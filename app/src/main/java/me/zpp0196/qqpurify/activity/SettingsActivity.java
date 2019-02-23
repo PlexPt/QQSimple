@@ -123,9 +123,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Act
                 .setMessage(R.string.tip_module_update)
                 .setNeutralButton(R.string.dialog_button_updlog, (dialog, which) -> openUrl("https://github.com/zpp0196/QQPurify/releases"))
                 .setNegativeButton(R.string.dialog_button_donate, (dialog, which) -> openAlipay())
-                .setPositiveButton(R.string.dialog_button_close, (dialog, which) -> {
-                    showModuleActiveToast();
-                })
+                .setPositiveButton(R.string.dialog_button_close, (dialog, which) -> showModuleActiveToast())
                 .show();
         sp.edit()
                 .putInt(versionCodeKey, BuildConfig.VERSION_CODE)

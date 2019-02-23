@@ -33,24 +33,24 @@ public class ReflectionUtils {
         }
     }
 
-    public static void setStaticObjectField(Class<?> clazz, Class<?> type, String fieldName, Object value)
+    public static void setStaticObjectField(Class<?> clazz, Class<?> fieldType, String fieldName, Object value)
             throws NoSuchFieldException, IllegalAccessException {
-        findFieldIfExists(clazz, type, fieldName).set(null, value);
+        findFieldIfExists(clazz, fieldType, fieldName).set(null, value);
     }
 
-    public static void setObjectField(Object obj, Class<?> type, String fieldName, Object value)
+    public static void setObjectField(Object obj, Class<?> fieldType, String fieldName, Object value)
             throws NoSuchFieldException, IllegalAccessException {
         if (obj != null) {
-            Field field = findFieldIfExists(obj.getClass(), type, fieldName);
+            Field field = findFieldIfExists(obj.getClass(), fieldType, fieldName);
             if (field != null) {
                 field.set(obj, value);
             }
         }
     }
 
-    public static Field findFieldIfExists(Class<?> clazz, Class<?> type, String fieldName)
+    public static Field findFieldIfExists(Class<?> clazz, Class<?> fieldType, String fieldName)
             throws NoSuchFieldException {
-        return findFieldIfExists(clazz, type.getName(), fieldName);
+        return findFieldIfExists(clazz, fieldType.getName(), fieldName);
     }
 
     public static Field findFieldIfExists(Class<?> clazz, String typeName, String fieldName)

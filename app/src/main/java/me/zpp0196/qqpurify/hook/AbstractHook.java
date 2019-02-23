@@ -79,9 +79,9 @@ public abstract class AbstractHook extends Constants.Class {
         }
     }
 
-    protected void findAndHideView(Object obj, Class<?> type, String name, String key) {
+    protected void findAndHideView(Object obj, Class<?> viewType, String name, String key) {
         if (getBool(key)) {
-            hideView(getObjectIfExists(obj, type, name));
+            hideView(getObjectIfExists(obj, viewType, name));
         }
     }
 
@@ -108,8 +108,8 @@ public abstract class AbstractHook extends Constants.Class {
         }
     }
 
-    protected <T> T getObjectIfExists(Object obj, Class<?> type, String fieldName) {
-        return ReflectionUtils.getObjectIfExists(obj.getClass(), type, fieldName, obj);
+    protected <T> T getObjectIfExists(Object obj, Class<?> fieldType, String fieldName) {
+        return ReflectionUtils.getObjectIfExists(obj.getClass(), fieldType, fieldName, obj);
     }
 
     protected <T> T getObjectIfExists(Object obj, String typeName, String fieldName) {
