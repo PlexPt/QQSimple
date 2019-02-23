@@ -39,7 +39,7 @@ public class ConversationHook extends AbstractHook {
             hideDivider();
         }
         // 隐藏SVIP铭牌
-        if (getBool("hide_svipTitle", true)) {
+        if (getBool("conversation_hide_svipNameplate", true)) {
             XposedHelpers.setStaticIntField(findClass(VipUtils), "a", 4);
         }
     }

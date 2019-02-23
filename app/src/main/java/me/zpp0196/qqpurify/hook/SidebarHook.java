@@ -44,7 +44,7 @@ public class SidebarHook extends AbstractHook {
 
         // 隐藏打卡
         if (getBool("sidebar_hide_myDaily", true)) {
-            findAndHideView(obj, LinearLayout.class, "a", "sidebar_hide_myDaily");
+            hideView(getObjectIfExists(obj, LinearLayout.class, "a"));
         }
         // 隐藏二维码
         findAndHideView(obj, ImageView.class, "d", "sidebar_hide_myQrCode");

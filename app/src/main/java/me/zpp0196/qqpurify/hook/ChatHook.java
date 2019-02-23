@@ -28,7 +28,7 @@ public class ChatHook extends AbstractHook {
         // 隐藏底部工具栏
         hidePanel();
         // 屏蔽提示
-        if (getBool("chat_hide_grayTips")) {
+        if (getBool("chat_hide_grayTips", true)) {
             hideGrayTipsItem();
         }
     }
