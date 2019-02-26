@@ -180,10 +180,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Act
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        setWorldReadable();
         if (item.getItemId() == R.id.menu_reboot_qq) {
             rebootQQ();
         } else if (item.getItemId() == R.id.menu_exit) {
-            setWorldReadable();
             System.exit(0);
         }
         return super.onOptionsItemSelected(item);
@@ -196,7 +196,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Act
             Shell.Result result = Shell.su("am force-stop " + PACKAGE_NAME_QQ)
                     .exec();
             if (result.isSuccess()) {
-                setWorldReadable();
                 try {
                     startActivity(getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME_QQ));
                 } catch (Exception e) {
@@ -218,8 +217,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Act
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         setWorldReadable();
     }
 
