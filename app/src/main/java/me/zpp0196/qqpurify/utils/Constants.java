@@ -27,6 +27,7 @@ public class Constants {
         protected final String BusinessInfoCheckUpdate$RedTypeInfo = "com.tencent.pb.getbusiinfo.BusinessInfoCheckUpdate$RedTypeInfo";
         protected final String Card = "com.tencent.mobileqq.data.Card";
         protected final String ChatActivityUtils = "com.tencent.mobileqq.activity.ChatActivityUtils";
+        protected final String ChatAdapter1 = "com.tencent.mobileqq.activity.aio.ChatAdapter1";
         protected final String ChatMessage = "com.tencent.mobileqq.data.ChatMessage";
         protected final String ColorNickManager = "com.tencent.mobileqq.vas.ColorNickManager";
         protected final String Conversation = "com.tencent.mobileqq.activity.Conversation";

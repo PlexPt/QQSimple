@@ -5,7 +5,9 @@ import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,10 @@ public class ChatHook extends AbstractHook {
         // 屏蔽提示
         if (getBool("chat_hide_grayTips", true)) {
             hideGrayTipsItem();
+        }
+        // 屏蔽小尾巴
+        if (getBool("chat_hide_tail")) {
+            hideTail();
         }
     }
 
@@ -109,6 +115,34 @@ public class ChatHook extends AbstractHook {
                 for (String keyword : keywords) {
                     if (msg != null && !TextUtils.isEmpty(keyword) && msg.contains(keyword)) {
                         param.setResult(null);
+                    }
+                }
+            }
+        });
+    }
+
+    private void hideTail() {
+        List<String> tailList = XPrefUtils.getStringList("chat_tail_list");
+        findAndHookMethod(ChatAdapter1, "getView", int.class, View.class, ViewGroup.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                View resultView = (View) param.getResult();
+                List list = getObjectIfExists(param.thisObject, List.class, "a");
+                Object messageRecord = list.get((int) param.args[0]);
+                if (messageRecord.getClass()
+                        .getName()
+                        .contains("MessageForText")) {
+                    View view = getObjectIfExists(resultView, View.class, "a");
+                    if (view instanceof TextView) {
+                        TextView textView = (TextView) view;
+                        String chatContent = textView.getText()
+                                .toString();
+                        for (String tail : tailList) {
+                            if (!TextUtils.equals(chatContent, tail) &&
+                                chatContent.endsWith(tail)) {
+                                textView.setText(chatContent.replace(tail, ""));
+                            }
+                        }
                     }
                 }
             }
