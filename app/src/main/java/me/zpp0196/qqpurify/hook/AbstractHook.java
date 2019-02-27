@@ -1,5 +1,6 @@
 package me.zpp0196.qqpurify.hook;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,19 +130,33 @@ public abstract class AbstractHook extends Constants.Class {
     protected void recursiveView(String space, View view) {
         if (view instanceof ViewGroup) {
             ViewGroup viewGroup = (ViewGroup) view;
-            Log.i(getTAG(), space + viewGroup.getClass()
-                    .getName() + ", id: " + viewGroup.getId() + ", visible: " +
-                            viewGroup.getVisibility());
+            printView(space, view);
             for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                recursiveView(space + space, viewGroup.getChildAt(i));
+                recursiveView(space + "\t", viewGroup.getChildAt(i));
             }
-        } else if (view instanceof TextView) {
-            Log.i(getTAG(), space + view.getClass()
-                    .getName() + ", id: " + view.getId() + ", text: " +
-                            ((TextView) view).getText() + ", visible: " + view.getVisibility());
         } else {
-            Log.i(getTAG(), space + view.getClass()
-                    .getName() + ", id: " + view.getId() + ", visible: " + view.getVisibility());
+            printView(space, view);
         }
+    }
+
+    private void printView(String space, View view) {
+        StringBuilder sb = new StringBuilder(space);
+        sb.append(view.getClass()
+                .getName());
+        if (view.getId() > 0) {
+            sb.append(", id: ")
+                    .append(view.getId());
+        }
+        if (view instanceof TextView) {
+            sb.append(", text: ")
+                    .append(((TextView) view).getText());
+        }
+        if (!TextUtils.isEmpty(view.getContentDescription())) {
+            sb.append(", description: ")
+                    .append(view.getContentDescription());
+        }
+        sb.append(", visible: ")
+                .append(view.getVisibility());
+        log(sb.toString());
     }
 }
