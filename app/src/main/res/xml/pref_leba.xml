@@ -4,13 +4,8 @@
         android:defaultValue="true"
         android:key="leba_display_tab"
         android:title="显示动态界面" />
-    <SwitchPreference
-        android:defaultValue="true"
-        android:dependency="leba_display_tab"
-        android:key="leba_use_older"
-        android:title="使用旧版动态" />
     <PreferenceCategory
-        android:dependency="leba_use_older"
+        android:dependency="leba_display_tab"
         android:title="顶部">
         <SwitchPreference
             android:defaultValue="true"
@@ -27,7 +22,7 @@
             android:title="隐藏兴趣部落入口" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:dependency="leba_use_older"
+        android:dependency="leba_display_tab"
         android:title="底部">
         <SwitchPreference
             android:key="leba_hide_tabNum"

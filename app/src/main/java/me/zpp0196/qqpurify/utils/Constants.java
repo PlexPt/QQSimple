@@ -44,7 +44,7 @@ public class Constants {
         protected final String HotChatFlashPicActivity = "com.tencent.mobileqq.dating.HotChatFlashPicActivity";
         protected final String ItemBuilderFactory = "com.tencent.mobileqq.activity.aio.item.ItemBuilderFactory";
         protected final String Leba = "com.tencent.mobileqq.activity.Leba";
-        protected final String LebaGridManager = "com.tencent.mobileqq.leba.LebaGridManager";
+        protected final String LebaShowListManager = "com.tencent.mobileqq.activity.leba.LebaShowListManager";
         protected final String MainFragment = "com.tencent.mobileqq.activity.MainFragment";
         protected final String MessageForDeliverGiftTips = "com.tencent.mobileqq.data.MessageForDeliverGiftTips";
         protected final String MessageInfo = "com.tencent.mobileqq.troop.data.MessageInfo";
@@ -67,6 +67,7 @@ public class Constants {
         protected final String RecentBaseData = "com.tencent.mobileqq.activity.recent.RecentBaseData";
         protected final String RecentEfficientItemBuilder = "com.tencent.mobileqq.activity.recent.RecentEfficientItemBuilder";
         protected final String RecentOptPopBar = "com.tencent.mobileqq.activity.recent.RecentOptPopBar";
+        protected final String ResourcePluginInfo = "com.tencent.mobileqq.data.ResourcePluginInfo";
         protected final String SimpleSlidingIndicator = "com.tencent.mobileqq.activity.contacts.view.SimpleSlidingIndicator";
         protected final String SougouInputGrayTips = "com.tencent.mobileqq.activity.aio.tips.SougouInputGrayTips";
         protected final String TextItemBuilder = "com.tencent.mobileqq.activity.aio.item.TextItemBuilder";
