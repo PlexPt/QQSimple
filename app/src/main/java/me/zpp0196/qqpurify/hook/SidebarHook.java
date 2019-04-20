@@ -63,26 +63,7 @@ public class SidebarHook extends AbstractHook {
         findAndHideView(obj, LinearLayout.class, "b", "sidebar_hide_cityWeather");
 
         Activity activity = (Activity) param.args[0];
-        addQzoneEntry(activity, param);
         addModuleEntry(activity, (ViewGroup) nightTheme.getParent());
-    }
-
-    @SuppressLint ("WrongConstant")
-    private void addQzoneEntry(Activity activity, XC_MethodHook.MethodHookParam param) {
-        // 侧滑栏添加空间入口
-        if (getBool("sidebar_add_qzoneEntry", true)) {
-            View view = getObjectIfExists(param.thisObject, View.class, "a");
-            view.setOnClickListener(v -> {
-                Intent intent = new Intent();
-                intent.putExtra("newflag", true);
-                intent.putExtra("refer", "schemeActiveFeeds");
-                XposedHelpers.callStaticMethod(findClass(QzonePluginProxyActivity), "a", intent, "com.qzone.feed.ui.activity.QZoneFriendFeedActivity");
-                intent.addFlags(0x30000000);
-                Object qqAppInterface = getObjectIfExists(param.thisObject, QQAppInterface, "a");
-                String uin = (String) XposedHelpers.callMethod(qqAppInterface, "getCurrentAccountUin");
-                XposedHelpers.callStaticMethod(findClass(QZoneHelper), "b", activity, uin, intent, -1);
-            });
-        }
     }
 
     @SuppressLint ("ResourceType")

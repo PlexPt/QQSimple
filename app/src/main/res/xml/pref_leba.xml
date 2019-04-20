@@ -25,6 +25,11 @@
         android:dependency="leba_display_tab"
         android:title="底部">
         <SwitchPreference
+            android:defaultValue="true"
+            android:key="leba_ce_qzoneEntry"
+            android:summary="点击底部动态按钮直接进入空间"
+            android:title="空间直达" />
+        <SwitchPreference
             android:key="leba_hide_tabNum"
             android:title="隐藏消息数量" />
     </PreferenceCategory>

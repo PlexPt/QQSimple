@@ -1,8 +1,11 @@
 package me.zpp0196.qqpurify.hook;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.Instrumentation;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
@@ -114,9 +117,13 @@ public class ExtensionHook extends AbstractHook {
         });
     }
 
+    private View lebaTab;
+    private View lebaTabNew;
+
     private void hideMainFragmentTab() {
-        findAndHookMethod(MainFragment, "a", View.class, new XC_MethodHook() {
+        findAndHookMethod(MainFragment, View[].class, "a", new Class<?>[]{View.class}, new XC_MethodHook() {
             @Override
+            @SuppressLint("WrongConstant")
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 View[] views = getObjectIfExists(param.thisObject, View[].class, "a");
                 // 联系人
@@ -126,6 +133,42 @@ public class ExtensionHook extends AbstractHook {
                 // 动态
                 if (!getBool("leba_display_tab", true)) {
                     hideView(views[3]);
+                }
+                // 空间直达
+                if (getBool("leba_ce_qzoneEntry")) {
+                    Activity activity = (Activity) XposedHelpers.callMethod(param.thisObject, "getActivity");
+                    View.OnClickListener enterQzone = view -> {
+                        Intent intent = new Intent();
+                        intent.putExtra("newflag", true);
+                        intent.putExtra("refer", "schemeActiveFeeds");
+                        XposedHelpers.callStaticMethod(findClass(QzonePluginProxyActivity), "a", intent, "com.qzone.feed.ui.activity.QZoneFriendFeedActivity");
+                        intent.addFlags(0x30000000);
+                        Object qqAppInterface = getObjectIfExists(param.thisObject, QQAppInterface, "a");
+                        String uin = (String) XposedHelpers.callMethod(qqAppInterface, "getCurrentAccountUin");
+                        XposedHelpers.callStaticMethod(findClass(QZoneHelper), "b", activity, uin, intent, -1);
+                    };
+                    if (lebaTab != null) {
+                        lebaTab.setOnClickListener(enterQzone);
+                    }
+                    if (lebaTabNew != null) {
+                        lebaTabNew.setOnClickListener(enterQzone);
+                    }
+                }
+            }
+        });
+        findAndHookMethod(MainFragment, "a", int.class, int.class, int.class, int.class, int.class, int.class, int.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) {
+                View view = (View) param.getResult();
+                Context context = view.getContext();
+                int strId = (int) param.args[4];
+                String title = context.getResources().getString(strId);
+                if (title.equals("动态")) {
+                    if (lebaTab == null) {
+                        lebaTab = view;
+                    } else {
+                        lebaTabNew = view;
+                    }
                 }
             }
         });

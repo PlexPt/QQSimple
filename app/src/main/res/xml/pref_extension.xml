@@ -4,11 +4,6 @@
     <PreferenceCategory android:title="侧滑栏">
         <SwitchPreference
             android:defaultValue="true"
-            android:key="sidebar_add_qzoneEntry"
-            android:summary="点击顶部背景图进入QQ空间，如需进入资料卡请点击QQ头像或昵称"
-            android:title="添加空间入口" />
-        <SwitchPreference
-            android:defaultValue="true"
             android:key="sidebar_add_moduleEntry"
             android:summary="长按左下角设置按钮进入模块"
             android:title="添加模块入口" />
