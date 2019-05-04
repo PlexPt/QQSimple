@@ -6,8 +6,8 @@ import android.content.ComponentName;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.SwitchPreference;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import me.zpp0196.qqpurify.R;
 import me.zpp0196.qqpurify.activity.SettingsActivity;
