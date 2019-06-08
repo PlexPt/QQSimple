@@ -1,20 +1,73 @@
 apply plugin: 'com.android.application'
+apply from: './versioning.gradle'
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('C:\\Users\\zpp0196\\.android\\debug.keystore')
+            storePassword 'android'
+            keyAlias = 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "me.zpp0196.qqpurify"
-        minSdkVersion 16
-        //noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 22
-        versionCode 19022714
-        versionName "3.5.0"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode mVersionCode
+        versionName mVersionName
     }
     buildTypes {
-        release {
+        comm {
+            buildConfigField "boolean", "TEST", "true"
+            buildConfigField "boolean", "DEV", "false"
+            buildConfigField "long", "BUILDTIME", mBuildTime
+            buildConfigField "String", "BUILDNUM", "\"" + mBuildNum + "\""
+            signingConfig signingConfigs.debug
+            debuggable = false
             minifyEnabled true
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            initWith(comm)
+            debuggable = true
+            minifyEnabled false
+            buildConfigField "boolean", "DEV", "true"
+            versionNameSuffix getMVersionNameSuffix(getName())
+        }
+        dev {
+            initWith(comm)
+            minifyEnabled = false
+            buildConfigField "boolean", "DEV", "true"
+            versionNameSuffix getMVersionNameSuffix(getName())
+        }
+        alpha {
+            initWith(comm)
+            versionNameSuffix getMVersionNameSuffix(getName())
+        }
+        beta {
+            initWith(comm)
+            versionNameSuffix getMVersionNameSuffix(getName())
+        }
+        rc {
+            initWith(comm)
+            buildConfigField "boolean", "TEST", "false"
+            versionNameSuffix getMVersionNameSuffix(getName())
+        }
+        release {
+            initWith(comm)
+            shrinkResources true
+            buildConfigField "boolean", "TEST", "false"
+            versionNameSuffix ""
+        }
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "QQPurify" + "-" + mVersionName +
+                    variant.buildType.versionNameSuffix + ".apk"
         }
     }
     compileOptions {
@@ -24,11 +77,28 @@ android {
 }
 
 repositories {
+    mavenLocal()
     maven { url 'https://jitpack.io' }
 }
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+}
+
 dependencies {
+    // xposed
     compileOnly 'de.robv.android.xposed:api:82'
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
-    implementation 'com.github.topjohnwu.libsu:core:2.3.3'
+    implementation 'me.zpp0196.library:xposed:0.0.1'
+
+    // library
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'com.jaredrummler:colorpicker:1.1.0'
+    implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2'
+    implementation 'de.psdev.licensesdialog:licensesdialog:2.0.0'
+    implementation 'pub.devrel:easypermissions:3.0.0'
+    implementation 'ru.noties.markwon:core:3.0.1'
+
+    // androidx
+    implementation 'androidx.preference:preference:1.1.0-beta01'
 }

@@ -1,44 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="模块">
+    <PreferenceCategory android:title="关于">
         <Preference
-            android:icon="@drawable/ic_about_module_active_circle"
-            android:key="about_module_active"
-            android:title="模块状态" />
-        <Preference
-            android:icon="@drawable/ic_about_module_envi_xposed"
-            android:key="about_module_environment"
-            android:title="模块环境" />
-        <Preference
-            android:icon="@drawable/ic_about_author"
-            android:key="about_author"
             android:summary="zpp0196"
             android:title="模块作者" />
         <Preference
-            android:icon="@drawable/ic_about_version_module"
-            android:key="about_version_module"
+            android:key="version_module"
             android:title="模块版本" />
         <Preference
-            android:icon="@drawable/ic_about_version_qq"
-            android:key="about_version_qq"
+            android:key="version_qq"
             android:title="QQ版本" />
+        <Preference
+            android:key="licenses"
+            android:title="开放源代码许可" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="其他">
+    <PreferenceCategory android:title="交流">
         <Preference
-            android:icon="@drawable/ic_about_github"
-            android:key="about_github"
-            android:title="GitHub源码" />
-        <Preference
-            android:icon="@drawable/ic_about_alipay"
-            android:key="about_alipay"
-            android:title="支付宝捐赠" />
-        <Preference
-            android:icon="@drawable/ic_about_email"
-            android:key="about_email"
+            android:key="email_feedback"
             android:title="邮箱反馈" />
         <Preference
-            android:icon="@drawable/ic_about_wiki"
-            android:key="about_wiki"
-            android:title="更多内容" />
+            android:key="telegram_channel"
+            android:title="Telegram频道" />
     </PreferenceCategory>
 </PreferenceScreen>

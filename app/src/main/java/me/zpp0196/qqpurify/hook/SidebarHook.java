@@ -1,114 +1,250 @@
 package me.zpp0196.qqpurify.hook;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedHelpers;
-import me.zpp0196.qqpurify.activity.SettingsActivity;
-import me.zpp0196.qqpurify.utils.XPrefUtils;
+import me.zpp0196.library.xposed.XConstructor;
+import me.zpp0196.library.xposed.XConstructorHook;
+import me.zpp0196.library.xposed.XField;
+import me.zpp0196.library.xposed.XMethod;
+import me.zpp0196.library.xposed.XMethodHook;
+import me.zpp0196.qqpurify.activity.MainActivity;
+import me.zpp0196.qqpurify.hook.annotation.MethodHook;
+import me.zpp0196.qqpurify.hook.annotation.VersionSupport;
+import me.zpp0196.qqpurify.hook.base.BaseHook;
+import me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook;
+import me.zpp0196.qqpurify.hook.utils.QQDialogUtils;
+import me.zpp0196.qqpurify.utils.Setting;
 
 import static me.zpp0196.qqpurify.BuildConfig.APPLICATION_ID;
+import static me.zpp0196.qqpurify.BuildConfig.VERSION_NAME;
+import static me.zpp0196.qqpurify.utils.Utils.getAppVersionName;
 
 /**
  * Created by zpp0196 on 2019/2/8.
  */
+@SuppressWarnings("unused")
+public class SidebarHook extends BaseHook {
 
-public class SidebarHook extends AbstractHook {
+    private boolean mHideDaily;
+    private boolean mHideQrCode;
+    private boolean mHideNightTheme;
+    private List<String> mSidebarItems = new ArrayList<>();
+
+    private View mModuleEntry;
+
+    public SidebarHook(Context context) {
+        super(context);
+    }
+
     @Override
     public void init() {
-        XposedHelpers.findAndHookConstructor(findClass(QQSettingMe), BaseActivity, QQAppInterface, FrameHelperActivity, new XC_MethodHook() {
+        super.init();
+        XConstructorHook.create($(QQSettingMe)).hook(new XC_LogMethodHook() {
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                hideSidebarItemAndAddEntry(param);
+            protected void after(XMethodHook.MethodParam param) {
+                super.after(param);
+                // 打卡
+                if (mHideDaily) {
+                    hideView(XField.create(param).exact(LinearLayout.class, "a").get());
+                }
+                // 二维码
+                if (mHideQrCode) {
+                    hideView(XField.create(param).exact(ImageView.class, "d").get());
+                }
+                // 夜间模式
+                if (mHideNightTheme) {
+                    hideView(XField.create(param).exact(View.class, "d").get());
+                }
+                // 侧滑栏列表
+                View[] items = XField.create(param).exact(View[].class, "a").get();
+                for (String str : mSidebarItems) {
+                    hideView(items[Integer.valueOf(str)]);
+                }
             }
         });
-        // 隐藏侧滑栏厘米秀
-        if (getBool("sidebar_hide_apollo")) {
-            findAndHookMethod(QQSettingMe, "a", ApolloManager$CheckApolloInfoResult, XC_MethodReplacement.returnConstant(null));
-        }
-        hideSettingItem();
     }
 
-    private void hideSidebarItemAndAddEntry(XC_MethodHook.MethodHookParam param) {
-        final Object obj = param.thisObject;
-
-        // 隐藏打卡
-        if (getBool("sidebar_hide_myDaily", true)) {
-            hideView(getObjectIfExists(obj, LinearLayout.class, "a"));
-        }
-        // 隐藏二维码
-        findAndHideView(obj, ImageView.class, "d", "sidebar_hide_myQrCode");
-        // 隐藏侧滑栏内容
-        View[] items = getObjectIfExists(obj, View[].class, "a");
-        List<Integer> list = XPrefUtils.getIntegerList("sidebar_hide_items");
-        for (Integer integer : list) {
-            hideView(items[integer]);
-        }
-        // 隐藏夜间模式
-        View nightTheme = getObjectIfExists(obj, View.class, "d");
-        if (getBool("sidebar_hide_nightTheme", true)) {
-            hideView(nightTheme);
-        }
-        // 隐藏天气
-        findAndHideView(obj, LinearLayout.class, "b", "sidebar_hide_cityWeather");
-
-        Activity activity = (Activity) param.args[0];
-        addModuleEntry(activity, (ViewGroup) nightTheme.getParent());
+    @MethodHook(desc = "隐藏打卡")
+    public void hideDaily() {
+        this.mHideDaily = true;
     }
 
-    @SuppressLint ("ResourceType")
-    private void addModuleEntry(Activity activity, ViewGroup bottomBtn) {
-        // 侧滑栏添加模块入口
-        if (getBool("sidebar_add_moduleEntry", true)) {
-            View settingLayout = bottomBtn.getChildAt(0);
-            settingLayout.setOnLongClickListener(v -> {
-                Intent intent = new Intent(APPLICATION_ID);
-                intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-                intent.setComponent(new ComponentName(APPLICATION_ID, SettingsActivity.class.getName()));
-                activity.startActivity(intent);
-                return false;
-            });
-        }
+    @MethodHook(desc = "隐藏我的二维码")
+    public void hideQrCode() {
+        this.mHideQrCode = true;
     }
 
-    private void hideSettingItem() {
-        // 隐藏设置界面内容
-        List<String> list = XPrefUtils.getStringList("setting_hide_items");
-        findAndHookMethod(QQSettingSettingActivity, "a", int.class, int.class, int.class, int.class, new XC_MethodHook() {
+    @MethodHook(desc = "隐藏夜间模式")
+    public void hideNightTheme() {
+        this.mHideNightTheme = true;
+    }
+
+    @MethodHook(desc = "隐藏侧滑栏列表")
+    public void hideSidebarItems(List<String> needHideItems) {
+        this.mSidebarItems = needHideItems;
+    }
+
+    @MethodHook(desc = "隐藏城市天气")
+    public void hideCityWeather() {
+        XConstructorHook.create($(QQSettingMe)).hook(new XMethodHook.Callback() {
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                Activity activity = (Activity) param.thisObject;
-                int viewId = Integer.parseInt(param.args[0].toString());
-                int strId = Integer.parseInt(param.args[1].toString());
-                View view = activity.findViewById(viewId);
-                String str = activity.getString(strId);
+            protected void after(XMethodHook.MethodParam param) {
+                hideView(XField.create(param).exact(LinearLayout.class, "c").get());
+            }
+        });
+    }
+
+    @MethodHook(desc = "隐藏返回按钮")
+    @VersionSupport(min = 1024)
+    public void hideBack() {
+        XConstructorHook.create($(QQSettingMe)).hook(new XC_LogMethodHook() {
+            @Override
+            protected void after(XMethodHook.MethodParam param) {
+                super.after(param);
+                hideView(XField.create(param).exact(ImageView.class, "e").get());
+            }
+        });
+    }
+
+    @MethodHook(desc = "隐藏我的状态")
+    @VersionSupport(min = 1024)
+    public void hideMineStory() {
+        // 我的状态
+        XMethodHook.create($(VSConfigManager)).method("a").params(String.class, Object.class)
+                .hook(new XC_LogMethodHook() {
+                    @Override
+                    protected void after(XMethodHook.MethodParam param) {
+                        super.after(param);
+                        String key = param.args(0);
+                        Object value = param.getResult();
+                        if ("mine_videostory_entrance".equals(key)) {
+                            param.setResult("0");
+                        }
+                    }
+                });
+    }
+
+    @MethodHook(desc = "隐藏厘米秀")
+    public void hideApollo() {
+        XMethodHook.create($(QQSettingMe)).method("a").params(ApolloManager$CheckApolloInfoResult)
+                .hook(XC_LogMethodHook.intercept());
+    }
+
+    @MethodHook(desc = "隐藏设置列表")
+    public void hideSettingItems(final List<String> list) {
+        // 设置列表
+        XMethodHook.create($(QQSettingSettingActivity)).method("a").params(int.class, int.class,
+                int.class, int.class).hook(new XC_LogMethodHook() {
+            @Override
+            protected void after(XMethodHook.MethodParam param) {
+                super.after(param);
+                Activity activity = param.thisObject();
+                String str = activity.getString(param.args(1));
                 if (list.contains(str)) {
-                    hideView(view);
+                    hideView(activity.findViewById(param.args(0)));
                 }
             }
         });
-        // 隐藏QQ达人
+
+        // QQ达人
         if (list.contains("QQ达人")) {
-            findAndHookMethod(QQSettingSettingActivity, "c", Card, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    param.args[0] = null;
-                }
-            });
+            XMethodHook.create($(QQSettingSettingActivity)).method("c").params(Card)
+                    .hook(new XC_LogMethodHook() {
+                        @Override
+                        protected void before(XMethodHook.MethodParam param) {
+                            super.before(param);
+                            param.args[0] = null;
+                        }
+                    });
         }
-        // 隐藏设置免流量特权
+
+        // 免流量特权
         if (list.contains("免流量特权")) {
-            findAndHookMethod(QQSettingSettingActivity, "a", XC_MethodReplacement.returnConstant(null));
+            XMethodHook.create($(QQSettingSettingActivity)).method(void.class, "a")
+                    .hook(XC_LogMethodHook.intercept());
         }
+    }
+
+    @MethodHook(desc = "添加模块入口")
+    public void addModuleEntry() {
+        // 皮这一下非常开心.jpg
+        int requestCode = (int) (Math.random() * 100000);
+
+        Class<?> clz = $(QQSettingSettingActivity);
+        XMethodHook.create(clz).method("doOnCreate").hook(new XC_LogMethodHook() {
+            @Override
+            protected void after(XMethodHook.MethodParam param) {
+                super.after(param);
+                View formSimpleItem = XField.create(param).exact(FormSimpleItem, "a").get();
+                Context context = formSimpleItem.getContext();
+                mModuleEntry = XConstructor.create(formSimpleItem.getClass()).instance(context);
+                XMethod.create(mModuleEntry).name("setLeftText").invoke("QQ净化");
+                XMethod.create(mModuleEntry).name("setRightText").invoke(VERSION_NAME);
+                LinearLayout linearLayout = (LinearLayout) formSimpleItem.getParent();
+                linearLayout.addView(mModuleEntry, 0);
+                mModuleEntry.setOnClickListener(view -> {
+                    String mainActivityClass = MainActivity.class.getName();
+                    String buildNum = XField.create($(BaseApplication)).name("buildNum").get();
+                    Intent intent = new Intent(APPLICATION_ID);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+                    intent.putExtra(INTENT_BUILD_NUM, buildNum);
+                    intent.putExtra(INTENT_LAUNCH, true);
+                    intent.setComponent(new ComponentName(APPLICATION_ID, mainActivityClass));
+                    Activity activity = param.thisObject();
+                    try {
+                        activity.startActivityForResult(intent, requestCode);
+                    } catch (Exception e) {
+                        onAfterError(param, e);
+                        Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        XMethodHook.create(clz).method("onActivityResult").hook(new XC_LogMethodHook() {
+            @Override
+            protected void after(XMethodHook.MethodParam param) {
+                super.after(param);
+                int rc = param.args(0);
+                Intent intent;
+
+                if (requestCode != rc || ((intent = param.args(2)) == null)) {
+                    return;
+                }
+
+                long oldLmt = Setting.getLong(KEY_LAST_MODIFIED, System.currentTimeMillis());
+                long newLmt = intent.getLongExtra(KEY_LAST_MODIFIED, oldLmt);
+                if (newLmt == oldLmt) {
+                    return;
+                }
+                QQDialogUtils.showRestartDialog(param.thisObject());
+            }
+        });
+
+        XMethodHook.create(clz).method("onResume").hook(new XC_LogMethodHook() {
+            @Override
+            protected void after(XMethodHook.MethodParam param) {
+                super.after(param);
+                String versionName = getAppVersionName(param.thisObject(), APPLICATION_ID);
+                if (mModuleEntry != null) {
+                    XMethod.create(mModuleEntry).name("setRightText").invoke(versionName);
+                }
+            }
+        });
+    }
+
+    @Override
+    public SettingGroup getSettingGroup() {
+        return SettingGroup.sidebar;
     }
 }

@@ -1,0 +1,39 @@
+import java.text.SimpleDateFormat
+
+ext {
+    mVersionCode = getVersionCode()
+    mVersionName = getVersionName()
+    mBuildNum = getBuildNum()
+    mBuildTime = getBuildTime()
+    getMVersionNameSuffix = this.&getMVersionNameSuffix
+}
+
+static Integer getVersionCode() {
+    String versionCode = new SimpleDateFormat("yyMMddHH", Locale.ENGLISH).format(new Date())
+    println("versionCode: " + versionCode)
+    return Integer.valueOf(versionCode)
+}
+
+static String getVersionName() {
+    long start = new GregorianCalendar(2018, 3 - 1, 14).getTimeInMillis()
+    String days = String.valueOf((int) ((System.currentTimeMillis() - start) / (24 * 60 * 60 * 1000)))
+    int length = days.length()
+    String v3 = days.substring(length - 1)
+    String v2 = days.substring(length - 2, length - 1)
+    String v1 = days.substring(0, length - 2)
+    String versionName = String.format("%s.%s.%s", v1, v2, v3)
+    println("versionName: " + versionName)
+    return versionName
+}
+
+static String getBuildNum() {
+    return new SimpleDateFormat("HHmm", Locale.ENGLISH).format(new Date())
+}
+
+static String getBuildTime() {
+    return System.currentTimeMillis() + "L"
+}
+
+static String getMVersionNameSuffix(String suffix) {
+    return "." + getBuildNum() + "-" + suffix
+}

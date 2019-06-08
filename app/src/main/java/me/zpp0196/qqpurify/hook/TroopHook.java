@@ -6,129 +6,125 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedHelpers;
-import me.zpp0196.qqpurify.utils.ReflectionUtils;
+import me.zpp0196.library.xposed.XField;
+import me.zpp0196.library.xposed.XMethod;
+import me.zpp0196.library.xposed.XMethodHook;
+import me.zpp0196.qqpurify.hook.annotation.MethodHook;
+import me.zpp0196.qqpurify.hook.annotation.VersionSupport;
+import me.zpp0196.qqpurify.hook.base.BaseHook;
+import me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook;
+
+import static me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook.intercept;
 
 /**
  * Created by zpp0196 on 2019/2/8.
  */
+@SuppressWarnings("unused")
+public class TroopHook extends BaseHook {
 
-public class TroopHook extends AbstractHook {
+    public TroopHook(Context context) {
+        super(context);
+    }
+
+    @MethodHook(desc = "隐藏总人数")
+    @VersionSupport(min = 1024)
+    public void hideTotalNumber() {
+        XMethodHook.create($(TroopChatPie)).method("a").params(String.class, boolean.class).
+                hook(new XC_LogMethodHook() {
+                    @Override
+                    protected void after(XMethodHook.MethodParam param) {
+                        super.after(param);
+                        TextView d = XField.create(param).exact(TextView.class, "d").get();
+                        d.setVisibility(View.INVISIBLE);
+                    }
+                });
+    }
+
+    @MethodHook(desc = "隐藏在线人数")
+    @VersionSupport(min = 1024)
+    public void hideOnlineNumber() {
+        XMethodHook.create($(BaseTroopChatPie)).method("c").params(boolean.class)
+                .hook(new XC_LogMethodHook() {
+                    @Override
+                    protected void after(XMethodHook.MethodParam param) {
+                        super.after(param);
+                        TextView f = XField.create(param).exact(TextView.class, "f").get();
+                        ((ViewGroup) f.getParent()).setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    @MethodHook(desc = "隐藏群头衔")
+    public void hideLevel() {
+        XMethodHook.create($(BaseBubbleBuilder)).method("f").params(ChatMessage, BaseChatItemLayout)
+                .hook(intercept());
+        XMethodHook.create($(BaseChatItemLayout)).method("a").params(QQAppInterface, boolean.class,
+                String.class, boolean.class, int.class, int.class).hook(intercept());
+    }
+
+    @MethodHook(desc = "隐藏魅力等级")
+    public void hideGlamourLevel() {
+        XMethodHook.create($(BaseBubbleBuilder)).method("g").params(ChatMessage, BaseChatItemLayout)
+                .hook(intercept());
+        XMethodHook.create($(BaseChatItemLayout)).method("a").params(QQAppInterface, boolean.class,
+                int.class, boolean.class).hook(intercept());
+    }
+
+    @MethodHook(desc = "隐藏炫彩昵称")
+    @VersionSupport(min = 980)
+    public void hideColorNick() {
+        XMethodHook.create($(ColorNickManager)).method("a").callback(intercept())
+                .params(QQAppInterface, TextView.class, Spannable.class).hook();
+    }
+
+    @MethodHook(desc = "隐藏礼物动画")
+    public void hideGiftAnim() {
+        XMethodHook.create($(TroopGiftAnimationController)).method("a")
+                .params(MessageForDeliverGiftTips).hook(intercept());
+    }
+
+    @MethodHook(desc = "隐藏入场动画")
+    public void hideEnterEffect() {
+        XField.create($(TroopEnterEffectController)).exact(String.class, "a").set("");
+    }
+
+    @MethodHook(desc = "隐藏群助手顶部动态")
+    public void hideAssistantDynamic() {
+        XMethodHook.create($(TroopDynamicConfig)).method("a").params(String.class).hook(intercept());
+    }
+
+    @MethodHook(desc = "隐藏移出群助手提示")
+    public void hideAssistantRemoveTips() {
+        XMethodHook.create($(ChatActivityUtils)).params(Context.class, String.class,
+                View.OnClickListener.class, View.OnClickListener.class).method("a")
+                .hook(new XC_LogMethodHook() {
+                    @Override
+                    protected void before(XMethodHook.MethodParam param) {
+                        super.before(param);
+                        String str = param.args[1].toString();
+                        if (str.contains("移出群助手")) {
+                            param.setResult(null);
+                        }
+                    }
+                });
+    }
+
+    @MethodHook(desc = "隐藏群通知里面的群推荐")
+    public void hideNoticeRecommend() {
+        XMethodHook.create($(NotifyAndRecAdapter)).method("getView").hook(new XC_LogMethodHook() {
+            @Override
+            protected void after(XMethodHook.MethodParam param) {
+                super.after(param);
+                int type = XMethod.create(param).name("getItemViewType").invoke(param.args[0]);
+                if (type == 1 || type == 6) {
+                    param.setResult(new View((param.args(1, View.class)).getContext()));
+                }
+            }
+        });
+    }
+
     @Override
-    public void init() throws Throwable {
-        hideTopContent();
-        hookChat();
-        hideChatItemLayout();
-        hideTroopAnim();
-        hideTroopAssistantContent();
-        hideTroopNoticeContent();
-    }
-
-    private void hideTopContent() {
-        // 隐藏顶部总人数
-        if (getBool("troop_hide_totalNumber")) {
-            findAndHookMethod(TroopChatPie, "bq", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    TextView d = getObjectIfExists(param.thisObject, TextView.class, "d");
-                    hideView(d);
-                }
-            });
-        }
-        // 隐藏顶部在线人数
-        if (getBool("troop_hide_onlineNumber")) {
-            findAndHookMethod(BaseTroopChatPie, "c", boolean.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    TextView f = getObjectIfExists(param.thisObject, TextView.class, "f");
-                    ((ViewGroup) f.getParent()).setVisibility(View.GONE);
-                    TextView e = getObjectIfExists(param.thisObject, TextView.class, "e");
-                    e.setTextSize(2, 19f);
-                    TextView d = getObjectIfExists(param.thisObject, TextView.class, "d");
-                    d.setTextSize(2, 19f);
-                }
-            });
-        }
-    }
-
-    private void hookChat() {
-        // 防止被@
-        if (getBool("troop_prevent_at")) {
-            findAndHookMethod(MessageInfo, "a", QQAppInterface, String.class, MessageInfo, Object.class, MessageRecord, boolean.class, XC_MethodReplacement.returnConstant(null));
-        }
-        // 签到文本化
-        if (getBool("troop_simple_sign", true)) {
-            findAndHookMethod(ItemBuilderFactory, "a", ChatMessage, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    int result = (int) param.getResult();
-                    if (result == 71 || result == 84) {
-                        param.setResult(-1);
-                    }
-                }
-            });
-        }
-    }
-
-    private void hideChatItemLayout() {
-        // 隐藏群头衔
-        if (getBool("troop_hide_level")) {
-            findAndHookMethod(BaseChatItemLayout, "a", QQAppInterface, boolean.class, String.class, boolean.class, int.class, int.class, hideViewAfterMethod(TextView.class, "c"));
-        }
-        // 隐藏魅力等级
-        if (getBool("troop_hide_glamourLevel", true)) {
-            findAndHookMethod(BaseChatItemLayout, "a", QQAppInterface, boolean.class, int.class, boolean.class, hideViewAfterMethod(TextView.class, "d"));
-        }
-        // 隐藏炫彩昵称 FIXME taichi
-        if (getBool("troop_hide_colorNick", true)) {
-            findAndHookMethod(ColorNickManager, "a", QQAppInterface, TextView.class, Spannable.class, XC_MethodReplacement.returnConstant(null));
-        }
-    }
-
-    private void hideTroopAnim() throws Throwable {
-        // 隐藏礼物动画
-        if (getBool("troop_hide_giftAnim", true)) {
-            findAndHookMethod(TroopGiftAnimationController, "a", MessageForDeliverGiftTips, XC_MethodReplacement.returnConstant(null));
-        }
-        // 隐藏入场动画
-        if (getBool("troop_hide_enterAnim", true)) {
-            ReflectionUtils.setStaticObjectField(findClass(TroopEnterEffectController), String.class, "a", "");
-        }
-    }
-
-    private void hideTroopAssistantContent() {
-        // 隐藏群助手里面的小视频
-        if (getBool("troopAssistant_hide_smallVideo", true)) {
-            findAndHookMethod(TroopAssistantActivity, "h", hideViewAfterMethod(View.class, "c"));
-        }
-        // 隐藏移出群助手提示
-        if (getBool("troopAssistant_hide_removeTips", true)) {
-            findAndHookMethod(ChatActivityUtils, "a", Context.class, String.class, View.OnClickListener.class, View.OnClickListener.class, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    String str = param.args[1].toString();
-                    if (str.contains("移出群助手")) {
-                        param.setResult(null);
-                    }
-                }
-            });
-        }
-    }
-
-    private void hideTroopNoticeContent() {
-        // 隐藏群通知里面的群推荐
-        if (getBool("troopNotice_hide_recommend", true)) {
-            findAndHookMethod(NotifyAndRecAdapter, "getView", int.class, View.class, ViewGroup.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    int itemViewType = (int) XposedHelpers.callMethod(param.thisObject, "getItemViewType", param.args[0]);
-                    if (itemViewType == 1 || itemViewType == 6) {
-                        param.setResult(new View(((View) param.args[1]).getContext()));
-                    }
-                }
-            });
-        }
+    public SettingGroup getSettingGroup() {
+        return SettingGroup.troop;
     }
 }

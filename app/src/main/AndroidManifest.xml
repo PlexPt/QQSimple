@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,23 +13,22 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.Def"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
-            android:name=".activity.SettingsActivity"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name">
+            android:name=".activity.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
             </intent-filter>
         </activity>
 
         <activity-alias
-            android:name=".activity.SettingsActivityAlias"
+            android:name=".activity.MainActivityAlias"
             android:label="@string/app_name"
-            android:targetActivity=".activity.SettingsActivity">
+            android:targetActivity=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -43,7 +43,7 @@
             android:value="@string/xposed_description" />
         <meta-data
             android:name="xposedminversion"
-            android:value="54" />
+            android:value="82" />
         <meta-data
             android:name="android.max_aspect"
             android:value="2.1" />

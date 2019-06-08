@@ -14,13 +14,21 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
-#-renamesourcefileattribute SourceFile
+-renamesourcefileattribute SourceFile
 
--keep public class me.zpp0196.qqpurify.hook.InitHook
--keepclassmembernames class me.zpp0196.qqpurify.activity.SettingsActivity {
-    boolean isModuleActive();
+-keep public class me.zpp0196.qqpurify.**PreferenceFragment
+
+-keep public class me.zpp0196.qqpurify.**Hook
+-keepclassmembers public class me.zpp0196.qqpurify.**Hook {
+    <init>(android.content.Context);
+}
+
+-keep class me.zpp0196.qqpurify.hook.annotation.*
+
+-keepclassmembers class * {
+    @me.zpp0196.qqpurify.hook.annotation.MethodHook <methods>;
 }

@@ -1,22 +1,102 @@
 package me.zpp0196.qqpurify.fragment;
 
-import android.Manifest;
 import android.app.AlertDialog;
-import android.content.ComponentName;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.preference.SwitchPreference;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import android.widget.Toast;
+
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.SwitchPreference;
+
+import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
 import me.zpp0196.qqpurify.R;
-import me.zpp0196.qqpurify.activity.SettingsActivity;
+import me.zpp0196.qqpurify.fragment.base.AbstractPreferenceFragment;
+import me.zpp0196.qqpurify.fragment.custom.ColorPickerPreference;
+import me.zpp0196.qqpurify.utils.Setting;
+import me.zpp0196.qqpurify.utils.ThemeUtils;
+import me.zpp0196.qqpurify.utils.Utils;
+
+import static me.zpp0196.library.utils.LogUtils.LogLevel;
 
 /**
  * Created by zpp0196 on 2019/2/9.
  */
+public class SettingPreferenceFragment extends AbstractPreferenceFragment
+        implements Preference.OnPreferenceClickListener, ColorPickerDialogListener {
 
-public class SettingPreferenceFragment extends AbstractPreferenceFragment {
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    protected void initPreferences() {
+        initLogLevelPreference();
+
+        super.initPreferences();
+        findPreference("restoreDefault").setOnPreferenceClickListener(this);
+
+        SwitchPreference disPlayDesktop = findPreference("displayDesktop");
+        disPlayDesktop.setChecked(Utils.getEnable(mActivity));
+        disPlayDesktop.setOnPreferenceChangeListener(this);
+
+        ColorPickerPreference appThemeColor = findPreference("appThemeColor");
+        appThemeColor.setPersistent(true);
+        appThemeColor.setColor(ThemeUtils.getThemeColor(mActivity));
+        appThemeColor.setPresets(ThemeUtils.getColors(mActivity));
+        appThemeColor.setSummary(ThemeUtils.getThemeTitle());
+        appThemeColor.setColorPickerDialogListener(this);
+        appThemeColor.setOnPreferenceChangeListener(null);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void initLogLevelPreference() {
+        String[] logLevels = new String[LogLevel.values().length];
+        for (int i = 0; i < logLevels.length; i++) {
+            logLevels[i] = LogLevel.values()[i].name();
+        }
+        ListPreference logLevel = findPreference(KEY_LOG_LEVEL);
+        logLevel.setEntries(logLevels);
+        logLevel.setEntryValues(logLevels);
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        if ("restoreDefault".equals(preference.getKey())) {
+            new AlertDialog.Builder(mActivity).setCancelable(false)
+                    .setTitle("提示")
+                    .setMessage("请确认是否恢复到默认设置")
+                    .setPositiveButton("确定", (dialog, which) -> {
+                        try {
+                            Setting.restore();
+                            mActivity.mRefreshedFragment.clear();
+                            initPreferences();
+                            Toast.makeText(mActivity, "已恢复到默认设置", Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(mActivity, "恢复失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton("取消", null)
+                    .show();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        if ("displayDesktop".equals(preference.getKey())) {
+            Utils.updateDesktopIcon(mActivity);
+            return true;
+        }
+        return super.onPreferenceChange(preference, newValue);
+    }
+
+    @Override
+    public void onColorSelected(int dialogId, int color) {
+        ThemeUtils.setColor(mActivity, color);
+        mActivity.recreate();
+    }
+
+    @Override
+    public void onDialogDismissed(int dialogId) {
+    }
 
     @Override
     protected int getPrefRes() {
@@ -24,70 +104,17 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        SwitchPreference hideDesktopIcon = (SwitchPreference) findPreference("module_hide_desktopIcon");
-        hideDesktopIcon.setChecked(!getEnable());
-        hideDesktopIcon.setOnPreferenceChangeListener((preference, newValue) -> {
-            // 设置桌面图标
-            activity.getPackageManager()
-                    .setComponentEnabledSetting(getAlias(),
-                            getEnable() ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED :
-                                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-
-            return true;
-        });
-        findPreference("module_backupData").setOnPreferenceClickListener(preference -> {
-            if (checkPermission(activity.REQUEST_BACKUP)) {
-                activity.backupPref();
-            }
-            return false;
-        });
-        findPreference("module_restoreBackup").setOnPreferenceClickListener(preference -> {
-            if (checkPermission(activity.REQUEST_RESTORE)) {
-                activity.restoreBackup();
-            }
-            return false;
-        });
-        findPreference("module_restoreDefault").setOnPreferenceClickListener(preference -> {
-            showRestoreDefaultDialog();
-            return false;
-        });
+    public String getTabTitle() {
+        return "设置";
     }
 
-    private ComponentName getAlias() {
-        return new ComponentName(activity, SettingsActivity.class.getName() + "Alias");
+    @Override
+    public String getToolbarTitle() {
+        return "模块设置";
     }
 
-    private boolean getEnable() {
-        try {
-            PackageManager packageManager = activity.getPackageManager();
-            int state = packageManager.getComponentEnabledSetting(getAlias());
-            return state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED ||
-                   state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private boolean checkPermission(int requestCode) {
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-            PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, requestCode);
-            return false;
-        }
-        return true;
-    }
-
-    private void showRestoreDefaultDialog() {
-        new AlertDialog.Builder(activity).setCancelable(false)
-                .setTitle(R.string.dialog_title_tip)
-                .setMessage(R.string.tip_setting_restore_default_confirm)
-                .setPositiveButton(R.string.dialog_button_confirm, (dialog, which) -> {
-                    activity.defaultPref.delete();
-                    activity.showRestartDialog();
-                })
-                .setNegativeButton(R.string.dialog_button_cancel, null)
-                .show();
+    @Override
+    public SettingGroup getSettingGroup() {
+        return SettingGroup.setting;
     }
 }

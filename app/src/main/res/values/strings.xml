@@ -2,28 +2,6 @@
 <resources>
 
     <string name="app_name">QQ净化</string>
-    <string name="xposed_description">Hide QQ garish dress up</string>
-
-    <string name="menu_reboot_qq">重启QQ</string>
-    <string name="menu_exit">退出</string>
-
-    <string name="dialog_title_tip">提示</string>
-    <string name="dialog_title_update">更新说明</string>
-    <string name="dialog_button_confirm">确定</string>
-    <string name="dialog_button_cancel">取消</string>
-    <string name="dialog_button_close">关闭</string>
-    <string name="dialog_button_donate">支持一下</string>
-    <string name="dialog_button_updlog">更新日志</string>
-    <string name="dialog_button_reboot">重启</string>
-
-    <string name="tip_module_update">感谢你使用本软件，如果需要了解更新内容请点击左下角的更新日志在里面找对应的版本查看更新日志，如果在使用过程中遇到了什么问题请先去看一下关于模块里面的更多内容，如果你喜欢这个模块请务必支持一下我，你们的支持就是我开发的动力。</string>
-    <string name="tip_module_active_error">模块未激活！</string>
-    <string name="tip_start_qq_failure">启动QQ失败！</string>
-    <string name="tip_reboot_qq_start">正在重启QQ&#8230;</string>
-    <string name="tip_reboot_qq_failure">获取Root权限失败，请手动强行停止QQ！</string>
-    <string name="tip_setting_backup_finish_success">已备份到：%s</string>
-    <string name="tip_setting_restore_default_confirm">你确定恢复默认设置吗？</string>
-    <string name="tip_setting_restore_reboot">恢复成功，重启应用生效！</string>
-    <string name="tip_setting_restore_file_not_find">未找到备份文件！</string>
+    <string name="xposed_description">精简QQ界面</string>
 
 </resources>

@@ -1,390 +1,220 @@
 package me.zpp0196.qqpurify.hook;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.Instrumentation;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Canvas;
-import android.os.SystemClock;
+import android.graphics.Color;
+import android.os.Environment;
 import android.text.TextUtils;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.view.ViewGroup;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedHelpers;
-import me.zpp0196.qqpurify.utils.ReflectionUtils;
-import me.zpp0196.qqpurify.utils.XPrefUtils;
+import me.zpp0196.library.xposed.XField;
+import me.zpp0196.library.xposed.XLog;
+import me.zpp0196.library.xposed.XMethod;
+import me.zpp0196.library.xposed.XMethodHook;
+import me.zpp0196.qqpurify.hook.annotation.MethodHook;
+import me.zpp0196.qqpurify.hook.annotation.VersionSupport;
+import me.zpp0196.qqpurify.hook.base.BaseHook;
+import me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook;
+import me.zpp0196.qqpurify.utils.Utils;
+
+import static me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook.intercept;
+import static me.zpp0196.qqpurify.utils.Utils.isCallingFrom;
 
 /**
  * Created by zpp0196 on 2019/2/8.
  */
-
-public class ExtensionHook extends AbstractHook {
-
-    private Context context;
-    private String redirectPath;
+@SuppressWarnings({"unused", "WeakerAccess"})
+public class ExtensionHook extends BaseHook {
 
     public ExtensionHook(Context context) {
-        this.context = context;
+        super(context);
     }
 
-    @Override
-    public void init() throws Throwable {
-        // 模拟菜单
-        if (getBool("conversation_simulate_menu")) {
-            simulateMenu();
-        }
-        // 隐藏菜单更新和反馈
-        if (getBool("conversation_hide_menuUAF", true)) {
-            hideMenuUAF();
-        }
-        // 隐藏底部分组
-        hideMainFragmentTab();
-        // 防止消息撤回
-        if (getBool("chat_prevent_msgRecall", true)) {
-            preventMessagesRecall();
-        }
-        // 防止闪照销毁
-        if (getBool("chat_prevent_flashDisappear", true)) {
-            preventFlashDisappear();
-        }
-        // 以图片方式打开表情包
-        if (getBool("chat_prevent_dynamicPic")) {
-            preventDynamicPic();
-        }
-        // 查看图片背景透明
-        if (getBool("chat_transparent_imgBg", true)) {
-            transImageBg();
-        }
-        // 重命名base.apk
-        if (getBool("troop_rename_base", true)) {
-            renameBaseApk();
-        }
-        // 重定向文件下载目录
-        if (getBool("extension_redirect_filerec")) {
-            redirectFileRec();
-        }
-        // 自定义字体大小 FIXME taichi
-        if (getBool("global_set_fontSize")) {
-            setGlobalFontSize();
-        }
-    }
-
-    private void simulateMenu() {
-        findAndHookMethod(Conversation, "D", new XC_MethodHook() {
+    // region 防撤回
+    @MethodHook(desc = "防止消息撤回")
+    public void preventRecall() {
+        XMethodHook.create($(QQMessageFacade)).params(ArrayList.class, boolean.class)
+                .method("a").hook(new XC_LogMethodHook() {
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                RelativeLayout relativeLayout = getObjectIfExists(param.thisObject, RelativeLayout.class, "b");
-                relativeLayout.setOnClickListener(v -> new Thread(() -> {
-                    try {
-                        Instrumentation inst = new Instrumentation();
-                        inst.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }).start());
-            }
-        });
-    }
-
-    private void hideMenuUAF() {
-        findAndHookMethod(MainFragment, "r", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                Dialog dialog = getObjectIfExists(param.thisObject, Dialog.class, "b");
-                LinearLayout layout = getObjectIfExists(dialog, LinearLayout.class, "a");
-                layout.getChildAt(0)
-                        .setVisibility(View.GONE);
-                layout.getChildAt(1)
-                        .setVisibility(View.GONE);
-            }
-        });
-    }
-
-    private View lebaTab;
-    private View lebaTabNew;
-
-    private void hideMainFragmentTab() {
-        findAndHookMethod(MainFragment, View[].class, "a", new Class<?>[]{View.class}, new XC_MethodHook() {
-            @Override
-            @SuppressLint("WrongConstant")
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                View[] views = getObjectIfExists(param.thisObject, View[].class, "a");
-                // 联系人
-                if (!getBool("contacts_display_tab", true)) {
-                    hideView(views[2]);
-                }
-                // 动态
-                if (!getBool("leba_display_tab", true)) {
-                    hideView(views[3]);
-                }
-                // 空间直达
-                if (getBool("leba_ce_qzoneEntry")) {
-                    Activity activity = (Activity) XposedHelpers.callMethod(param.thisObject, "getActivity");
-                    View.OnClickListener enterQzone = view -> {
-                        Intent intent = new Intent();
-                        intent.putExtra("newflag", true);
-                        intent.putExtra("refer", "schemeActiveFeeds");
-                        XposedHelpers.callStaticMethod(findClass(QzonePluginProxyActivity), "a", intent, "com.qzone.feed.ui.activity.QZoneFriendFeedActivity");
-                        intent.addFlags(0x30000000);
-                        Object qqAppInterface = getObjectIfExists(param.thisObject, QQAppInterface, "a");
-                        String uin = (String) XposedHelpers.callMethod(qqAppInterface, "getCurrentAccountUin");
-                        XposedHelpers.callStaticMethod(findClass(QZoneHelper), "b", activity, uin, intent, -1);
-                    };
-                    if (lebaTab != null) {
-                        lebaTab.setOnClickListener(enterQzone);
-                    }
-                    if (lebaTabNew != null) {
-                        lebaTabNew.setOnClickListener(enterQzone);
-                    }
-                }
-            }
-        });
-        findAndHookMethod(MainFragment, "a", int.class, int.class, int.class, int.class, int.class, int.class, int.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) {
-                View view = (View) param.getResult();
-                Context context = view.getContext();
-                int strId = (int) param.args[4];
-                String title = context.getResources().getString(strId);
-                if (title.equals("动态")) {
-                    if (lebaTab == null) {
-                        lebaTab = view;
-                    } else {
-                        lebaTabNew = view;
-                    }
-                }
-            }
-        });
-        // 隐藏联系人和动态底部消息数量
-        findAndHookMethod(MainFragment, "a", int.class, BusinessInfoCheckUpdate$RedTypeInfo, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                int i = (int) param.args[0];
-                if ((i == 33 && (getBool("contacts_hide_tabNum") || getBool("contacts_hide_newFriend"))) ||
-                    (i == 34 && getBool("leba_hide_tabNum"))) {
+            protected void before(XMethodHook.MethodParam param) {
+                super.before(param);
+                ArrayList list = param.args(0);
+                if (list == null || list.isEmpty() || isCallingFrom("C2CMessageProcessor")) {
                     param.setResult(null);
+                    return;
                 }
-            }
-        });
-        // 隐藏消息列表底部消息数量
-        findAndHookMethod(MainFragment, "a", int.class, int.class, Object.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                int i = (int) param.args[0];
-                if (i == 32 && getBool("conversation_hide_tabNum")) {
-                    param.setResult(null);
-                }
-            }
-        });
-    }
+                Object revokeMsgInfo = list.get(0);
 
-    private void preventMessagesRecall() {
-        findAndHookMethod(QQMessageFacade, "a", ArrayList.class, boolean.class, new XC_MethodReplacement() {
-            @Override
-            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
-                ArrayList arrayList = (ArrayList) param.args[0];
-                if (arrayList == null || arrayList.isEmpty() ||
-                    isCallingFrom("C2CMessageProcessor")) {
-                    return null;
-                }
-                Object revokeMsgInfo = arrayList.get(0);
+                XField xField = XField.create(revokeMsgInfo);
+                String friendUin = xField.exact(String.class, "a").get();
+                String fromUin = xField.exact(String.class, "b").get();
+                int isTroop = xField.exact(int.class, "a").get();
+                long msgUid = xField.exact(long.class, "b").get();
+                long shmsgseq = xField.exact(long.class, "a").get();
+                long time = xField.exact(long.class, "c").get();
 
-                String friendUin = getObjectIfExists(revokeMsgInfo, String.class, "a");
-                String fromUin = getObjectIfExists(revokeMsgInfo, String.class, "b");
-                int isTroop = getObjectIfExists(revokeMsgInfo, int.class, "a");
-                long msgUid = getObjectIfExists(revokeMsgInfo, long.class, "b");
-                long shmsgseq = getObjectIfExists(revokeMsgInfo, long.class, "a");
-                long time = getObjectIfExists(revokeMsgInfo, long.class, "c");
-
-                Object qqAppInterface = getObjectIfExists(param.thisObject, QQAppInterface, "a");
-                String selfUin = (String) XposedHelpers.callMethod(qqAppInterface, "getCurrentAccountUin");
+                Object qqApp = XField.create(param).type(QQAppInterface).get();
+                String selfUin = XMethod.create(qqApp).name("getCurrentAccountUin").invoke();
 
                 if (selfUin.equals(fromUin)) {
-                    return null;
+                    param.setResult(null);
+                    return;
                 }
 
-                int msgType = (int) XposedHelpers.getStaticObjectField(findClass(MessageRecord), "MSG_TYPE_REVOKE_GRAY_TIPS");
-                List tip = getRevokeTip(qqAppInterface, selfUin, friendUin, fromUin, msgUid, shmsgseq,
+                int msgType = XField.create($(MessageRecord)).name("MSG_TYPE_REVOKE_GRAY_TIPS").get();
+                List tip = getRevokeTip(qqApp, selfUin, friendUin, fromUin, msgUid, shmsgseq,
                         time + 1, msgType, isTroop);
                 if (tip != null && !tip.isEmpty()) {
-                    XposedHelpers.callMethod(param.thisObject, "a", tip, selfUin);
+                    XMethod.create(param).name("a").invoke(tip, selfUin);
                 }
-                return null;
+                param.setResult(null);
             }
         });
     }
 
-    private List getRevokeTip(Object qqAppInterface, String selfUin, String friendUin, String fromUin, long msgUid, long shmsgseq, long time, int msgType, int isTroop) {
-        Object messageRecord = XposedHelpers.callStaticMethod(findClass(MessageRecordFactory), "a", msgType);
+    private List getRevokeTip(Object qqAppInterface, String selfUin, String friendUin, String fromUin,
+                              long msgUid, long shmsgseq, long time, int msgType, int isTroop) {
+        Object messageRecord = XMethod.create($(MessageRecordFactory)).name("a").invoke(msgType);
 
         String name;
         if (isTroop == 0) {
             name = "对方";
         } else {
-            name = (String) XposedHelpers.callStaticMethod(findClass(ContactUtils), "a", qqAppInterface, fromUin, friendUin,
-                    isTroop == 1 ? 1 : 2, 0);
+            name = XMethod.create($(ContactUtils)).name("a").invoke(qqAppInterface, fromUin,
+                    friendUin, isTroop == 1 ? 1 : 2, 0);
         }
 
-        XposedHelpers.callMethod(messageRecord, "init", selfUin,
-                isTroop == 0 ? fromUin : friendUin, fromUin,
-                name + "尝试撤回一条消息", time, msgType, isTroop, time);
+        XMethod.create(messageRecord).name("init").invoke(selfUin, isTroop == 0 ? fromUin :
+                friendUin, fromUin, name + "尝试撤回一条消息", time, msgType, isTroop, time);
 
-        XposedHelpers.setObjectField(messageRecord, "msgUid",
-                msgUid == 0 ? 0 : msgUid + new Random().nextInt());
-        XposedHelpers.setObjectField(messageRecord, "shmsgseq", shmsgseq);
-        XposedHelpers.setObjectField(messageRecord, "isread", true);
+        XField.create(messageRecord).name("msgUid").set(msgUid == 0 ? 0 : msgUid + new Random().nextInt());
+        XField.create(messageRecord).name("shmsgseq").set(shmsgseq);
+        XField.create(messageRecord).name("isread").set(true);
 
         List<Object> list = new ArrayList<>();
         list.add(messageRecord);
         return list;
     }
 
-    private boolean isCallingFrom(String className) {
-        StackTraceElement[] stackTraceElements = Thread.currentThread()
-                .getStackTrace();
-        for (StackTraceElement element : stackTraceElements) {
-            if (element.getClassName()
-                    .contains(className)) {
-                return true;
-            }
+    // endregion
+
+    @MethodHook(desc = "查看图片背景透明")
+    public void transparentImgBg() {
+        String value = getString(KEY_IMAGE_BG_COLOR);
+        if (value.isEmpty()) {
+            return;
         }
-        return false;
-    }
-
-    private void preventFlashDisappear() {
-        findAndHookMethod(CountDownProgressBar, "a", XC_MethodReplacement.returnConstant(null));
-
-        findAndHookMethod(HotChatFlashPicActivity, "onTouch", View.class, MotionEvent.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                param.args[1] = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0);
-            }
-        });
-        findAndHookMethod(AIOImageProviderService, void.class, "a", new Class[]{long.class}, XC_MethodReplacement.returnConstant(null));
-
-        // 隐藏倒计时
-        findAndHookMethod(CountDownProgressBar, "onDraw", Canvas.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                ((View) param.thisObject).setVisibility(View.GONE);
-            }
-        });
-
-        // 允许闪照截图
-        findAndHookMethod(Window.class, "setFlags", int.class, int.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (Integer.parseInt(param.args[0].toString()) ==
-                    WindowManager.LayoutParams.FLAG_SECURE) {
-                    param.setResult(null);
-                }
-            }
-        });
-        findAndHookMethod(SurfaceView.class, "setSecure", boolean.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                param.args[0] = false;
-            }
-        });
-        findAndHookMethod(HotChatFlashPicActivity, "finish", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                ReflectionUtils.setObjectField(param.thisObject, boolean.class, "c", false);
-            }
-        });
-    }
-
-    private void preventDynamicPic() {
-        findAndHookMethod(PicItemBuilder, "onClick", View.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                Object v0 = ReflectionUtils.findMethodIfExists(findClass("com.tencent.mobileqq.activity.aio.AIOUtils"), Object.class, "a", View.class)
-                        .invoke(null, param.args[0]);
-                Object chatMessage = getObjectIfExists(v0, ChatMessage, "a");
-                Object picMessageExtraData = XposedHelpers.findField(chatMessage.getClass(), "picExtraData")
-                        .get(chatMessage);
-                ReflectionUtils.setObjectField(chatMessage, int.class, "imageType", 0);
-                if (picMessageExtraData != null) {
-                    ReflectionUtils.setObjectField(picMessageExtraData, int.class, "imageBizType", 0);
-                }
-            }
-        });
-    }
-
-    private void transImageBg() {
-        findAndHookMethod(AbstractGalleryScene, "a", boolean.class, boolean.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                int intAlpha = XPrefUtils.getPref()
-                        .getInt("chat_imgBg_alphaPercent", 50);
-                if (intAlpha >= 0 && intAlpha <= 100) {
-                    float floatAlpha = 1 - intAlpha / 100.0f;
-                    View d = getObjectIfExists(param.thisObject, View.class, "d");
-                    if (d != null) {
-                        d.setAlpha(floatAlpha);
+        int color = Color.parseColor(value);
+        XMethodHook.create($(AbstractGalleryScene)).method("a").params(ViewGroup.class)
+                .hook(new XC_LogMethodHook() {
+                    @Override
+                    protected void after(XMethodHook.MethodParam param) {
+                        super.after(param);
+                        View d = XField.create(param).exact(View.class, "d").get();
+                        d.setBackgroundColor(color);
                     }
-                    RelativeLayout root = getObjectIfExists(param.thisObject, RelativeLayout.class, "a");
-                    View view = root.getChildAt(root.getChildCount() - 1);
-                    if (view != null) {
-                        view.setAlpha(floatAlpha);
-                    }
+                });
+    }
+
+    @MethodHook(desc = "以图片方式打开闪照")
+    public void openFlashAsPic() {
+        XMethodHook.create($(FlashPicHelper)).method(boolean.class, "a")
+                .params(MessageRecord).hook(new XC_LogMethodHook() {
+            @Override
+            protected void before(XMethodHook.MethodParam param) {
+                super.before(param);
+                if (isCallingFrom("ItemBuilderFactory") ||
+                        isCallingFrom("BasePicDownloadProcessor")) {
+                    param.setResult(false);
                 }
+            }
+        });
+        XMethodHook.create($(PicItemBuilder)).method("a").params(ChatMessage, BaseBubbleBuilder$ViewHolder,
+                View.class, BaseChatItemLayout, OnLongClickAndTouchListener).hook(new XC_LogMethodHook() {
+            @Override
+            protected void after(XMethodHook.MethodParam param) {
+                super.after(param);
+                Object viewHolder = param.args[1];
+                if (viewHolder == null) {
+                    return;
+                }
+                boolean isFlash = XMethod.create($(FlashPicHelper))
+                        .exact(boolean.class, "a")
+                        .types(MessageRecord)
+                        .invoke(param.args(0, Object.class));
+                XMethod.create(param.args(3, Object.class))
+                        .name("setTailMessage")
+                        .invoke(isFlash, "闪照", null);
             }
         });
     }
 
-    private void renameBaseApk() {
-        final PackageManager packageManager = context.getPackageManager();
-        String apkFormat = XPrefUtils.getPref()
-                .getString("troop_rename_format", "%l_%n.apk");
-        XposedHelpers.findAndHookMethod(File.class, "getName", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                if (param.getResult()
-                        .toString()
-                        .equals("base.apk")) {
-                    File file = (File) param.thisObject;
-                    if (file.getParentFile()
-                            .getAbsolutePath()
-                            .contains("/data/app/")) {
-                        String parentFilePath = file.getParentFile()
-                                .getName();
-                        String packageName = parentFilePath.substring(0, parentFilePath.indexOf("-"));
-                        PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
-                        if (!TextUtils.isEmpty(apkFormat)) {
-                            param.setResult(apkFormat.replace("%p", packageName)
-                                    .replace("%l", packageInfo.applicationInfo.loadLabel(packageManager)
-                                            .toString())
-                                    .replace("%n", packageInfo.versionName)
-                                    .replace("%c", String.valueOf(packageInfo.versionCode)));
+    @MethodHook(desc = "防止被@")
+    public void preventAt() {
+        XMethodHook.create($(MessageInfo)).method("a").params(QQAppInterface, String.class,
+                MessageInfo, Object.class, MessageRecord, boolean.class).hook(intercept());
+    }
+
+    @MethodHook(desc = "签到文本化")
+    public void simpleSign() {
+        XMethodHook.create($(ItemBuilderFactory)).method("a").params(ChatMessage)
+                .hook(new XC_LogMethodHook() {
+                    @Override
+                    protected void after(XMethodHook.MethodParam param) {
+                        super.after(param);
+                        int result = param.getResult();
+                        if (result == 71 || result == 84) {
+                            param.setResult(-1);
                         }
                     }
+                });
+    }
+
+    @MethodHook(desc = "重命名base.apk")
+    public void renameBase() {
+        final PackageManager pm = mContext.getPackageManager();
+        String apkFormat = getString(KEY_RENAME_BASE_FORMAT);
+        XMethodHook.create(File.class).method("getName").hook(new XMethodHook.Callback() {
+            @Override
+            protected void after(XMethodHook.MethodParam param) {
+                if (!param.getResult().toString().equals("base.apk")) {
+                    return;
                 }
+                File file = param.thisObject();
+                if (!file.getParentFile().getAbsolutePath().contains("/data/app/")) {
+                    return;
+                }
+                String parentFilePath = file.getParentFile().getName();
+                String packageName = parentFilePath.substring(0, parentFilePath.indexOf("-"));
+                PackageInfo packageInfo = null;
+                try {
+                    packageInfo = pm.getPackageInfo(packageName, 0);
+                } catch (PackageManager.NameNotFoundException e) {
+                    onAfterError(param, e);
+                }
+                if (packageInfo == null || TextUtils.isEmpty(apkFormat)) {
+                    return;
+                }
+                param.setResult(apkFormat.replace("%p", packageName)
+                        .replace("%l", packageInfo.applicationInfo.loadLabel(pm).toString())
+                        .replace("%n", packageInfo.versionName)
+                        .replace("%c", String.valueOf(Utils.getAppVersionCode(mContext, packageName))));
             }
         });
     }
 
-    private void redirectFileRec() {
-        final String srcPath = "/Tencent/QQfile_recv/";
-        redirectPath = XPrefUtils.getPref()
-                .getString("extension_redirect_path", srcPath);
+    @MethodHook(desc = "重定向文件下载目录")
+    @VersionSupport(min = 832)
+    public void redirectFileRec() {
+        String redirectPath = getString(KEY_REDIRECT_FILE_REC_PATH);
         if (TextUtils.isEmpty(redirectPath)) {
             return;
         }
@@ -394,27 +224,25 @@ public class ExtensionHook extends AbstractHook {
         if (!redirectPath.endsWith("/")) {
             redirectPath = redirectPath + "/";
         }
-        XposedHelpers.findAndHookConstructor(File.class, String.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (param.args[0].toString()
-                        .contains(srcPath)) {
-                    param.args[0] = param.args[0].toString()
-                            .replace(srcPath, redirectPath);
+        redirectPath = Environment.getExternalStorageDirectory().getAbsolutePath() + redirectPath;
+        Field[] fields = $(AppConstants).getFields();
+        for (Field field : fields) {
+            try {
+                field.setAccessible(true);
+                Object value = field.get(null);
+                String path = String.valueOf(value);
+                if (path.toLowerCase().endsWith("file_recv/")) {
+                    field.set(null, redirectPath);
+                    return;
                 }
+            } catch (IllegalAccessException e) {
+                XLog.e(getTAG(), e);
             }
-        });
+        }
     }
 
-    private void setGlobalFontSize() {
-        float fontSize = XPrefUtils.getPref()
-                                 .getInt("extension_global_fontSize", 16) * 1.0f;
-        findAndHookMethod(FontSettingManager, "a", float.class, XC_MethodReplacement.returnConstant(true));
-        findAndHookMethod(FontSettingManager, "a", Context.class, float.class, boolean.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                param.args[1] = fontSize;
-            }
-        });
+    @Override
+    public SettingGroup getSettingGroup() {
+        return SettingGroup.extension;
     }
 }

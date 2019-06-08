@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="module_switch"
-        android:title="启用模块" />
-    <SwitchPreference
-        android:key="module_hide_desktopIcon"
-        android:persistent="false"
-        android:summary="隐藏后可以通过 Xposed 框架或 QQ 打开本软件"
-        android:title="隐藏桌面图标" />
-    <PreferenceCategory android:title="数据管理">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="模块">
+        <SwitchPreference
+            android:key="disableModule"
+            android:title="停用模块" />
+        <SwitchPreference
+            android:key="displayDesktop"
+            android:title="显示桌面图标" />
         <Preference
-            android:key="module_backupData"
-            android:title="备份软件数据" />
-        <Preference
-            android:key="module_restoreBackup"
-            android:title="恢复软件数据" />
-        <Preference
-            android:key="module_restoreDefault"
+            android:key="restoreDefault"
             android:title="恢复默认设置" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="主题">
+        <me.zpp0196.qqpurify.fragment.custom.ColorPickerPreference
+            android:defaultValue="@color/theme_color_ftb"
+            android:key="appThemeColor"
+            android:title="主题颜色"
+            app:cpv_allowCustom="false"
+            app:cpv_allowPresets="false"
+            app:cpv_showAlphaSlider="false"
+            app:cpv_showColorShades="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="categoryDebug"
+        android:title="调试">
+        <ListPreference
+            android:key="logLevel"
+            android:title="模块日志级别" />
     </PreferenceCategory>
 </PreferenceScreen>

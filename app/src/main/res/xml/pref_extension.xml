@@ -1,80 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory android:title="侧滑栏">
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="sidebar_add_moduleEntry"
-            android:summary="长按左下角设置按钮进入模块"
-            android:title="添加模块入口" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="主界面">
-        <SwitchPreference
-            android:key="conversation_simulate_menu"
-            android:summary="点击顶部弹出菜单"
-            android:title="模拟菜单按钮" />
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="conversation_hide_menuUAF"
-            android:title="隐藏菜单更新与反馈" />
-    </PreferenceCategory>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="聊天">
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="chat_prevent_msgRecall"
+            android:key="preventRecall"
             android:title="防止消息撤回" />
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="chat_prevent_flashDisappear"
-            android:summary="无限时查看闪照并且可以截图"
-            android:title="防止闪照销毁" />
-        <SwitchPreference
-            android:key="chat_prevent_dynamicPic"
-            android:title="以图片方式打开表情包" />
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="chat_transparent_imgBg"
-            android:summary="查看聊天图片时的背景透明化"
+            android:key="transparentImgBg"
             android:title="聊天图片背景透明" />
-        <me.zpp0196.qqpurify.fragment.custom.SeekBarPreferences
-            android:defaultValue="50"
-            android:dependency="chat_transparent_imgBg"
-            android:key="chat_imgBg_alphaPercent"
-            android:title="背景透明百分比"
-            custom:maxValue="100"
-            custom:minValue="0" />
+        <SwitchPreference
+            android:key="openFlashAsPic"
+            android:title="以图片方式打开闪照" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="群聊">
+        <SwitchPreference
+            android:key="preventAt"
+            android:title="防止被@" />
+        <SwitchPreference
+            android:key="simpleSign"
+            android:title="签到文本化" />
     </PreferenceCategory>
     <PreferenceCategory android:title="文件">
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="troop_rename_base"
+            android:key="renameBase"
             android:summary="在群里上传本机安装已应用时修改上传文件名"
             android:title="重命名base.apk" />
-        <me.zpp0196.qqpurify.fragment.custom.EditTextPreference
-            android:defaultValue="%l_%n.apk"
-            android:dependency="troop_rename_base"
+        <EditTextPreference
+            android:dependency="renameBase"
+            android:dialogLayout="@layout/preference_dialog_et"
             android:dialogMessage="应用包名：%p    软件名称：%l\n版本名称：%n    版本编号：%c"
-            android:key="troop_rename_format"
+            android:key="renameBaseFormat"
             android:title="文件上传格式" />
         <SwitchPreference
-            android:key="extension_redirect_filerec"
+            android:key="redirectFileRec"
             android:title="重定向文件下载目录" />
-        <me.zpp0196.qqpurify.fragment.custom.EditTextPreference
-            android:defaultValue="/Tencent/QQfile_recv/"
-            android:dependency="extension_redirect_filerec"
-            android:key="extension_redirect_path"
+        <EditTextPreference
+            android:dependency="redirectFileRec"
+            android:dialogLayout="@layout/preference_dialog_et"
+            android:key="redirectFileRecPath"
             android:title="下载目录" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="其他">
-        <SwitchPreference
-            android:key="global_set_fontSize"
-            android:title="自定义字体大小" />
-        <me.zpp0196.qqpurify.fragment.custom.SeekBarPreferences
-            android:defaultValue="16"
-            android:dependency="global_set_fontSize"
-            android:key="extension_global_fontSize"
-            android:title="字体大小"
-            custom:maxValue="20"
-            custom:minValue="12" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -1,107 +1,98 @@
 package me.zpp0196.qqpurify.fragment;
 
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.net.Uri;
-import android.os.Bundle;
-import android.preference.Preference;
+import androidx.preference.Preference;
 
+import de.psdev.licensesdialog.LicensesDialogFragment;
+import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
+import de.psdev.licensesdialog.licenses.MITLicense;
+import de.psdev.licensesdialog.model.Notice;
+import de.psdev.licensesdialog.model.Notices;
 import me.zpp0196.qqpurify.BuildConfig;
 import me.zpp0196.qqpurify.R;
+import me.zpp0196.qqpurify.fragment.base.AbstractPreferenceFragment;
+import me.zpp0196.qqpurify.task.CheckUpdateTask;
+import me.zpp0196.qqpurify.utils.Utils;
 
-import static me.zpp0196.qqpurify.utils.Constants.PACKAGE_NAME_QQ;
+import static me.zpp0196.qqpurify.utils.Utils.getAppVersionName;
 
 /**
  * Created by zpp0196 on 2019/2/9.
  */
-
 public class AboutPreferenceFragment extends AbstractPreferenceFragment implements Preference.OnPreferenceClickListener {
-    @Override
-    protected int getPrefRes() {
-        return R.xml.pref_about;
-    }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initSummaryAndIcon();
-        findPreference("about_version_module").setOnPreferenceClickListener(this);
-        findPreference("about_github").setOnPreferenceClickListener(this);
-        findPreference("about_alipay").setOnPreferenceClickListener(this);
-        findPreference("about_email").setOnPreferenceClickListener(this);
-        findPreference("about_wiki").setOnPreferenceClickListener(this);
-    }
+    @SuppressWarnings("ConstantConditions")
+    protected void initPreferences() {
+        super.initPreferences();
+        String mBuildNum = BuildConfig.TEST ? "" : BuildConfig.BUILDNUM;
+        String qBuildNum = mActivity.getIntent().getStringExtra(INTENT_BUILD_NUM);
+        qBuildNum = qBuildNum == null ? "" : "." + qBuildNum;
+        String moduleVersion = BuildConfig.VERSION_NAME + mBuildNum;
+        String qqVersion = getAppVersionName(mActivity, PACKAGE_NAME_QQ) + qBuildNum;
 
-    public void initSummaryAndIcon() {
-        // 模块状态
-        Preference moduleActive = findPreference("about_module_active");
-        // 模块环境
-        Preference moduleEnvironment = findPreference("about_module_environment");
-        if (activity.isModuleActive()) {
-            moduleActive.setSummary("已激活");
-            if (System.getProperty("vxp") != null) {
-                moduleEnvironment.setSummary("VirtualXposed");
-            } else {
-                moduleEnvironment.setSummary("Xposed");
-            }
-        } else if (activity.isExpModuleActive()) {
-            moduleActive.setSummary("已激活");
-            moduleEnvironment.setSummary("太极");
-            moduleEnvironment.setIcon(R.drawable.ic_about_module_envi_taichi);
-        } else {
-            moduleActive.setSummary("未激活");
-            moduleActive.setIcon(R.drawable.ic_about_module_active_error);
-            getPreferenceScreen().removePreference(moduleEnvironment);
-        }
-        // 模块版本
-        findPreference("about_version_module").setSummary(String.format("%s(%s)", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
-        // QQ版本
-        findPreference("about_version_qq").setSummary(getQQVersion());
-    }
-
-    public String getQQVersion() {
-        try {
-            PackageInfo qqPackageInfo = activity.getPackageManager()
-                    .getPackageInfo(PACKAGE_NAME_QQ, 0);
-            String versionName = qqPackageInfo.versionName;
-            int versionCode = qqPackageInfo.versionCode;
-            return String.format("%s(%s)", versionName, versionCode);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "unknown";
-        }
+        findPreference("version_module").setSummary(moduleVersion);
+        findPreference("version_qq").setSummary(qqVersion);
+        findPreference("licenses").setOnPreferenceClickListener(this);
+        findPreference("email_feedback").setOnPreferenceClickListener(this);
+        findPreference("telegram_channel").setOnPreferenceClickListener(this);
+        findPreference("version_module").setOnPreferenceClickListener(this);
     }
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
         String key = preference.getKey();
         switch (key) {
-            case "about_version_module":
-                activity.openUrl("https://github.com/zpp0196/QQPurify/releases");
+            case "version_module":
+                new CheckUpdateTask(mActivity, true).execute();
                 break;
-            case "about_github":
-                activity.openUrl("https://github.com/zpp0196/QQPurify");
+            case "licenses":
+                showLicensesDialog();
                 break;
-            case "about_alipay":
-                activity.openAlipay();
+            case "email_feedback":
+                Utils.mailTo(mActivity, "zpp0196@gmail.com");
                 break;
-            case "about_email":
-                mailContact("zpp0196@gmail.com");
-                break;
-            case "about_wiki":
-                activity.openUrl("https://github.com/zpp0196/QQPurify/wiki");
+            case "telegram_channel":
+                Utils.openUrl(mActivity, "https://t.me/QQPurify");
                 break;
         }
         return false;
     }
 
-    public void mailContact(String mailAddress) {
-        Uri uri = Uri.parse("mailto:" + mailAddress);
-        Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
-        try {
-            activity.startActivity(Intent.createChooser(intent, "请选择发送邮件的应用"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void showLicensesDialog() {
+        Notices notices = new Notices();
+        Notice commonsIo = new Notice("Apache Commons IO", "https://github.com/apache/commons-io", "Copyright 2002-2019 The Apache Software Foundation", new ApacheSoftwareLicense20());
+        Notice easypermissions = new Notice("easypermissions", "https://github.com/googlesamples/easypermissions", "Copyright 2017 Google", new ApacheSoftwareLicense20());
+        Notice flycoTabLayout = new Notice("FlycoTabLayout", "https://github.com/H07000223/FlycoTabLayout", "Copyright (c) 2015 H07000223", new MITLicense());
+        Notice markwon = new Notice("Markwon", "https://github.com/noties/Markwon", "Copyright 2017 Dimitry Ivanov (mail@dimitryivanov.ru)", new ApacheSoftwareLicense20());
+        Notice colorPicker = new Notice("ColorPicker", "https://github.com/jaredrummler/ColorPicker", "Copyright 2016 Jared Rummler\nCopyright 2015 Daniel Nilsson", new ApacheSoftwareLicense20());
+        notices.addNotice(commonsIo);
+        notices.addNotice(easypermissions);
+        notices.addNotice(flycoTabLayout);
+        notices.addNotice(markwon);
+        notices.addNotice(colorPicker);
+        new LicensesDialogFragment.Builder(mActivity)
+                .setNotices(notices)
+                .build()
+                .showNow(mActivity.getSupportFragmentManager(), "licenses-dialog");
+    }
+
+    @Override
+    protected int getPrefRes() {
+        return R.xml.pref_about;
+    }
+
+    @Override
+    public String getTabTitle() {
+        return "关于";
+    }
+
+    @Override
+    public String getToolbarTitle() {
+        return "关于模块";
+    }
+
+    @Override
+    public SettingGroup getSettingGroup() {
+        return SettingGroup.about;
     }
 }
