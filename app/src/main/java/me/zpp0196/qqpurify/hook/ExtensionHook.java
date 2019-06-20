@@ -23,6 +23,7 @@ import me.zpp0196.qqpurify.hook.annotation.MethodHook;
 import me.zpp0196.qqpurify.hook.annotation.VersionSupport;
 import me.zpp0196.qqpurify.hook.base.BaseHook;
 import me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook;
+import me.zpp0196.qqpurify.hook.utils.QQConfigUtils;
 import me.zpp0196.qqpurify.utils.Utils;
 
 import static me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook.intercept;
@@ -47,7 +48,8 @@ public class ExtensionHook extends BaseHook {
             protected void before(XMethodHook.MethodParam param) {
                 super.before(param);
                 ArrayList list = param.args(0);
-                if (list == null || list.isEmpty() || isCallingFrom("C2CMessageProcessor")) {
+                if (isCallingFrom(QQConfigUtils.findClass(C2CMessageProcessor)) ||
+                        list == null || list.isEmpty()) {
                     param.setResult(null);
                     return;
                 }
@@ -131,8 +133,8 @@ public class ExtensionHook extends BaseHook {
             @Override
             protected void before(XMethodHook.MethodParam param) {
                 super.before(param);
-                if (isCallingFrom("ItemBuilderFactory") ||
-                        isCallingFrom("BasePicDownloadProcessor")) {
+                if (isCallingFrom(QQConfigUtils.findClass(ItemBuilderFactory)) ||
+                        isCallingFrom(QQConfigUtils.findClass(BasePicDownloadProcessor))) {
                     param.setResult(false);
                 }
             }

@@ -29,6 +29,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.zpp0196.qqpurify.BuildConfig;
+
 import static android.content.Context.MODE_PRIVATE;
 import static me.zpp0196.qqpurify.BuildConfig.APPLICATION_ID;
 
@@ -37,6 +39,10 @@ import static me.zpp0196.qqpurify.BuildConfig.APPLICATION_ID;
  */
 @SuppressWarnings("WeakerAccess")
 public class Utils {
+
+    public static Context createContext(Context context) throws PackageManager.NameNotFoundException {
+        return context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY);
+    }
 
     public static File getLocalPath() {
         return new File(Environment.getExternalStorageDirectory(), Constants.APP_NAME);

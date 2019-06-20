@@ -19,8 +19,8 @@ public class QQCustomDialog implements QQClasses {
         private XMethod mXMethod;
 
         public Builder(Activity activity) {
-            this.mDialog = XMethod.create(DialogUtil, activity.getClassLoader())
-                    .exact(QQCustomDialog, "a")
+            this.mDialog = XMethod.create(QQConfigUtils.findClass(DialogUtil), activity.getClassLoader())
+                    .exact(QQConfigUtils.findClass(QQCustomDialog), "a")
                     .types(Context.class, int.class)
                     .invoke(activity, 0);
             this.mXMethod = XMethod.create(mDialog);

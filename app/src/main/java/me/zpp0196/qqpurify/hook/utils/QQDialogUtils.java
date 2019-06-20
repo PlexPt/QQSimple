@@ -25,7 +25,7 @@ public class QQDialogUtils implements Constants, QQClasses {
     private static List<Throwable> mInitErrors;
 
     public static void init(ClassLoader classLoader) {
-        XMethodHook.create(MainFragment, classLoader).method("onViewCreated").hook(new XC_LogMethodHook() {
+        XMethodHook.create(QQConfigUtils.findClass(MainFragment), classLoader).method("onViewCreated").hook(new XC_LogMethodHook() {
             @Override
             protected void after(XMethodHook.MethodParam param) {
                 super.after(param);

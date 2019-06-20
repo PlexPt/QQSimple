@@ -10,9 +10,10 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import me.zpp0196.library.xposed.XLog;
 import me.zpp0196.library.xposed.XMethodHook;
+import me.zpp0196.library.xposed.XReflect;
 import me.zpp0196.qqpurify.hook.base.BaseHook;
 import me.zpp0196.qqpurify.hook.earlier.EarlierSupport;
-import me.zpp0196.qqpurify.hook.utils.QQClasses;
+import me.zpp0196.qqpurify.hook.utils.QQConfigUtils;
 import me.zpp0196.qqpurify.hook.utils.QQDialogUtils;
 import me.zpp0196.qqpurify.hook.utils.XLogUtils;
 import me.zpp0196.qqpurify.utils.Constants;
@@ -23,7 +24,7 @@ import me.zpp0196.qqpurify.utils.Utils;
 /**
  * Created by zpp0196 on 2018/4/27 0027.
  */
-public class InitializeHook implements Constants, QQClasses, IXposedHookLoadPackage, SettingUtils.ISetting {
+public class InitializeHook implements Constants, IXposedHookLoadPackage, SettingUtils.ISetting {
 
     private static final String TAG = APP_NAME;
 
@@ -38,8 +39,8 @@ public class InitializeHook implements Constants, QQClasses, IXposedHookLoadPack
             @Override
             protected void after(XMethodHook.MethodParam param) {
                 Context context = param.args(0);
-                QQDialogUtils.init(context.getClassLoader());
                 String processName = Utils.getProcessName();
+                init(context, processName);
                 if (!isHookProcess(processName)) {
                     return;
                 }
@@ -48,11 +49,18 @@ public class InitializeHook implements Constants, QQClasses, IXposedHookLoadPack
         });
     }
 
-    private boolean isHookProcess(String processName) {
-        boolean isPeak = processName.endsWith("peak");
-        if (!PACKAGE_NAME_QQ.equals(processName) && !isPeak) {
-            return false;
-        }
+    private void init(Context context, String processName) {
+        XLog.setTAG(TAG);
+        long versionCode = Utils.getAppVersionCode(context, PACKAGE_NAME_QQ);
+        QQConfigUtils.init(context, versionCode);
+        XReflect.setConvertCallback(new XReflect.XConvertClassCallback() {
+            @Override
+            protected Class<?> findClass(String className, ClassLoader classLoader) {
+                return super.findClass(QQConfigUtils.findClass(className), classLoader);
+            }
+        });
+
+        QQDialogUtils.init(context.getClassLoader());
 
         try {
             Setting.init();
@@ -60,26 +68,33 @@ public class InitializeHook implements Constants, QQClasses, IXposedHookLoadPack
             QQDialogUtils.addError(th);
         }
         Setting setting = Setting.getInstance(this);
-        Setting extension = Setting.getInstance(SettingGroup.extension);
         XLog.LogLevel logLevel = XLog.LogLevel.valueOf(setting.get(KEY_LOG_LEVEL, XLog.LogLevel.NONE.name()));
-        XLog.setTAG(TAG);
         XLog.setLevel(logLevel);
         if (logLevel != XLog.LogLevel.NONE) {
             XLog.setLogCallback(XLogUtils.getInstance(setting.get(KEY_LOG_COUNT, 10)));
         }
         Log.d(TAG, "logLevel: " + logLevel.name());
         XLog.wtf(TAG, "logLevel: " + logLevel.name());
+        XLog.d(TAG, "Loading processName: " + processName + ", versionCode: " + versionCode);
+    }
 
+    private boolean isHookProcess(String processName) {
+        boolean isPeak = processName.endsWith("peak");
+        if (!PACKAGE_NAME_QQ.equals(processName) && !isPeak) {
+            return false;
+        }
+
+        Setting setting = Setting.getInstance(this);
         if (setting.get(KEY_DISABLE_MODULE, false)) {
             XLog.d(TAG, "module disabled");
             return false;
         }
 
+        Setting extension = Setting.getInstance(SettingGroup.extension);
         return !isPeak || extension.get(KEY_TRANSPARENT_IMG_BG, false);
     }
 
     private void initHook(Context context, String processName) {
-        XLog.d(TAG, "Loading processName: " + processName);
         if (processName.endsWith("peak")) {
             new ExtensionHook(context).transparentImgBg();
             return;

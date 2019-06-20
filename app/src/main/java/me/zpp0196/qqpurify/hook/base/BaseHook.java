@@ -19,7 +19,7 @@ import me.zpp0196.library.xposed.XMethodHook;
 import me.zpp0196.qqpurify.hook.annotation.MethodHook;
 import me.zpp0196.qqpurify.hook.annotation.VersionSupport;
 import me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook;
-import me.zpp0196.qqpurify.hook.utils.QQDialogUtils;
+import me.zpp0196.qqpurify.hook.utils.QQConfigUtils;
 import me.zpp0196.qqpurify.utils.Constants;
 import me.zpp0196.qqpurify.hook.utils.QQClasses;
 import me.zpp0196.qqpurify.utils.Setting;
@@ -116,7 +116,6 @@ public abstract class BaseHook implements SettingUtils.ISetting, Constants, QQCl
                 XLog.d(impl.getTAG(), String.format("Loading %s success", methodHook.desc()));
             } catch (Exception e) {
                 String message = String.format("加载\"%s\"功能失败", methodHook.desc());
-                QQDialogUtils.addError(new Exception(message));
                 XLog.e(impl.getTAG(), message, e);
             }
         }
@@ -127,11 +126,11 @@ public abstract class BaseHook implements SettingUtils.ISetting, Constants, QQCl
             return mClassMap.get(className);
         }
         try {
-            Class<?> clazz = XposedHelpers.findClass(className, mClassLoader);
+            Class<?> clazz = XposedHelpers.findClass(QQConfigUtils.findClass(className), mClassLoader);
             mClassMap.put(className, clazz);
             return clazz;
         } catch (Throwable th) {
-            XLog.e(getTAG(), th);
+            XLog.e(getTAG(), th.getMessage());
             return null;
         }
     }
@@ -155,15 +154,16 @@ public abstract class BaseHook implements SettingUtils.ISetting, Constants, QQCl
     }
 
     protected void doSthAfterTabCreated(String frame, OnTabCreated onTabCreated) {
+        final String frameClass = QQConfigUtils.findClass(frame);
         XMethodHook.create($(FrameFragment)).method("createTabContent").hook(new XC_LogMethodHook() {
             @Override
             protected void after(XMethodHook.MethodParam param) {
                 super.after(param);
-                if (!param.args(0, String.class).equals(frame)) {
+                if (!param.args(0, String.class).equals(frameClass)) {
                     return;
                 }
                 Map map = XField.create(param).exact(Map.class, "a").get();
-                onTabCreated.operation(map.get(frame));
+                onTabCreated.operation(map.get(frameClass));
             }
         });
     }
