@@ -105,6 +105,12 @@ public class EarlierSupport extends BaseHook {
         });
     }
 
+    @MethodHook(desc = "隐藏厘米秀")
+    @VersionSupport(group = SettingGroup.sidebar, max = 1186)
+    public void hideApollo() {
+        XMethodHook.create($(QQSettingMe)).method("a").params(ApolloManager$CheckApolloInfoResult)
+                .hook(XC_LogMethodHook.intercept());
+    }
     // endregion
 
     // region chat
@@ -141,6 +147,23 @@ public class EarlierSupport extends BaseHook {
                 });
     }
 
+    @MethodHook(desc = "隐藏群头衔")
+    @VersionSupport(group = SettingGroup.troop, max = 1186)
+    public void hideLevel() {
+        XMethodHook.create($(BaseBubbleBuilder)).method("f").params(ChatMessage, BaseChatItemLayout)
+                .hook(intercept());
+        XMethodHook.create($(BaseChatItemLayout)).method("a").params(QQAppInterface, boolean.class,
+                String.class, boolean.class, int.class, int.class).hook(intercept());
+    }
+
+    @MethodHook(desc = "隐藏魅力等级")
+    @VersionSupport(group = SettingGroup.troop, max = 1186)
+    public void hideGlamourLevel() {
+        XMethodHook.create($(BaseBubbleBuilder)).method("g").params(ChatMessage, BaseChatItemLayout)
+                .hook(intercept());
+        XMethodHook.create($(BaseChatItemLayout)).method("a").params(QQAppInterface, boolean.class,
+                int.class, boolean.class).hook(intercept());
+    }
     // endregion
 
     @Override

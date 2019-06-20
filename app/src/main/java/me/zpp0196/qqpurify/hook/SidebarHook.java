@@ -27,6 +27,8 @@ import me.zpp0196.qqpurify.utils.Setting;
 
 import static me.zpp0196.qqpurify.BuildConfig.APPLICATION_ID;
 import static me.zpp0196.qqpurify.BuildConfig.VERSION_NAME;
+import static me.zpp0196.qqpurify.hook.utils.QQConfigUtils.findClass;
+import static me.zpp0196.qqpurify.hook.utils.QQConfigUtils.getField;
 import static me.zpp0196.qqpurify.utils.Utils.getAppVersionName;
 
 /**
@@ -38,6 +40,9 @@ public class SidebarHook extends BaseHook {
     private boolean mHideDaily;
     private boolean mHideQrCode;
     private boolean mHideNightTheme;
+    private boolean mHideCityWeather;
+    private boolean mHideBack;
+    private boolean mHideApollo;
     private List<String> mSidebarItems = new ArrayList<>();
 
     private View mModuleEntry;
@@ -53,17 +58,30 @@ public class SidebarHook extends BaseHook {
             @Override
             protected void after(XMethodHook.MethodParam param) {
                 super.after(param);
+                XField settingMe = XField.create(param);
                 // 打卡
                 if (mHideDaily) {
-                    hideView(XField.create(param).exact(LinearLayout.class, "a").get());
+                    hideView(settingMe.exact(LinearLayout.class, getField("sidebar_daily", "a")).get());
                 }
                 // 二维码
                 if (mHideQrCode) {
-                    hideView(XField.create(param).exact(ImageView.class, "d").get());
+                    hideView(settingMe.exact(ImageView.class, getField("sidebar_qrCode", "d")).get());
                 }
                 // 夜间模式
                 if (mHideNightTheme) {
-                    hideView(XField.create(param).exact(View.class, "d").get());
+                    hideView(settingMe.exact(View.class, getField("sidebar_nightTheme", "d")).get());
+                }
+                // 城市天气
+                if (mHideCityWeather) {
+                    hideView(settingMe.exact(LinearLayout.class, getField("sidebar_cityWeather", "c")).get());
+                }
+                // 返回按钮
+                if (mHideBack) {
+                    hideView(settingMe.exact(ImageView.class, getField("sidebar_backBtn", "e")).get());
+                }
+                // 厘米秀
+                if (mHideApollo) {
+                    settingMe.exact(findClass(SettingMeApolloViewController), "a").set(null);
                 }
                 // 侧滑栏列表
                 View[] items = XField.create(param).exact(View[].class, "a").get();
@@ -96,30 +114,18 @@ public class SidebarHook extends BaseHook {
 
     @MethodHook(desc = "隐藏城市天气")
     public void hideCityWeather() {
-        XConstructorHook.create($(QQSettingMe)).hook(new XMethodHook.Callback() {
-            @Override
-            protected void after(XMethodHook.MethodParam param) {
-                hideView(XField.create(param).exact(LinearLayout.class, "c").get());
-            }
-        });
+        this.mHideCityWeather = true;
     }
 
     @MethodHook(desc = "隐藏返回按钮")
     @VersionSupport(min = 1024)
     public void hideBack() {
-        XConstructorHook.create($(QQSettingMe)).hook(new XC_LogMethodHook() {
-            @Override
-            protected void after(XMethodHook.MethodParam param) {
-                super.after(param);
-                hideView(XField.create(param).exact(ImageView.class, "e").get());
-            }
-        });
+        this.mHideBack = true;
     }
 
     @MethodHook(desc = "隐藏我的状态")
     @VersionSupport(min = 1024)
     public void hideMineStory() {
-        // 我的状态
         XMethodHook.create($(VSConfigManager)).method("a").params(String.class, Object.class)
                 .hook(new XC_LogMethodHook() {
                     @Override
@@ -135,9 +141,9 @@ public class SidebarHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏厘米秀")
+    @VersionSupport(min = 1186)
     public void hideApollo() {
-        XMethodHook.create($(QQSettingMe)).method("a").params(ApolloManager$CheckApolloInfoResult)
-                .hook(XC_LogMethodHook.intercept());
+        this.mHideApollo = true;
     }
 
     @MethodHook(desc = "隐藏设置列表")
@@ -185,7 +191,7 @@ public class SidebarHook extends BaseHook {
             @Override
             protected void after(XMethodHook.MethodParam param) {
                 super.after(param);
-                View formSimpleItem = XField.create(param).exact(FormSimpleItem, "a").get();
+                View formSimpleItem = XField.create(param).exact(findClass(FormSimpleItem), "a").get();
                 Context context = formSimpleItem.getContext();
                 mModuleEntry = XConstructor.create(formSimpleItem.getClass()).instance(context);
                 XMethod.create(mModuleEntry).name("setLeftText").invoke("QQ净化");

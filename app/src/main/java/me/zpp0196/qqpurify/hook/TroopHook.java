@@ -13,6 +13,7 @@ import me.zpp0196.qqpurify.hook.annotation.MethodHook;
 import me.zpp0196.qqpurify.hook.annotation.VersionSupport;
 import me.zpp0196.qqpurify.hook.base.BaseHook;
 import me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook;
+import me.zpp0196.qqpurify.hook.utils.QQConfigUtils;
 
 import static me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook.intercept;
 
@@ -55,18 +56,24 @@ public class TroopHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏群头衔")
+    @VersionSupport(min = 1186)
     public void hideLevel() {
-        XMethodHook.create($(BaseBubbleBuilder)).method("f").params(ChatMessage, BaseChatItemLayout)
+        String bb = QQConfigUtils.getMethod("troop_level_bb");
+        String ci = QQConfigUtils.getMethod("troop_level_ci");
+        XMethodHook.create($(BaseBubbleBuilder)).method(bb).params(ChatMessage, BaseChatItemLayout)
                 .hook(intercept());
-        XMethodHook.create($(BaseChatItemLayout)).method("a").params(QQAppInterface, boolean.class,
+        XMethodHook.create($(BaseChatItemLayout)).method(ci).params(QQAppInterface, boolean.class,
                 String.class, boolean.class, int.class, int.class).hook(intercept());
     }
 
     @MethodHook(desc = "隐藏魅力等级")
+    @VersionSupport(min = 1186)
     public void hideGlamourLevel() {
-        XMethodHook.create($(BaseBubbleBuilder)).method("g").params(ChatMessage, BaseChatItemLayout)
+        String bb = QQConfigUtils.getMethod("troop_glamour_bb");
+        String ci = QQConfigUtils.getMethod("troop_glamour_ci");
+        XMethodHook.create($(BaseBubbleBuilder)).method(bb).params(ChatMessage, BaseChatItemLayout)
                 .hook(intercept());
-        XMethodHook.create($(BaseChatItemLayout)).method("a").params(QQAppInterface, boolean.class,
+        XMethodHook.create($(BaseChatItemLayout)).method(ci).params(QQAppInterface, boolean.class,
                 int.class, boolean.class).hook(intercept());
     }
 

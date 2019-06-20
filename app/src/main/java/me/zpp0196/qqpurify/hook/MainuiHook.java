@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,8 +28,6 @@ import me.zpp0196.qqpurify.hook.annotation.MethodHook;
 import me.zpp0196.qqpurify.hook.annotation.VersionSupport;
 import me.zpp0196.qqpurify.hook.base.BaseHook;
 import me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook;
-
-import static me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook.intercept;
 
 /**
  * Created by zpp0196 on 2018/5/15.
@@ -57,7 +56,19 @@ public class MainuiHook extends BaseHook {
     @MethodHook(desc = "隐藏小程序入口")
     @VersionSupport(min = 1024)
     public void hideMiniAppEntry() {
-        XMethodHook.create($(MiniAppConfBean)).method("a").params(QConfItem + "[]").hook(intercept());
+        XMethodHook.create($(MiniAppConfBean)).method("a").hookAll(new XC_LogMethodHook() {
+            @Override
+            protected void after(XMethodHook.MethodParam param) {
+                Method method = (Method) param.method;
+                Class<?> thisClass = method.getDeclaringClass();
+                Class<?> returnType = method.getReturnType();
+                if (thisClass != returnType) {
+                    return;
+                }
+                super.after(param);
+                XField.create((Object) param.getResult()).exact(boolean.class, "a").set(false);
+            }
+        });
     }
 
     @MethodHook(desc = "隐藏快捷入口")
