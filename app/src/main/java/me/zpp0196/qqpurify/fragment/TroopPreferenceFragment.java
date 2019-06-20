@@ -23,7 +23,7 @@ public class TroopPreferenceFragment extends AbstractPreferenceFragment {
     }
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.troop;
+    public String getSettingGroup() {
+        return SETTING_TROOP;
     }
 }

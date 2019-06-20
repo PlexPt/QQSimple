@@ -41,7 +41,8 @@ public @interface VersionSupport {
     /**
      * @return 指定key值所在的group
      */
-    SettingUtils.ISetting.SettingGroup group() default SettingUtils.ISetting.SettingGroup.empty;
+    @SettingUtils.ISetting.SettingGroup
+    String group() default SettingUtils.ISetting.SETTING_DEFAULT;
 
     /**
      * @return 支持的最小版本

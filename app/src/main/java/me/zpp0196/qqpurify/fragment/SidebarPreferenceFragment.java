@@ -23,7 +23,7 @@ public class SidebarPreferenceFragment extends AbstractPreferenceFragment {
     }
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.sidebar;
+    public String getSettingGroup() {
+        return SETTING_SIDEBAR;
     }
 }

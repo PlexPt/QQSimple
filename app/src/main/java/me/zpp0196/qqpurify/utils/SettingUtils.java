@@ -2,7 +2,7 @@ package me.zpp0196.qqpurify.utils;
 
 import android.util.Log;
 
-import androidx.annotation.Keep;
+import androidx.annotation.StringDef;
 
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
@@ -11,6 +11,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,12 +27,35 @@ public class SettingUtils implements Constants {
 
     public interface ISetting {
 
-        @Keep
-        enum SettingGroup {
-            mainui, sidebar, chat, troop, extension, setting, about, earlier, update, empty
+        String SETTING_MAINUI = "mainui";
+        String SETTING_SIDEBAR = "sidebar";
+        String SETTING_CHAT = "chat";
+        String SETTING_TROOP = "troop";
+        String SETTING_EXTENSION = "extension";
+        String SETTING_SETTING = "setting";
+        String SETTING_ABOUT = "about";
+        String SETTING_EARLIER = "earlier";
+        String SETTING_UPDATE = "update";
+        String SETTING_DEFAULT = "default";
+
+        @StringDef(value = {
+                SETTING_MAINUI,
+                SETTING_SIDEBAR,
+                SETTING_CHAT,
+                SETTING_TROOP,
+                SETTING_EXTENSION,
+                SETTING_SETTING,
+                SETTING_ABOUT,
+                SETTING_EARLIER,
+                SETTING_UPDATE,
+                SETTING_DEFAULT,
+        })
+        @Retention(RetentionPolicy.SOURCE)
+        @interface SettingGroup {
         }
 
-        SettingGroup getSettingGroup();
+        @SettingGroup
+        String getSettingGroup();
     }
 
     private static final JSONObject DEFAULT_SETTING = new JSONObject();
@@ -70,13 +95,13 @@ public class SettingUtils implements Constants {
             update.put(KEY_UPD_AUTO_OPEN, false);
             update.put(KEY_UPD_INTERVAL, 1000);
 
-            DEFAULT_GROUPS.put(ISetting.SettingGroup.mainui.name(), mainui);
-            DEFAULT_GROUPS.put(ISetting.SettingGroup.sidebar.name(), sidebar);
-            DEFAULT_GROUPS.put(ISetting.SettingGroup.chat.name(), chat);
-            DEFAULT_GROUPS.put(ISetting.SettingGroup.troop.name(), troop);
-            DEFAULT_GROUPS.put(ISetting.SettingGroup.extension.name(), extension);
-            DEFAULT_GROUPS.put(ISetting.SettingGroup.setting.name(), setting);
-            DEFAULT_GROUPS.put(ISetting.SettingGroup.update.name(), update);
+            DEFAULT_GROUPS.put(ISetting.SETTING_MAINUI, mainui);
+            DEFAULT_GROUPS.put(ISetting.SETTING_SIDEBAR, sidebar);
+            DEFAULT_GROUPS.put(ISetting.SETTING_CHAT, chat);
+            DEFAULT_GROUPS.put(ISetting.SETTING_TROOP, troop);
+            DEFAULT_GROUPS.put(ISetting.SETTING_EXTENSION, extension);
+            DEFAULT_GROUPS.put(ISetting.SETTING_SETTING, setting);
+            DEFAULT_GROUPS.put(ISetting.SETTING_UPDATE, update);
             DEFAULT_SETTING.put(KEY_GROUPS, DEFAULT_GROUPS);
             DEFAULT_SETTING.put(KEY_LAST_MODIFIED, System.currentTimeMillis());
         } catch (JSONException ignore) {

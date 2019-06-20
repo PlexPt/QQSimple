@@ -244,7 +244,7 @@ public class ExtensionHook extends BaseHook {
     }
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.extension;
+    public String getSettingGroup() {
+        return SETTING_EXTENSION;
     }
 }

@@ -23,8 +23,8 @@ public class ChatPreferenceFragment extends AbstractPreferenceFragment {
     }
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.chat;
+    public String getSettingGroup() {
+        return SETTING_CHAT;
     }
 }
 

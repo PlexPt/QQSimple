@@ -92,7 +92,7 @@ public class AboutPreferenceFragment extends AbstractPreferenceFragment implemen
     }
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.about;
+    public String getSettingGroup() {
+        return SETTING_ABOUT;
     }
 }

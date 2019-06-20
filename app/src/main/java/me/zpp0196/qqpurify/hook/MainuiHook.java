@@ -400,8 +400,8 @@ public class MainuiHook extends BaseHook {
     }
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.mainui;
+    public String getSettingGroup() {
+        return SETTING_MAINUI;
     }
     // endregion
 }

@@ -90,7 +90,7 @@ public class InitializeHook implements Constants, IXposedHookLoadPackage, Settin
             return false;
         }
 
-        Setting extension = Setting.getInstance(SettingGroup.extension);
+        Setting extension = Setting.getInstance(SETTING_EXTENSION);
         return !isPeak || extension.get(KEY_TRANSPARENT_IMG_BG, false);
     }
 
@@ -103,11 +103,11 @@ public class InitializeHook implements Constants, IXposedHookLoadPackage, Settin
         long allHooksInitStartTime = System.currentTimeMillis();
         for (String simpleClassName : hooksClassName) {
             // 排除setting
-            if (simpleClassName.toLowerCase().contains(getSettingGroup().name())) {
+            if (simpleClassName.toLowerCase().contains(getSettingGroup())) {
                 continue;
             }
             // 排除update
-            if (simpleClassName.toLowerCase().contains(SettingGroup.update.name())) {
+            if (simpleClassName.toLowerCase().contains(SETTING_UPDATE)) {
                 continue;
             }
 
@@ -147,7 +147,7 @@ public class InitializeHook implements Constants, IXposedHookLoadPackage, Settin
     }
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.setting;
+    public String getSettingGroup() {
+        return SETTING_SETTING;
     }
 }

@@ -154,8 +154,8 @@ public class ChatHook extends BaseHook {
     // endregion
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.chat;
+    public String getSettingGroup() {
+        return SETTING_CHAT;
     }
 }
 

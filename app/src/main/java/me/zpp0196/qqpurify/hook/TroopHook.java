@@ -131,7 +131,7 @@ public class TroopHook extends BaseHook {
     }
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.troop;
+    public String getSettingGroup() {
+        return SETTING_TROOP;
     }
 }

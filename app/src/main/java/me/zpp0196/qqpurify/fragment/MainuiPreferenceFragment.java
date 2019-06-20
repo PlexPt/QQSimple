@@ -23,7 +23,7 @@ public class MainuiPreferenceFragment extends AbstractPreferenceFragment {
     }
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.mainui;
+    public String getSettingGroup() {
+        return SETTING_MAINUI;
     }
 }

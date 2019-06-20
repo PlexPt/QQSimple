@@ -61,7 +61,7 @@ public abstract class BaseHook implements SettingUtils.ISetting, Constants, QQCl
         Setting setting = mSetting;
         if (method.isAnnotationPresent(VersionSupport.class)) {
             VersionSupport vs = method.getAnnotation(VersionSupport.class);
-            if (vs.group() != SettingGroup.empty) {
+            if (!vs.group().equals(SETTING_DEFAULT)) {
                 setting = Setting.getInstance(vs.group());
             }
 

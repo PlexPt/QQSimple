@@ -28,8 +28,7 @@ public class Setting extends SettingUtils {
         return getInstance(setting.getSettingGroup());
     }
 
-    public static Setting getInstance(ISetting.SettingGroup group) {
-        String groupName = group.name();
+    public static Setting getInstance(@ISetting.SettingGroup String groupName) {
         if (mSettings.containsKey(groupName)) {
             return mSettings.get(groupName);
         }

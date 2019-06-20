@@ -105,7 +105,7 @@ public class QQDialogUtils implements Constants, QQClasses {
 
     private static void checkUpdate(Activity activity) {
         long lastCheckUpdate = QQSharedPreferences.getLong(activity, KEY_LAST_CHECK);
-        Setting update = Setting.getInstance(SettingUtils.ISetting.SettingGroup.update);
+        Setting update = Setting.getInstance(SettingUtils.ISetting.SETTING_UPDATE);
         if (!update.get(KEY_UPD_AUTO_CHECK, true)) {
             return;
         }

@@ -114,7 +114,7 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
     }
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.setting;
+    public String getSettingGroup() {
+        return SETTING_SETTING;
     }
 }

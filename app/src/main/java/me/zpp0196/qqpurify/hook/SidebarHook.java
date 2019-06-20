@@ -250,7 +250,7 @@ public class SidebarHook extends BaseHook {
     }
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.sidebar;
+    public String getSettingGroup() {
+        return SETTING_SIDEBAR;
     }
 }

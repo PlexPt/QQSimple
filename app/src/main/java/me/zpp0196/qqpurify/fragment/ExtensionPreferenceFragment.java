@@ -23,7 +23,7 @@ public class ExtensionPreferenceFragment extends AbstractPreferenceFragment {
     }
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.extension;
+    public String getSettingGroup() {
+        return SETTING_EXTENSION;
     }
 }

@@ -38,7 +38,7 @@ public class EarlierSupport extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏动态入口")
-    @VersionSupport(group = SettingGroup.mainui, max = QQ_800)
+    @VersionSupport(group = SETTING_MAINUI, max = QQ_800)
     public void hideLebaList(final List<String> list) {
         XMethodHook.create($(Leba)).method("onInflate").hook(new XC_LogMethodHook() {
             @Override
@@ -57,7 +57,7 @@ public class EarlierSupport extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏坦白说入口")
-    @VersionSupport(group = SettingGroup.mainui, max = QQ_795)
+    @VersionSupport(group = SETTING_MAINUI, max = QQ_795)
     public void hideHonestSay() {
         XMethodHook honestSayHook = XMethodHook.create($(CardController)).method("a")
                 .callback(intercept());
@@ -66,13 +66,13 @@ public class EarlierSupport extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏创建群聊")
-    @VersionSupport(group = SettingGroup.mainui, max = QQ_800)
+    @VersionSupport(group = SETTING_MAINUI, max = QQ_800)
     public void hideCreateTroop() {
         hideViewAfterCreateTab(Contacts, View.class, "b");
     }
 
     @MethodHook(desc = "隐藏底部分组")
-    @VersionSupport(group = SettingGroup.mainui)
+    @VersionSupport(group = SETTING_MAINUI)
     public void hideTabs(final List<String> list) {
         XMethodHook.create($(MainFragment)).method(View[].class, "a")
                 .params(View.class).hook(new XC_LogMethodHook() {
@@ -95,7 +95,7 @@ public class EarlierSupport extends BaseHook {
 
     // region sidebar
     @MethodHook(desc = "隐藏城市天气")
-    @VersionSupport(group = SettingGroup.sidebar, max = QQ_800)
+    @VersionSupport(group = SETTING_SIDEBAR, max = QQ_800)
     public void hideCityWeather() {
         XConstructorHook.create($(QQSettingMe)).hook(new XMethodHook.Callback() {
             @Override
@@ -106,7 +106,7 @@ public class EarlierSupport extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏厘米秀")
-    @VersionSupport(group = SettingGroup.sidebar, max = QQ_805)
+    @VersionSupport(group = SETTING_SIDEBAR, max = QQ_805)
     public void hideApollo() {
         XMethodHook.create($(QQSettingMe)).method("a").params(ApolloManager$CheckApolloInfoResult)
                 .hook(XC_LogMethodHook.intercept());
@@ -115,13 +115,13 @@ public class EarlierSupport extends BaseHook {
 
     // region chat
     @MethodHook(desc = "隐藏表情联想")
-    @VersionSupport(group = SettingGroup.chat, max = QQ_800)
+    @VersionSupport(group = SETTING_CHAT, max = QQ_800)
     public void hideSticker() {
         XMethodHook.create($(BaseChatPie)).method("a").params(Editable.class).hook(intercept());
     }
 
     @MethodHook(desc = "隐藏字体特效")
-    @VersionSupport(group = SettingGroup.chat)
+    @VersionSupport(group = SETTING_CHAT)
     public void hideFont() {
         XMethodHook.create($(TextItemBuilder)).method("a")
                 .params(BaseBubbleBuilder$ViewHolder, ChatMessage).hook(intercept());
@@ -134,7 +134,7 @@ public class EarlierSupport extends BaseHook {
 
     // region troop
     @MethodHook(desc = "隐藏在线人数")
-    @VersionSupport(group = SettingGroup.troop, max = QQ_800)
+    @VersionSupport(group = SETTING_TROOP, max = QQ_800)
     public void hideOnlineNumber() {
         XMethodHook.create($(BaseTroopChatPie)).method("b").params(boolean.class)
                 .hook(new XC_LogMethodHook() {
@@ -148,7 +148,7 @@ public class EarlierSupport extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏群头衔")
-    @VersionSupport(group = SettingGroup.troop, max = QQ_805)
+    @VersionSupport(group = SETTING_TROOP, max = QQ_805)
     public void hideLevel() {
         XMethodHook.create($(BaseBubbleBuilder)).method("f").params(ChatMessage, BaseChatItemLayout)
                 .hook(intercept());
@@ -157,7 +157,7 @@ public class EarlierSupport extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏魅力等级")
-    @VersionSupport(group = SettingGroup.troop, max = QQ_805)
+    @VersionSupport(group = SETTING_TROOP, max = QQ_805)
     public void hideGlamourLevel() {
         XMethodHook.create($(BaseBubbleBuilder)).method("g").params(ChatMessage, BaseChatItemLayout)
                 .hook(intercept());
@@ -167,7 +167,7 @@ public class EarlierSupport extends BaseHook {
     // endregion
 
     @Override
-    public SettingGroup getSettingGroup() {
-        return SettingGroup.earlier;
+    public String getSettingGroup() {
+        return SETTING_EARLIER;
     }
 }
