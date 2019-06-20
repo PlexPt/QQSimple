@@ -28,7 +28,7 @@ public class TroopHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏总人数")
-    @VersionSupport(min = 1024)
+    @VersionSupport(min = QQ_800)
     public void hideTotalNumber() {
         XMethodHook.create($(TroopChatPie)).method("a").params(String.class, boolean.class).
                 hook(new XC_LogMethodHook() {
@@ -42,7 +42,7 @@ public class TroopHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏在线人数")
-    @VersionSupport(min = 1024)
+    @VersionSupport(min = QQ_800)
     public void hideOnlineNumber() {
         XMethodHook.create($(BaseTroopChatPie)).method("c").params(boolean.class)
                 .hook(new XC_LogMethodHook() {
@@ -56,7 +56,7 @@ public class TroopHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏群头衔")
-    @VersionSupport(min = 1186)
+    @VersionSupport(min = QQ_805)
     public void hideLevel() {
         String bb = QQConfigUtils.getMethod("troop_level_bb");
         String ci = QQConfigUtils.getMethod("troop_level_ci");
@@ -67,7 +67,7 @@ public class TroopHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏魅力等级")
-    @VersionSupport(min = 1186)
+    @VersionSupport(min = QQ_805)
     public void hideGlamourLevel() {
         String bb = QQConfigUtils.getMethod("troop_glamour_bb");
         String ci = QQConfigUtils.getMethod("troop_glamour_ci");
@@ -78,7 +78,7 @@ public class TroopHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏炫彩昵称")
-    @VersionSupport(min = 980)
+    @VersionSupport(min = QQ_795)
     public void hideColorNick() {
         XMethodHook.create($(ColorNickManager)).method("a").callback(intercept())
                 .params(QQAppInterface, TextView.class, Spannable.class).hook();

@@ -64,7 +64,7 @@ public class ChatHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏字体特效")
-    @VersionSupport(min = 980)
+    @VersionSupport(min = QQ_795)
     public void hideFont() {
         XMethodHook fontManagerHook = XMethodHook.create($(FontManager)).callback(intercept());
         fontManagerHook.method(void.class, "a").params(String.class).hook();
@@ -81,7 +81,7 @@ public class ChatHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏表情联想")
-    @VersionSupport(min = 1024)
+    @VersionSupport(min = QQ_800)
     public void hideSticker() {
         XMethodHook.create($(StickerRecHelper)).method("a").params(Editable.class).hook(intercept());
     }

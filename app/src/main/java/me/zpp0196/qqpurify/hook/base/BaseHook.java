@@ -29,7 +29,7 @@ import me.zpp0196.qqpurify.utils.Utils;
 /**
  * Created by zpp0196 on 2018/3/18.
  */
-public abstract class BaseHook implements SettingUtils.ISetting, Constants, QQClasses {
+public abstract class BaseHook implements SettingUtils.ISetting, Constants, QQClasses, VersionSupport.QQVersions {
 
     private static final Map<String, Class<?>> mClassMap = new HashMap<>();
     protected static long mQQVersionCode = -1;

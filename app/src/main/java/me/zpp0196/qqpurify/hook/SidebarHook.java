@@ -118,13 +118,13 @@ public class SidebarHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏返回按钮")
-    @VersionSupport(min = 1024)
+    @VersionSupport(min = QQ_800)
     public void hideBack() {
         this.mHideBack = true;
     }
 
     @MethodHook(desc = "隐藏我的状态")
-    @VersionSupport(min = 1024)
+    @VersionSupport(min = QQ_800)
     public void hideMineStory() {
         XMethodHook.create($(VSConfigManager)).method("a").params(String.class, Object.class)
                 .hook(new XC_LogMethodHook() {
@@ -141,7 +141,7 @@ public class SidebarHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏厘米秀")
-    @VersionSupport(min = 1186)
+    @VersionSupport(min = QQ_805)
     public void hideApollo() {
         this.mHideApollo = true;
     }

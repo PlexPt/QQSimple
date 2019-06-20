@@ -214,7 +214,7 @@ public class ExtensionHook extends BaseHook {
     }
 
     @MethodHook(desc = "重定向文件下载目录")
-    @VersionSupport(min = 832)
+    @VersionSupport(min = QQ_760)
     public void redirectFileRec() {
         String redirectPath = getString(KEY_REDIRECT_FILE_REC_PATH);
         if (TextUtils.isEmpty(redirectPath)) {

@@ -43,7 +43,7 @@ public class MainuiHook extends BaseHook {
 
     // region 消息
     @MethodHook(desc = "隐藏SVIP铭牌")
-    @VersionSupport(min = 1024)
+    @VersionSupport(min = QQ_800)
     public void hideSvipNameplate() {
         // SVIP铭牌
         XMethodHook.create($(VipUtils)).method(short.class, "a").params(AppRuntime,
@@ -54,7 +54,7 @@ public class MainuiHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏小程序入口")
-    @VersionSupport(min = 1024)
+    @VersionSupport(min = QQ_800)
     public void hideMiniAppEntry() {
         XMethodHook.create($(MiniAppConfBean)).method("a").hookAll(new XC_LogMethodHook() {
             @Override
@@ -272,7 +272,7 @@ public class MainuiHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏动态入口")
-    @VersionSupport(min = 1024)
+    @VersionSupport(min = QQ_800)
     public void hideLebaList(final List<String> list) {
         if (list.contains("动态")) {
             XMethodHook.create($(Leba)).method("onInflate").hook(new XC_LogMethodHook() {
@@ -333,7 +333,7 @@ public class MainuiHook extends BaseHook {
     }
 
     @MethodHook(desc = "隐藏底部分组")
-    @VersionSupport(min = 1024)
+    @VersionSupport(min = QQ_800)
     public void hideTabs(final List<String> list) {
         if (list.contains("-1")) {
             XMethodHook.create($(MainFragment)).method("onViewCreated").hook(new XC_LogMethodHook() {
