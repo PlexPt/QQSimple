@@ -5,6 +5,7 @@ public interface QQClasses {
     String AbstractGalleryScene = "com.tencent.common.galleryactivity.AbstractGalleryScene";
     String AioAnimationConfigHelper = "com.tencent.mobileqq.activity.aio.anim.AioAnimationConfigHelper";
     String AIOPanelUtiles = "com.tencent.mobileqq.activity.aio.panel.AIOPanelUtiles";
+    String AIOUtils = "com.tencent.mobileqq.activity.aio.AIOUtils";
     String ApolloManager$CheckApolloInfoResult = "com.tencent.mobileqq.apollo.ApolloManager$CheckApolloInfoResult";
     String AppConstants = "com.tencent.mobileqq.app.AppConstants";
     String AppRuntime = "mqq.app.AppRuntime";

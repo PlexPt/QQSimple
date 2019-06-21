@@ -10,6 +10,9 @@
         <SwitchPreference
             android:key="openFlashAsPic"
             android:title="以图片方式打开闪照" />
+        <SwitchPreference
+            android:key="openEmoticonAsPic"
+            android:title="以图片方式打开表情包" />
     </PreferenceCategory>
     <PreferenceCategory android:title="群聊">
         <SwitchPreference

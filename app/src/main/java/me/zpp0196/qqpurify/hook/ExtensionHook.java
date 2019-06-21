@@ -159,6 +159,25 @@ public class ExtensionHook extends BaseHook {
         });
     }
 
+    @MethodHook(desc = "以图片方式打开表情包")
+    @VersionSupport(min = QQ_795, exclude = {QQ_799, QQ_800})
+    public void openEmoticonAsPic() {
+        XMethodHook.create($(PicItemBuilder)).method("onClick").hook(new XC_LogMethodHook() {
+            @Override
+            protected void before(XMethodHook.MethodParam param) {
+                super.before(param);
+                Object v0 = XMethod.create($(AIOUtils)).exact(Object.class, "a")
+                        .types(View.class).invoke(param.args[0]);
+                Object chatMessage = XField.create(v0).exact($(ChatMessage), "a").get();
+                Object picMessageExtraData = XField.create(chatMessage).name("picExtraData").get();
+                XField.create(chatMessage).exact(int.class, "imageType").set(0);
+                if (picMessageExtraData != null) {
+                    XField.create(picMessageExtraData).exact(int.class, "imageBizType").set(0);
+                }
+            }
+        });
+    }
+
     @MethodHook(desc = "防止被@")
     public void preventAt() {
         XMethodHook.create($(MessageInfo)).method("a").params(QQAppInterface, String.class,
