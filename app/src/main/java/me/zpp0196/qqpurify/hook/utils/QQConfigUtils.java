@@ -71,10 +71,14 @@ public class QQConfigUtils implements Constants {
     }
 
     public static String getMethod(String key) {
+        return getMethod(key, "a");
+    }
+
+    public static String getMethod(String key, String def) {
         try {
             return mMethods.getString(key);
         } catch (Exception e) {
-            return "a";
+            return def;
         }
     }
 }

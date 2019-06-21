@@ -47,7 +47,6 @@ public interface QQClasses {
     String MessageInfo = "com.tencent.mobileqq.troop.data.MessageInfo";
     String MessageRecord = "com.tencent.mobileqq.data.MessageRecord";
     String MessageRecordFactory = "com.tencent.mobileqq.service.message.MessageRecordFactory";
-    String MiniAppConfBean = "com.tencent.mobileqq.config.business.MiniAppConfBean";
     String NotifyAndRecAdapter = "com.tencent.mobileqq.activity.contact.troop.NotifyAndRecAdapter";
     String OnLongClickAndTouchListener = "com.tencent.mobileqq.activity.aio.OnLongClickAndTouchListener";
     String PanelIconLinearLayout = "com.tencent.mobileqq.activity.aio.panel.PanelIconLinearLayout";
