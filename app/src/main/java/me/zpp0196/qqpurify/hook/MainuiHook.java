@@ -50,6 +50,15 @@ public class MainuiHook extends BaseHook {
     }
 
     // region 消息
+    @MethodHook(desc = "隐藏在线状态")
+    @VersionSupport(min = QQ_805)
+    public void hideOnlineStatus() {
+        XMethodHook.create($(FrameHelperActivity)).method("handleMessage").afterHooked(param -> {
+            String onlineStatusIcon = QQConfigUtils.getField("mainui_osi", "c");
+            hideView(XField.create(param).exact(ImageView.class, onlineStatusIcon).get());
+        }).hook();
+    }
+
     @MethodHook(desc = "隐藏SVIP铭牌")
     @VersionSupport(min = QQ_800)
     public void hideSvipNameplate() {

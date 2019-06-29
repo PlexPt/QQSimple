@@ -2,6 +2,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="消息">
         <SwitchPreference
+            android:key="hideOnlineStatus"
+            android:title="隐藏在线状态" />
+        <SwitchPreference
             android:key="hideSvipNameplate"
             android:title="隐藏SVIP铭牌" />
         <SwitchPreference
