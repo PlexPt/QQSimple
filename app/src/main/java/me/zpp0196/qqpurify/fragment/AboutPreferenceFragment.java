@@ -1,7 +1,5 @@
 package me.zpp0196.qqpurify.fragment;
 
-import androidx.preference.Preference;
-
 import de.psdev.licensesdialog.LicensesDialogFragment;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.MITLicense;
@@ -10,15 +8,13 @@ import de.psdev.licensesdialog.model.Notices;
 import me.zpp0196.qqpurify.BuildConfig;
 import me.zpp0196.qqpurify.R;
 import me.zpp0196.qqpurify.fragment.base.AbstractPreferenceFragment;
-import me.zpp0196.qqpurify.task.CheckUpdateTask;
-import me.zpp0196.qqpurify.utils.Utils;
 
 import static me.zpp0196.qqpurify.utils.Utils.getAppVersionName;
 
 /**
  * Created by zpp0196 on 2019/2/9.
  */
-public class AboutPreferenceFragment extends AbstractPreferenceFragment implements Preference.OnPreferenceClickListener {
+public class AboutPreferenceFragment extends AbstractPreferenceFragment {
 
     @Override
     @SuppressWarnings("ConstantConditions")
@@ -32,30 +28,10 @@ public class AboutPreferenceFragment extends AbstractPreferenceFragment implemen
 
         findPreference("version_module").setSummary(moduleVersion);
         findPreference("version_qq").setSummary(qqVersion);
-        findPreference("licenses").setOnPreferenceClickListener(this);
-        findPreference("email_feedback").setOnPreferenceClickListener(this);
-        findPreference("telegram_channel").setOnPreferenceClickListener(this);
-        findPreference("version_module").setOnPreferenceClickListener(this);
-    }
-
-    @Override
-    public boolean onPreferenceClick(Preference preference) {
-        String key = preference.getKey();
-        switch (key) {
-            case "version_module":
-                new CheckUpdateTask(mActivity, true).execute();
-                break;
-            case "licenses":
-                showLicensesDialog();
-                break;
-            case "email_feedback":
-                Utils.mailTo(mActivity, "zpp0196@gmail.com");
-                break;
-            case "telegram_channel":
-                Utils.openUrl(mActivity, "https://t.me/QQPurify");
-                break;
-        }
-        return false;
+        findPreference("licenses").setOnPreferenceClickListener(preference -> {
+            showLicensesDialog();
+            return false;
+        });
     }
 
     private void showLicensesDialog() {

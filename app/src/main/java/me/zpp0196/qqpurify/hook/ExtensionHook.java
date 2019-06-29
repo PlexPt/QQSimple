@@ -9,12 +9,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import me.zpp0196.library.xposed.XC_MemberHook;
 import me.zpp0196.library.xposed.XField;
 import me.zpp0196.library.xposed.XLog;
 import me.zpp0196.library.xposed.XMethod;
@@ -22,11 +25,9 @@ import me.zpp0196.library.xposed.XMethodHook;
 import me.zpp0196.qqpurify.hook.annotation.MethodHook;
 import me.zpp0196.qqpurify.hook.annotation.VersionSupport;
 import me.zpp0196.qqpurify.hook.base.BaseHook;
-import me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook;
 import me.zpp0196.qqpurify.hook.utils.QQConfigUtils;
 import me.zpp0196.qqpurify.utils.Utils;
 
-import static me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook.intercept;
 import static me.zpp0196.qqpurify.utils.Utils.isCallingFrom;
 
 /**
@@ -43,10 +44,9 @@ public class ExtensionHook extends BaseHook {
     @MethodHook(desc = "防止消息撤回")
     public void preventRecall() {
         XMethodHook.create($(QQMessageFacade)).params(ArrayList.class, boolean.class)
-                .method("a").hook(new XC_LogMethodHook() {
+                .method("a").hook(new XC_MemberHook() {
             @Override
-            protected void before(XMethodHook.MethodParam param) {
-                super.before(param);
+            protected void onBeforeHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 ArrayList list = param.args(0);
                 if (isCallingFrom(QQConfigUtils.findClass(C2CMessageProcessor)) ||
                         list == null || list.isEmpty()) {
@@ -116,10 +116,9 @@ public class ExtensionHook extends BaseHook {
         }
         int color = Color.parseColor(value);
         XMethodHook.create($(AbstractGalleryScene)).method("a").params(ViewGroup.class)
-                .hook(new XC_LogMethodHook() {
+                .hook(new XC_MemberHook() {
                     @Override
-                    protected void after(XMethodHook.MethodParam param) {
-                        super.after(param);
+                    protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                         View d = XField.create(param).exact(View.class, "d").get();
                         d.setBackgroundColor(color);
                     }
@@ -129,10 +128,9 @@ public class ExtensionHook extends BaseHook {
     @MethodHook(desc = "以图片方式打开闪照")
     public void openFlashAsPic() {
         XMethodHook.create($(FlashPicHelper)).method(boolean.class, "a")
-                .params(MessageRecord).hook(new XC_LogMethodHook() {
+                .params(MessageRecord).hook(new XC_MemberHook() {
             @Override
-            protected void before(XMethodHook.MethodParam param) {
-                super.before(param);
+            protected void onBeforeHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 if (isCallingFrom(QQConfigUtils.findClass(ItemBuilderFactory)) ||
                         isCallingFrom(QQConfigUtils.findClass(BasePicDownloadProcessor))) {
                     param.setResult(false);
@@ -140,10 +138,9 @@ public class ExtensionHook extends BaseHook {
             }
         });
         XMethodHook.create($(PicItemBuilder)).method("a").params(ChatMessage, BaseBubbleBuilder$ViewHolder,
-                View.class, BaseChatItemLayout, OnLongClickAndTouchListener).hook(new XC_LogMethodHook() {
+                View.class, BaseChatItemLayout, OnLongClickAndTouchListener).hook(new XC_MemberHook() {
             @Override
-            protected void after(XMethodHook.MethodParam param) {
-                super.after(param);
+            protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 Object viewHolder = param.args[1];
                 if (viewHolder == null) {
                     return;
@@ -162,10 +159,9 @@ public class ExtensionHook extends BaseHook {
     @MethodHook(desc = "以图片方式打开表情包")
     @VersionSupport(min = QQ_795, exclude = {QQ_799, QQ_800})
     public void openEmoticonAsPic() {
-        XMethodHook.create($(PicItemBuilder)).method("onClick").hook(new XC_LogMethodHook() {
+        XMethodHook.create($(PicItemBuilder)).method("onClick").hook(new XC_MemberHook() {
             @Override
-            protected void before(XMethodHook.MethodParam param) {
-                super.before(param);
+            protected void onBeforeHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 Object v0 = XMethod.create($(AIOUtils)).exact(Object.class, "a")
                         .types(View.class).invoke(param.args[0]);
                 Object chatMessage = XField.create(v0).exact($(ChatMessage), "a").get();
@@ -181,16 +177,15 @@ public class ExtensionHook extends BaseHook {
     @MethodHook(desc = "防止被@")
     public void preventAt() {
         XMethodHook.create($(MessageInfo)).method("a").params(QQAppInterface, String.class,
-                MessageInfo, Object.class, MessageRecord, boolean.class).hook(intercept());
+                MessageInfo, Object.class, MessageRecord, boolean.class).intercept();
     }
 
     @MethodHook(desc = "签到文本化")
     public void simpleSign() {
         XMethodHook.create($(ItemBuilderFactory)).method("a").params(ChatMessage)
-                .hook(new XC_LogMethodHook() {
+                .hook(new XC_MemberHook() {
                     @Override
-                    protected void after(XMethodHook.MethodParam param) {
-                        super.after(param);
+                    protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                         int result = param.getResult();
                         if (result == 71 || result == 84) {
                             param.setResult(-1);
@@ -203,9 +198,9 @@ public class ExtensionHook extends BaseHook {
     public void renameBase() {
         final PackageManager pm = mContext.getPackageManager();
         String apkFormat = getString(KEY_RENAME_BASE_FORMAT);
-        XMethodHook.create(File.class).method("getName").hook(new XMethodHook.Callback() {
+        XMethodHook.create(File.class).method("getName").hook(new XC_MemberHook() {
             @Override
-            protected void after(XMethodHook.MethodParam param) {
+            protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 if (!param.getResult().toString().equals("base.apk")) {
                     return;
                 }
@@ -257,7 +252,7 @@ public class ExtensionHook extends BaseHook {
                     return;
                 }
             } catch (IllegalAccessException e) {
-                XLog.e(getTAG(), e);
+                XLog.e(e);
             }
         }
     }

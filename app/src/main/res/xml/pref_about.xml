@@ -14,12 +14,4 @@
             android:key="licenses"
             android:title="开放源代码许可" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="交流">
-        <Preference
-            android:key="email_feedback"
-            android:title="邮箱反馈" />
-        <Preference
-            android:key="telegram_channel"
-            android:title="Telegram频道" />
-    </PreferenceCategory>
 </PreferenceScreen>

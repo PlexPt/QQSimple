@@ -13,16 +13,19 @@ import java.util.Locale;
 
 import me.zpp0196.library.xposed.XLog;
 import me.zpp0196.qqpurify.utils.Constants;
+import me.zpp0196.qqpurify.utils.Setting;
+import me.zpp0196.qqpurify.utils.SettingUtils;
 import me.zpp0196.qqpurify.utils.Utils;
 
 /**
  * Created by zpp0196 on 2019/6/2.
  */
-public class XLogUtils implements XLog.ILogCallback, Constants {
+public class XLogUtils implements XLog.Callback, Constants {
 
     private static final SimpleDateFormat mSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.CHINA);
 
     private static int mLogCount;
+    private static boolean mSwitch;
     private static File mLogFile;
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -54,26 +57,33 @@ public class XLogUtils implements XLog.ILogCallback, Constants {
         private static final XLogUtils INSTANCE = new XLogUtils();
     }
 
-    public static XLogUtils getInstance(int count) {
-        mLogCount = count;
+    public static XLogUtils getInstance() {
+        Setting setting = Setting.getInstance(SettingUtils.ISetting.SETTING_SETTING);
+        mSwitch = setting.get(Constants.KEY_LOG_SWITCH, false);
+        mLogCount = setting.get(KEY_LOG_COUNT, 10);
         return SingletonInstance.INSTANCE;
     }
 
+    public static void log(SettingUtils.ISetting setting, String message) {
+        XLog.i(String.format("%s(%s) -> %s", APP_NAME, setting.getSettingGroup(), message));
+    }
+
     @Override
-    public synchronized void write(XLog.LogLevel level, String tag, Object msg, Throwable th) {
+    public synchronized boolean log(Object msg, Throwable th) {
         if (mLogFile == null) {
-            return;
+            return true;
         }
         StringBuilder sb = new StringBuilder();
-        sb.append(mSdf.format(new Date())).append("/? ").append(level.name().charAt(0)).append("/");
-        sb.append(tag).append(": ").append(msg).append("\n");
+        sb.append(mSdf.format(new Date())).append("/? ").append(msg).append("\n");
         if (th != null) {
-            sb.append(Log.getStackTraceString(th));
+            sb.append(Log.getStackTraceString(th)).append("\n");
         }
         try {
             FileUtils.writeStringToFile(mLogFile, sb.toString(), "utf-8", true);
+            return mSwitch;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return true;
     }
 }

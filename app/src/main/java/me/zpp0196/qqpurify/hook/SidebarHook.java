@@ -9,9 +9,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import me.zpp0196.library.xposed.XC_MemberHook;
 import me.zpp0196.library.xposed.XConstructor;
 import me.zpp0196.library.xposed.XConstructorHook;
 import me.zpp0196.library.xposed.XField;
@@ -21,7 +24,6 @@ import me.zpp0196.qqpurify.activity.MainActivity;
 import me.zpp0196.qqpurify.hook.annotation.MethodHook;
 import me.zpp0196.qqpurify.hook.annotation.VersionSupport;
 import me.zpp0196.qqpurify.hook.base.BaseHook;
-import me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook;
 import me.zpp0196.qqpurify.hook.utils.QQDialogUtils;
 import me.zpp0196.qqpurify.utils.Setting;
 
@@ -54,10 +56,9 @@ public class SidebarHook extends BaseHook {
     @Override
     public void init() {
         super.init();
-        XConstructorHook.create($(QQSettingMe)).hook(new XC_LogMethodHook() {
+        XConstructorHook.create($(QQSettingMe)).hook(new XC_MemberHook() {
             @Override
-            protected void after(XMethodHook.MethodParam param) {
-                super.after(param);
+            protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 XField settingMe = XField.create(param);
                 // 打卡
                 if (mHideDaily) {
@@ -127,10 +128,9 @@ public class SidebarHook extends BaseHook {
     @VersionSupport(min = QQ_800)
     public void hideMineStory() {
         XMethodHook.create($(VSConfigManager)).method("a").params(String.class, Object.class)
-                .hook(new XC_LogMethodHook() {
+                .hook(new XC_MemberHook() {
                     @Override
-                    protected void after(XMethodHook.MethodParam param) {
-                        super.after(param);
+                    protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                         String key = param.args(0);
                         Object value = param.getResult();
                         if ("mine_videostory_entrance".equals(key)) {
@@ -150,10 +150,9 @@ public class SidebarHook extends BaseHook {
     public void hideSettingItems(final List<String> list) {
         // 设置列表
         XMethodHook.create($(QQSettingSettingActivity)).method("a").params(int.class, int.class,
-                int.class, int.class).hook(new XC_LogMethodHook() {
+                int.class, int.class).hook(new XC_MemberHook() {
             @Override
-            protected void after(XMethodHook.MethodParam param) {
-                super.after(param);
+            protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 Activity activity = param.thisObject();
                 String str = activity.getString(param.args(1));
                 if (list.contains(str)) {
@@ -165,19 +164,17 @@ public class SidebarHook extends BaseHook {
         // QQ达人
         if (list.contains("QQ达人")) {
             XMethodHook.create($(QQSettingSettingActivity)).method("c").params(Card)
-                    .hook(new XC_LogMethodHook() {
+                    .hook(new XC_MemberHook() {
                         @Override
-                        protected void before(XMethodHook.MethodParam param) {
-                            super.before(param);
-                            param.args[0] = null;
+                        protected void onBeforeHooked(@NonNull XC_MemberHook.MemberHookParam param) {
+                            param.setArgs(0, null);
                         }
                     });
         }
 
         // 免流量特权
         if (list.contains("免流量特权")) {
-            XMethodHook.create($(QQSettingSettingActivity)).method(void.class, "a")
-                    .hook(XC_LogMethodHook.intercept());
+            XMethodHook.create($(QQSettingSettingActivity)).method(void.class, "a").intercept();
         }
     }
 
@@ -187,10 +184,9 @@ public class SidebarHook extends BaseHook {
         int requestCode = (int) (Math.random() * 100000);
 
         Class<?> clz = $(QQSettingSettingActivity);
-        XMethodHook.create(clz).method("doOnCreate").hook(new XC_LogMethodHook() {
+        XMethodHook.create(clz).method("doOnCreate").hook(new XC_MemberHook() {
             @Override
-            protected void after(XMethodHook.MethodParam param) {
-                super.after(param);
+            protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 View formSimpleItem = XField.create(param).exact(findClass(FormSimpleItem), "a").get();
                 Context context = formSimpleItem.getContext();
                 mModuleEntry = XConstructor.create(formSimpleItem.getClass()).instance(context);
@@ -217,10 +213,9 @@ public class SidebarHook extends BaseHook {
             }
         });
 
-        XMethodHook.create(clz).method("onActivityResult").hook(new XC_LogMethodHook() {
+        XMethodHook.create(clz).method("onActivityResult").hook(new XC_MemberHook() {
             @Override
-            protected void after(XMethodHook.MethodParam param) {
-                super.after(param);
+            protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 int rc = param.args(0);
                 Intent intent;
 
@@ -237,10 +232,9 @@ public class SidebarHook extends BaseHook {
             }
         });
 
-        XMethodHook.create(clz).method("onResume").hook(new XC_LogMethodHook() {
+        XMethodHook.create(clz).method("onResume").hook(new XC_MemberHook() {
             @Override
-            protected void after(XMethodHook.MethodParam param) {
-                super.after(param);
+            protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 String versionName = getAppVersionName(param.thisObject(), APPLICATION_ID);
                 if (mModuleEntry != null) {
                     XMethod.create(mModuleEntry).name("setRightText").invoke(versionName);

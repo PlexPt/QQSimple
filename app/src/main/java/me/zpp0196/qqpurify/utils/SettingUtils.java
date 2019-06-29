@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import me.zpp0196.library.xposed.XLog;
-
 /**
  * Created by zpp0196 on 2018/5/17.
  */
@@ -35,7 +33,6 @@ public class SettingUtils implements Constants {
         String SETTING_SETTING = "setting";
         String SETTING_ABOUT = "about";
         String SETTING_EARLIER = "earlier";
-        String SETTING_UPDATE = "update";
         String SETTING_DEFAULT = "default";
 
         @StringDef(value = {
@@ -47,7 +44,6 @@ public class SettingUtils implements Constants {
                 SETTING_SETTING,
                 SETTING_ABOUT,
                 SETTING_EARLIER,
-                SETTING_UPDATE,
                 SETTING_DEFAULT,
         })
         @Retention(RetentionPolicy.SOURCE)
@@ -87,13 +83,8 @@ public class SettingUtils implements Constants {
 
             JSONObject setting = new JSONObject();
             setting.put(KEY_DISABLE_MODULE, false);
-            setting.put(KEY_LOG_LEVEL, XLog.LogLevel.NONE.name());
+            setting.put(KEY_LOG_SWITCH, false);
             setting.put(KEY_LOG_COUNT, 10);
-
-            JSONObject update = new JSONObject();
-            update.put(KEY_UPD_AUTO_CHECK, true);
-            update.put(KEY_UPD_AUTO_OPEN, false);
-            update.put(KEY_UPD_INTERVAL, 1000);
 
             DEFAULT_GROUPS.put(ISetting.SETTING_MAINUI, mainui);
             DEFAULT_GROUPS.put(ISetting.SETTING_SIDEBAR, sidebar);
@@ -101,7 +92,6 @@ public class SettingUtils implements Constants {
             DEFAULT_GROUPS.put(ISetting.SETTING_TROOP, troop);
             DEFAULT_GROUPS.put(ISetting.SETTING_EXTENSION, extension);
             DEFAULT_GROUPS.put(ISetting.SETTING_SETTING, setting);
-            DEFAULT_GROUPS.put(ISetting.SETTING_UPDATE, update);
             DEFAULT_SETTING.put(KEY_GROUPS, DEFAULT_GROUPS);
             DEFAULT_SETTING.put(KEY_LAST_MODIFIED, System.currentTimeMillis());
         } catch (JSONException ignore) {

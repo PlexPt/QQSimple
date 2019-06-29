@@ -15,18 +15,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import me.zpp0196.library.xposed.XC_MemberHook;
 import me.zpp0196.library.xposed.XField;
-import me.zpp0196.library.xposed.XLog;
 import me.zpp0196.library.xposed.XMethod;
 import me.zpp0196.library.xposed.XMethodHook;
 import me.zpp0196.qqpurify.hook.annotation.MethodHook;
 import me.zpp0196.qqpurify.hook.annotation.VersionSupport;
 import me.zpp0196.qqpurify.hook.base.BaseHook;
-import me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook;
 import me.zpp0196.qqpurify.hook.utils.QQConfigUtils;
 
 /**
@@ -36,9 +37,16 @@ import me.zpp0196.qqpurify.hook.utils.QQConfigUtils;
 public class MainuiHook extends BaseHook {
 
     private List<String> mHideFriendGroups = new ArrayList<>();
+    private List<String> mHideTabNum = new ArrayList<>();
 
     public MainuiHook(Context context) {
         super(context);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        hideTabsNum();
     }
 
     // region 消息
@@ -47,10 +55,10 @@ public class MainuiHook extends BaseHook {
     public void hideSvipNameplate() {
         // SVIP铭牌
         XMethodHook.create($(VipUtils)).method(short.class, "a").params(AppRuntime,
-                String.class).hook(XC_LogMethodHook.replace((short) 0));
+                String.class).replace((short) 0);
         // 会员红名
         XMethodHook.create($(VipUtils)).method(int.class, "a").params(QQAppInterface,
-                String.class, boolean.class).hook(XC_LogMethodHook.replace(4));
+                String.class, boolean.class).replace(4);
     }
 
     @MethodHook(desc = "隐藏小程序入口")
@@ -58,7 +66,7 @@ public class MainuiHook extends BaseHook {
     public void hideMiniAppEntry() {
         String F = QQConfigUtils.getMethod("mainui_imael", "F");
         // initMicroAppEntryLayout
-        XMethodHook.create($(Conversation)).method(F).hook(XC_LogMethodHook.intercept());
+        XMethodHook.create($(Conversation)).method(F).intercept();
     }
 
     @MethodHook(desc = "隐藏快捷入口")
@@ -68,13 +76,12 @@ public class MainuiHook extends BaseHook {
             return;
         }
 
-        XMethodHook hook = XMethodHook.create($(PopupMenuDialog)).callback(new XC_LogMethodHook() {
+        XMethodHook hook = XMethodHook.create($(PopupMenuDialog)).callback(new XC_MemberHook() {
             @Override
-            protected void before(XMethodHook.MethodParam param) {
+            protected void onBeforeHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 if (param.args.length < 2 || !(param.args[1] instanceof List)) {
                     return;
                 }
-                super.before(param);
                 List<Object> items = param.args(1);
                 Object addItem = null;
                 String addTitle = "加好友/群";
@@ -82,7 +89,7 @@ public class MainuiHook extends BaseHook {
                 while (iterable.hasNext()) {
                     Object item = iterable.next();
                     String title = XField.create(item).exact(String.class, "a").get();
-                    XLog.d(getTAG(), "快捷入口: " + title);
+                    log("快捷入口: " + title);
                     if (title.equals(addTitle)) {
                         addItem = item;
                     }
@@ -91,7 +98,7 @@ public class MainuiHook extends BaseHook {
                     }
                 }
                 if (items.isEmpty()) {
-                    XLog.w(getTAG(), "请至少保留一个入口，否则会导致QQ闪退");
+                    log("请至少保留一个入口，否则会导致QQ闪退");
                     items.add(addItem);
                 }
             }
@@ -105,16 +112,16 @@ public class MainuiHook extends BaseHook {
     // region 联系人
     @MethodHook(key = KEY_HIDE_NEW_FRIEND, desc = "隐藏新朋友")
     public void hideNewFriend() {
+        mHideTabNum.add("33");
         hideViewAfterCreateTab(Contacts, View.class, "a");
     }
 
     @MethodHook(desc = "隐藏滑动分组")
     public void hideSlidingIndicator(final List<String> list) {
         XMethodHook.create($(SimpleSlidingIndicator)).method(void.class, "a")
-                .hook(new XC_LogMethodHook() {
+                .hook(new XC_MemberHook() {
                     @Override
-                    protected void after(XMethodHook.MethodParam param) {
-                        super.after(param);
+                    protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                         LinearLayout layout = XField.create(param.thisObject)
                                 .exact(LinearLayout.class, "a").get();
                         for (int i = 0; i < layout.getChildCount(); i++) {
@@ -127,15 +134,14 @@ public class MainuiHook extends BaseHook {
 
         // 左右滑动(一开始只有我和上帝知道这些代码怎么写出来的，现在只有上帝知道了)
         XMethodHook.create($(SimpleSlidingIndicator)).params(int.class, boolean.class, boolean.class)
-                .method("a").hook(new XC_LogMethodHook() {
+                .method("a").hook(new XC_MemberHook() {
 
-            private XMethodHook.MethodParam param;
+            private XC_MemberHook.MemberHookParam param;
             private int i;
             private int b;
 
             @Override
-            protected void before(XMethodHook.MethodParam param) {
-                super.before(param);
+            protected void onBeforeHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 this.i = param.args(0);
                 this.b = XField.create(param).exact(int.class, "b").get();
                 this.param = param;
@@ -201,10 +207,9 @@ public class MainuiHook extends BaseHook {
             mHideFriendGroups.addAll(list);
         }
         XMethodHook.create($(BuddyListAdapter)).method("a").params(ArrayList.class,
-                SparseArray.class, SparseIntArray.class).hook(new XC_LogMethodHook() {
+                SparseArray.class, SparseIntArray.class).hook(new XC_MemberHook() {
             @Override
-            protected void after(XMethodHook.MethodParam param) {
-                super.after(param);
+            protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 ArrayList groupsList = param.args(0);
                 Iterator iterator = groupsList.iterator();
                 while (iterator.hasNext()) {
@@ -222,10 +227,9 @@ public class MainuiHook extends BaseHook {
     @SuppressWarnings("UnnecessaryLocalVariable")
     public void hideUnusualContacts() {
         String listClassName = ContactsFPSPinnedHeaderExpandableListView;
-        XMethodHook.create($(listClassName)).method("addFooterView").hook(new XC_LogMethodHook() {
+        XMethodHook.create($(listClassName)).method("addFooterView").hook(new XC_MemberHook() {
             @Override
-            protected void before(XMethodHook.MethodParam param) {
-                super.before(param);
+            protected void onBeforeHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 View view = param.args(0);
                 if (!(view instanceof FrameLayout)) {
                     return;
@@ -242,13 +246,12 @@ public class MainuiHook extends BaseHook {
     // region 动态
     @MethodHook(desc = "隐藏热搜")
     public void hideHotSearch() {
-        XMethodHook.create($(Leba)).method("a").hookAll(new XC_LogMethodHook() {
+        XMethodHook.create($(Leba)).method("a").hookAll(new XC_MemberHook() {
             @Override
-            protected void before(XMethodHook.MethodParam param) {
+            protected void onBeforeHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 if (param.args.length != 1 || !(param.args(0) instanceof List)) {
                     return;
                 }
-                super.before(param);
                 List list = param.args(0);
                 if (list == null || list.isEmpty()) {
                     return;
@@ -265,27 +268,25 @@ public class MainuiHook extends BaseHook {
     @VersionSupport(min = QQ_800)
     public void hideLebaList(final List<String> list) {
         if (list.contains("动态")) {
-            XMethodHook.create($(Leba)).method("onInflate").hook(new XC_LogMethodHook() {
+            XMethodHook.create($(Leba)).method("onInflate").hook(new XC_MemberHook() {
                 @Override
-                protected void after(XMethodHook.MethodParam param) {
-                    super.after(param);
+                protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                     View c = XField.create(param).exact(View.class, "c").get();
                     hideView((ViewGroup) c.getParent());
                 }
             });
         }
         XMethodHook.create($(LebaShowListManager)).method("a")
-                .params(QQAppInterface).hook(new XC_LogMethodHook() {
+                .params(QQAppInterface).hook(new XC_MemberHook() {
             @Override
-            protected void after(XMethodHook.MethodParam param) {
-                super.after(param);
+            protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 List itemList = param.getResult();
                 Iterator iterator = itemList.iterator();
                 while (iterator.hasNext()) {
                     Object item = iterator.next();
                     Object rpi = XField.create(item).type(ResourcePluginInfo).get();
                     String strPkgName = XField.create(rpi).name("strPkgName").get();
-                    XLog.d(getTAG(), "动态列表: " + strPkgName);
+                    log("动态列表: " + strPkgName);
                     if (list.contains(strPkgName)) {
                         iterator.remove();
                     }
@@ -299,13 +300,12 @@ public class MainuiHook extends BaseHook {
     @MethodHook(desc = "隐藏菜单")
     public void hideMenu(final List<String> list) {
         XMethodHook.create($(MainFragment)).method("a").params(int.class, KeyEvent.class)
-                .hook(new XC_LogMethodHook() {
+                .hook(new XC_MemberHook() {
                     @Override
-                    protected void after(XMethodHook.MethodParam param) {
+                    protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                         if (param.args(0, Integer.class) != KeyEvent.KEYCODE_MENU) {
                             return;
                         }
-                        super.after(param);
                         Dialog dialog = XField.create(param).exact(Dialog.class, "b").get();
                         LinearLayout dl = XField.create(dialog).exact(LinearLayout.class, "a").get();
                         for (int i = 0; i < dl.getChildCount(); i++) {
@@ -326,10 +326,9 @@ public class MainuiHook extends BaseHook {
     @VersionSupport(min = QQ_800)
     public void hideTabs(final List<String> list) {
         if (list.contains("-1")) {
-            XMethodHook.create($(MainFragment)).method("onViewCreated").hook(new XC_LogMethodHook() {
+            XMethodHook.create($(MainFragment)).method("onViewCreated").hook(new XC_MemberHook() {
                 @Override
-                protected void after(XMethodHook.MethodParam param) {
-                    super.after(param);
+                protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                     Activity activity = XMethod.create(param).name("getActivity").invoke();
                     hideView(activity.findViewById(android.R.id.tabs));
                     hideView(XField.create(param).type(QQBlurView).get());
@@ -340,31 +339,36 @@ public class MainuiHook extends BaseHook {
 
     @MethodHook(desc = "隐藏分组消息数量")
     public void hideTabsNum(List<String> list) {
+        mHideTabNum.addAll(list);
+    }
+
+    private void hideTabsNum() {
         // 联系人和动态
         XMethodHook.create($(MainFragment)).params(int.class, BusinessInfoCheckUpdate$RedTypeInfo)
-                .method("a").hook(new XC_LogMethodHook() {
+                .method("a").hook(new XC_MemberHook() {
             @Override
-            protected void before(XMethodHook.MethodParam param) {
-                super.before(param);
+            protected void onBeforeHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 int i = param.args(0);
-                if (!list.contains(String.valueOf(i))) {
-                    return;
-                }
-                boolean isHideContacts = i == 33 || mSetting.get(KEY_HIDE_NEW_FRIEND, false);
-                boolean isHideLeba = i == 34;
-                if (isHideContacts || isHideLeba) {
-                    param.setResult(null);
+                switch (i) {
+                    case 33:
+                        if (mHideTabNum.contains("33") || mSetting.get(KEY_HIDE_NEW_FRIEND, false)) {
+                            param.setResult(null);
+                        }
+                        return;
+                    case 34:
+                        if (mHideTabNum.contains("34")) {
+                            param.setResult(null);
+                        }
                 }
             }
         });
         // 消息
         XMethodHook.create($(MainFragment)).method("a").params(int.class, int.class, Object.class)
-                .hook(new XC_LogMethodHook() {
+                .hook(new XC_MemberHook() {
                     @Override
-                    protected void before(XMethodHook.MethodParam param) {
-                        super.before(param);
+                    protected void onBeforeHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                         int i = param.args(0);
-                        if (!list.contains(String.valueOf(i))) {
+                        if (!mHideTabNum.contains(String.valueOf(i))) {
                             return;
                         }
                         if (i == 32) {

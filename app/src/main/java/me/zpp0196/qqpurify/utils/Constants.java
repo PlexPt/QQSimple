@@ -18,9 +18,6 @@ public interface Constants {
     String KEY_RENAME_BASE_FORMAT = "renameBaseFormat";
     String KEY_REDIRECT_FILE_REC_PATH = "redirectFileRecPath";
     String KEY_LOG_COUNT = "logCount";
-    String KEY_LOG_LEVEL = "logLevel";
-    String KEY_UPD_AUTO_CHECK = "autoCheck";
-    String KEY_UPD_AUTO_OPEN = "autoOpen";
-    String KEY_UPD_INTERVAL = "interval";
+    String KEY_LOG_SWITCH = "logSwitch";
     String KEY_LAST_MODIFIED = "lastModified";
 }

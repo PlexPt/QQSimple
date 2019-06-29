@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 
 import java.lang.reflect.Method;
@@ -12,14 +14,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.robv.android.xposed.XposedHelpers;
+import me.zpp0196.library.xposed.XC_MemberHook;
 import me.zpp0196.library.xposed.XConstructor;
 import me.zpp0196.library.xposed.XField;
 import me.zpp0196.library.xposed.XLog;
 import me.zpp0196.library.xposed.XMethodHook;
 import me.zpp0196.qqpurify.hook.annotation.MethodHook;
 import me.zpp0196.qqpurify.hook.annotation.VersionSupport;
-import me.zpp0196.qqpurify.hook.callback.XC_LogMethodHook;
 import me.zpp0196.qqpurify.hook.utils.QQConfigUtils;
+import me.zpp0196.qqpurify.hook.utils.XLogUtils;
 import me.zpp0196.qqpurify.utils.Constants;
 import me.zpp0196.qqpurify.hook.utils.QQClasses;
 import me.zpp0196.qqpurify.utils.Setting;
@@ -87,7 +90,7 @@ public abstract class BaseHook implements SettingUtils.ISetting, Constants, QQCl
         }
 
         Object value = setting.get(key);
-        XLog.v(getTAG(), String.format("key: %s, value: %s", key, value));
+        log(String.format("desc: %s, key: %s, value: %s", methodHook.desc(), key, value));
         if (value == null) {
             return null;
         }
@@ -105,18 +108,16 @@ public abstract class BaseHook implements SettingUtils.ISetting, Constants, QQCl
             if (value == null) {
                 continue;
             }
-            MethodHook methodHook = method.getAnnotation(MethodHook.class);
             try {
                 if (value instanceof Boolean) {
                     method.invoke(impl);
                 } else {
                     method.invoke(impl, value);
                 }
-                XLog.v(impl.getTAG(), "invoke: " + method);
-                XLog.d(impl.getTAG(), String.format("Loading %s success", methodHook.desc()));
             } catch (Exception e) {
+                MethodHook methodHook = method.getAnnotation(MethodHook.class);
                 String message = String.format("加载\"%s\"功能失败", methodHook.desc());
-                XLog.e(impl.getTAG(), message, e);
+                XLog.e(message, e);
             }
         }
     }
@@ -130,7 +131,7 @@ public abstract class BaseHook implements SettingUtils.ISetting, Constants, QQCl
             mClassMap.put(className, clazz);
             return clazz;
         } catch (Throwable th) {
-            XLog.e(getTAG(), th.getMessage());
+            XLog.e(th);
             return null;
         }
     }
@@ -155,10 +156,9 @@ public abstract class BaseHook implements SettingUtils.ISetting, Constants, QQCl
 
     protected void doSthAfterTabCreated(String frame, OnTabCreated onTabCreated) {
         final String frameClass = QQConfigUtils.findClass(frame);
-        XMethodHook.create($(FrameFragment)).method("createTabContent").hook(new XC_LogMethodHook() {
+        XMethodHook.create($(FrameFragment)).method("createTabContent").hook(new XC_MemberHook() {
             @Override
-            protected void after(XMethodHook.MethodParam param) {
-                super.after(param);
+            protected void onAfterHooked(@NonNull MemberHookParam param) {
                 if (!param.args(0, String.class).equals(frameClass)) {
                     return;
                 }
@@ -172,8 +172,8 @@ public abstract class BaseHook implements SettingUtils.ISetting, Constants, QQCl
         return mSetting.get(key, "");
     }
 
-    protected String getTAG() {
-        return APP_NAME + ": " + getClass().getSimpleName();
+    protected void log(String message) {
+        XLogUtils.log(this, message);
     }
 
     protected interface OnTabCreated {

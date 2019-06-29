@@ -22,11 +22,4 @@
             app:cpv_showAlphaSlider="false"
             app:cpv_showColorShades="false" />
     </PreferenceCategory>
-    <PreferenceCategory
-        android:key="categoryDebug"
-        android:title="调试">
-        <ListPreference
-            android:key="logLevel"
-            android:title="模块日志级别" />
-    </PreferenceCategory>
 </PreferenceScreen>

@@ -49,7 +49,7 @@ public class QQConfigUtils implements Constants {
                 mMethods = config.getJSONObject("methods");
             }
         } catch (Exception e) {
-            XLog.wtf(e);
+            XLog.e(e);
         }
     }
 

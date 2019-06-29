@@ -2,12 +2,14 @@ package me.zpp0196.qqpurify.hook;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import java.util.List;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import me.zpp0196.library.xposed.XC_MemberHook;
 import me.zpp0196.library.xposed.XLog;
 import me.zpp0196.library.xposed.XMethodHook;
 import me.zpp0196.library.xposed.XReflect;
@@ -22,11 +24,9 @@ import me.zpp0196.qqpurify.utils.SettingUtils;
 import me.zpp0196.qqpurify.utils.Utils;
 
 /**
- * Created by zpp0196 on 2018/4/27 0027.
+ * Created by zpp0196 on 2018/4/27.
  */
 public class InitializeHook implements Constants, IXposedHookLoadPackage, SettingUtils.ISetting {
-
-    private static final String TAG = APP_NAME;
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
@@ -35,9 +35,9 @@ public class InitializeHook implements Constants, IXposedHookLoadPackage, Settin
             return;
         }
 
-        XMethodHook.create(Application.class).method("attach").hook(new XMethodHook.Callback() {
+        XMethodHook.create(Application.class).method("attach").hook(new XC_MemberHook() {
             @Override
-            protected void after(XMethodHook.MethodParam param) {
+            protected void onAfterHooked(@NonNull XC_MemberHook.MemberHookParam param) {
                 Context context = param.args(0);
                 String processName = Utils.getProcessName();
                 init(context, processName);
@@ -50,8 +50,9 @@ public class InitializeHook implements Constants, IXposedHookLoadPackage, Settin
     }
 
     private void init(Context context, String processName) {
-        XLog.setTAG(TAG);
         long versionCode = Utils.getAppVersionCode(context, PACKAGE_NAME_QQ);
+        log("Loading processName: " + processName + ", versionCode: " + versionCode);
+
         QQConfigUtils.init(context, versionCode);
         XReflect.setConvertCallback(new XReflect.XConvertClassCallback() {
             @Override
@@ -61,21 +62,12 @@ public class InitializeHook implements Constants, IXposedHookLoadPackage, Settin
         });
 
         QQDialogUtils.init(context.getClassLoader());
-
         try {
             Setting.init();
+            XLog.setLogCallback(XLogUtils.getInstance());
         } catch (Throwable th) {
             QQDialogUtils.addError(th);
         }
-        Setting setting = Setting.getInstance(this);
-        XLog.LogLevel logLevel = XLog.LogLevel.valueOf(setting.get(KEY_LOG_LEVEL, XLog.LogLevel.NONE.name()));
-        XLog.setLevel(logLevel);
-        if (logLevel != XLog.LogLevel.NONE) {
-            XLog.setLogCallback(XLogUtils.getInstance(setting.get(KEY_LOG_COUNT, 10)));
-        }
-        Log.d(TAG, "logLevel: " + logLevel.name());
-        XLog.wtf(TAG, "logLevel: " + logLevel.name());
-        XLog.d(TAG, "Loading processName: " + processName + ", versionCode: " + versionCode);
     }
 
     private boolean isHookProcess(String processName) {
@@ -86,7 +78,7 @@ public class InitializeHook implements Constants, IXposedHookLoadPackage, Settin
 
         Setting setting = Setting.getInstance(this);
         if (setting.get(KEY_DISABLE_MODULE, false)) {
-            XLog.d(TAG, "module disabled");
+            log("module disabled");
             return false;
         }
 
@@ -106,39 +98,38 @@ public class InitializeHook implements Constants, IXposedHookLoadPackage, Settin
             if (simpleClassName.toLowerCase().contains(getSettingGroup())) {
                 continue;
             }
-            // 排除update
-            if (simpleClassName.toLowerCase().contains(SETTING_UPDATE)) {
-                continue;
-            }
 
             Class<?> hookClass;
             try {
                 hookClass = Class.forName(getPackage() + simpleClassName);
             } catch (ClassNotFoundException e) {
-                XLog.e(TAG, e);
+                XLog.e(e);
                 QQDialogUtils.addError(e);
                 continue;
             }
 
             long hookInitStartTime = System.currentTimeMillis();
-            XLog.d(TAG, "================================================");
-            XLog.d(TAG, String.format("Loading %s start", simpleClassName));
+            log("================================================");
+            log(String.format("Loading %s start", simpleClassName));
 
             try {
                 ((BaseHook) hookClass.getConstructor(Context.class).newInstance(context)).init();
             } catch (Exception e) {
-                XLog.e(TAG, e);
-                XLog.d(TAG, String.format("Loading %s failure", simpleClassName));
+                XLog.e(e);
+                log(String.format("Loading %s failure", simpleClassName));
                 QQDialogUtils.addError(e);
             }
 
-            XLog.d(TAG, String.format("Loading %s cost: %s ms", simpleClassName,
+            log(String.format("Loading %s cost: %s ms", simpleClassName,
                     System.currentTimeMillis() - hookInitStartTime));
-            XLog.d(TAG, "================================================");
+            log("================================================");
         }
         new EarlierSupport(context).init();
-        XLog.d(TAG, String.format("Loading all the hooks cost: %s ms",
-                System.currentTimeMillis() - allHooksInitStartTime));
+        log(String.format("Loading all the hooks cost: %s ms", System.currentTimeMillis() - allHooksInitStartTime));
+    }
+
+    private void log(String message) {
+        XLogUtils.log(this, message);
     }
 
     private String getPackage() {

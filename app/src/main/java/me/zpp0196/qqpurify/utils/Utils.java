@@ -4,11 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -87,29 +85,6 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
             return "unknown";
-        }
-    }
-
-    public static void mailTo(Context context, String mailAddress) {
-        Uri uri = Uri.parse("mailto:" + mailAddress);
-        Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
-        try {
-            context.startActivity(Intent.createChooser(intent, "请选择发送邮件的应用"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void openUrl(Context context, String url) {
-        Uri uri = Uri.parse(url);
-        Intent intent = new Intent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setData(uri);
-        try {
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

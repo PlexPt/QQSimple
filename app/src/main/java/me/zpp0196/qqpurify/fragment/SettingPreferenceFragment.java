@@ -3,7 +3,6 @@ package me.zpp0196.qqpurify.fragment;
 import android.app.AlertDialog;
 import android.widget.Toast;
 
-import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.SwitchPreference;
 
@@ -16,8 +15,6 @@ import me.zpp0196.qqpurify.utils.Setting;
 import me.zpp0196.qqpurify.utils.ThemeUtils;
 import me.zpp0196.qqpurify.utils.Utils;
 
-import static me.zpp0196.library.utils.LogUtils.LogLevel;
-
 /**
  * Created by zpp0196 on 2019/2/9.
  */
@@ -27,8 +24,6 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
     @Override
     @SuppressWarnings("ConstantConditions")
     protected void initPreferences() {
-        initLogLevelPreference();
-
         super.initPreferences();
         findPreference("restoreDefault").setOnPreferenceClickListener(this);
 
@@ -43,17 +38,6 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
         appThemeColor.setSummary(ThemeUtils.getThemeTitle());
         appThemeColor.setColorPickerDialogListener(this);
         appThemeColor.setOnPreferenceChangeListener(null);
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private void initLogLevelPreference() {
-        String[] logLevels = new String[LogLevel.values().length];
-        for (int i = 0; i < logLevels.length; i++) {
-            logLevels[i] = LogLevel.values()[i].name();
-        }
-        ListPreference logLevel = findPreference(KEY_LOG_LEVEL);
-        logLevel.setEntries(logLevels);
-        logLevel.setEntryValues(logLevels);
     }
 
     @Override
