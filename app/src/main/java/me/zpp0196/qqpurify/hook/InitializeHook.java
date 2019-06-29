@@ -63,8 +63,9 @@ public class InitializeHook implements Constants, IXposedHookLoadPackage, Settin
 
         QQDialogUtils.init(context.getClassLoader());
         try {
-            Setting.init();
-            XLog.setLogCallback(XLogUtils.getInstance());
+            Context mContext = Utils.createContext(context);
+            Setting.init(mContext);
+            XLog.setLogCallback(XLogUtils.getInstance(mContext));
         } catch (Throwable th) {
             QQDialogUtils.addError(th);
         }

@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -42,8 +41,8 @@ public class Utils {
         return context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY);
     }
 
-    public static File getLocalPath() {
-        return new File(Environment.getExternalStorageDirectory(), Constants.APP_NAME);
+    public static File getLocalPath(Context context) {
+        return context.getExternalFilesDir("");
     }
 
     public static SharedPreferences getSp(Context context) {

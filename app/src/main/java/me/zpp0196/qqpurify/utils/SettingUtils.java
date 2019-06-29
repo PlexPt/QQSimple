@@ -1,5 +1,6 @@
 package me.zpp0196.qqpurify.utils;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.StringDef;
@@ -99,10 +100,10 @@ public class SettingUtils implements Constants {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void init() throws Exception {
+    public static void init(Context context) throws Exception {
         try {
             if (mDataFile == null) {
-                mDataFile = new File(Utils.getLocalPath(), "config.json");
+                mDataFile = new File(Utils.getLocalPath(context), "config.json");
             }
             mJsonData = new JSONObject(DEFAULT_SETTING.toString());
             if (!mDataFile.exists()) {

@@ -25,13 +25,14 @@ public class QQConfigUtils implements Constants {
 
     public static void init(Context context, long versionCode) {
         try {
+            Context mContext = Utils.createContext(context);
             String fileName = versionCode + ".cfg";
             if (mConfigFile == null) {
-                mConfigFile = new File(Utils.getLocalPath(), fileName);
+                mConfigFile = new File(Utils.getLocalPath(mContext), fileName);
             }
             String res;
             if (!mConfigFile.exists()) {
-                res = Utils.getTextFromAssets(Utils.createContext(context), fileName);
+                res = Utils.getTextFromAssets(mContext, fileName);
             } else {
                 res = FileUtils.readFileToString(mConfigFile, StandardCharsets.UTF_8).trim();
             }

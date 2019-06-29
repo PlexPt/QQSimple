@@ -37,12 +37,10 @@ public class AboutPreferenceFragment extends AbstractPreferenceFragment {
     private void showLicensesDialog() {
         Notices notices = new Notices();
         Notice commonsIo = new Notice("Apache Commons IO", "https://github.com/apache/commons-io", "Copyright 2002-2019 The Apache Software Foundation", new ApacheSoftwareLicense20());
-        Notice easypermissions = new Notice("easypermissions", "https://github.com/googlesamples/easypermissions", "Copyright 2017 Google", new ApacheSoftwareLicense20());
         Notice flycoTabLayout = new Notice("FlycoTabLayout", "https://github.com/H07000223/FlycoTabLayout", "Copyright (c) 2015 H07000223", new MITLicense());
         Notice markwon = new Notice("Markwon", "https://github.com/noties/Markwon", "Copyright 2017 Dimitry Ivanov (mail@dimitryivanov.ru)", new ApacheSoftwareLicense20());
         Notice colorPicker = new Notice("ColorPicker", "https://github.com/jaredrummler/ColorPicker", "Copyright 2016 Jared Rummler\nCopyright 2015 Daniel Nilsson", new ApacheSoftwareLicense20());
         notices.addNotice(commonsIo);
-        notices.addNotice(easypermissions);
         notices.addNotice(flycoTabLayout);
         notices.addNotice(markwon);
         notices.addNotice(colorPicker);

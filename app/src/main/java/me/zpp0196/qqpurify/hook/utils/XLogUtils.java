@@ -1,5 +1,6 @@
 package me.zpp0196.qqpurify.hook.utils;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
@@ -29,9 +30,9 @@ public class XLogUtils implements XLog.Callback, Constants {
     private static File mLogFile;
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private XLogUtils() {
+    private XLogUtils(Context context) {
         try {
-            File logPath = new File(Utils.getLocalPath(), "logs");
+            File logPath = new File(Utils.getLocalPath(context), "logs");
             if (!logPath.exists()) {
                 FileUtils.forceMkdir(logPath);
             }
@@ -54,14 +55,21 @@ public class XLogUtils implements XLog.Callback, Constants {
     }
 
     private static class SingletonInstance {
-        private static final XLogUtils INSTANCE = new XLogUtils();
+        private static XLogUtils instance;
+
+        private static XLogUtils getInstance(Context context) {
+            if (instance == null) {
+                instance = new XLogUtils(context);
+            }
+            return instance;
+        }
     }
 
-    public static XLogUtils getInstance() {
+    public static XLogUtils getInstance(Context context) {
         Setting setting = Setting.getInstance(SettingUtils.ISetting.SETTING_SETTING);
         mSwitch = setting.get(Constants.KEY_LOG_SWITCH, false);
         mLogCount = setting.get(KEY_LOG_COUNT, 10);
-        return SingletonInstance.INSTANCE;
+        return SingletonInstance.getInstance(context);
     }
 
     public static void log(SettingUtils.ISetting setting, String message) {
