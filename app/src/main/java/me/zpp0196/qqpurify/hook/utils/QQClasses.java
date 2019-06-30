@@ -59,6 +59,7 @@ public interface QQClasses {
     String QQMessageFacade = "com.tencent.mobileqq.app.message.QQMessageFacade";
     String QQSettingMe = "com.tencent.mobileqq.activity.QQSettingMe";
     String QQSettingSettingActivity = "com.tencent.mobileqq.activity.QQSettingSettingActivity";
+    String RedTouch = "com.tencent.mobileqq.redtouch.RedTouch";
     String ResourcePluginInfo = "com.tencent.mobileqq.data.ResourcePluginInfo";
     String SettingMeApolloViewController = "com.tencent.mobileqq.apollo.SettingMeApolloViewController";
     String SimpleSlidingIndicator = "com.tencent.mobileqq.activity.contacts.view.SimpleSlidingIndicator";

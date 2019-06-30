@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
@@ -255,6 +256,12 @@ public class ExtensionHook extends BaseHook {
                 XLog.e(e);
             }
         }
+    }
+
+    @MethodHook(desc = "隐藏部分小红点")
+    public void hideReadTouch() {
+        XMethodHook.create($(RedTouch)).method(ImageView.class, "a").params(int.class)
+                .afterHooked(param -> hideView(param.getResult())).hook();
     }
 
     @Override
