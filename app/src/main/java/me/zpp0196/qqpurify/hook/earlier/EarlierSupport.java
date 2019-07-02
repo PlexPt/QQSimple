@@ -143,24 +143,6 @@ public class EarlierSupport extends BaseHook {
                     }
                 });
     }
-
-    @MethodHook(desc = "隐藏群头衔")
-    @VersionSupport(group = SETTING_TROOP, max = QQ_805)
-    public void hideLevel() {
-        XMethodHook.create($(BaseBubbleBuilder)).method("f").params(ChatMessage, BaseChatItemLayout)
-                .intercept();
-        XMethodHook.create($(BaseChatItemLayout)).method("a").params(QQAppInterface, boolean.class,
-                String.class, boolean.class, int.class, int.class).intercept();
-    }
-
-    @MethodHook(desc = "隐藏魅力等级")
-    @VersionSupport(group = SETTING_TROOP, max = QQ_805)
-    public void hideGlamourLevel() {
-        XMethodHook.create($(BaseBubbleBuilder)).method("g").params(ChatMessage, BaseChatItemLayout)
-                .intercept();
-        XMethodHook.create($(BaseChatItemLayout)).method("a").params(QQAppInterface, boolean.class,
-                int.class, boolean.class).intercept();
-    }
     // endregion
 
     @Override

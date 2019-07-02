@@ -30,6 +30,7 @@ public interface QQClasses {
     String Contacts = "com.tencent.mobileqq.activity.Contacts";
     String ContactsFPSPinnedHeaderExpandableListView = "com.tencent.mobileqq.activity.contacts.view.ContactsFPSPinnedHeaderExpandableListView";
     String ContactUtils = "com.tencent.mobileqq.utils.ContactUtils";
+    String CTEntryController = "com.tencent.mobileqq.activity.contacts.topentry.CTEntryController";
     String DialogUtil = "com.tencent.mobileqq.utils.DialogUtil";
     String EmoticonManager = "com.tencent.mobileqq.model.EmoticonManager";
     String FlashPicHelper = "com.tencent.mobileqq.app.FlashPicHelper";

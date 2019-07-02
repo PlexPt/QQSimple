@@ -68,6 +68,7 @@ public class SettingUtils implements Constants {
             mainui.put("hideHonestSay", false);
             mainui.put("hideCreateTroop", false);
             mainui.put("hideFriendGroups", new JSONArray().put(0, ""));
+            mainui.put("hideCTEntry", false);
 
             JSONObject sidebar = new JSONObject();
             sidebar.put("addModuleEntry", true);

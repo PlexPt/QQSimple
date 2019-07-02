@@ -66,7 +66,7 @@ public class SidebarHook extends BaseHook {
                 }
                 // 二维码
                 if (mHideQrCode) {
-                    hideView(settingMe.exact(ImageView.class, getField("sidebar_qrCode", "d")).get());
+                    hideView(settingMe.exact(ImageView.class, getField("sidebar_qrCode", mQQVersionCode < QQ_805 ? "d" : "e")).get());
                 }
                 // 夜间模式
                 if (mHideNightTheme) {
@@ -78,7 +78,7 @@ public class SidebarHook extends BaseHook {
                 }
                 // 返回按钮
                 if (mHideBack) {
-                    hideView(settingMe.exact(ImageView.class, getField("sidebar_backBtn", "e")).get());
+                    hideView(settingMe.exact(ImageView.class, getField("sidebar_backBtn", mQQVersionCode < QQ_805 ? "e" : "f")).get());
                 }
                 // 厘米秀
                 if (mHideApollo) {

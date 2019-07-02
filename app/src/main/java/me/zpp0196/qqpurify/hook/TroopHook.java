@@ -56,8 +56,8 @@ public class TroopHook extends BaseHook {
     @MethodHook(desc = "隐藏群头衔")
     @VersionSupport(min = QQ_805)
     public void hideLevel() {
-        String bb = QQConfigUtils.getMethod("troop_level_bb");
-        String ci = QQConfigUtils.getMethod("troop_level_ci");
+        String bb = QQConfigUtils.getMethod("troop_level_bb", mQQVersionCode < QQ_805 ? "f" : "e");
+        String ci = QQConfigUtils.getMethod("troop_level_ci", mQQVersionCode < QQ_805 ? "a" : "setTroopMemberLevel");
         XMethodHook.create($(BaseBubbleBuilder)).method(bb).params(ChatMessage, BaseChatItemLayout).intercept();
         XMethodHook.create($(BaseChatItemLayout)).method(ci).params(QQAppInterface, boolean.class,
                 String.class, boolean.class, int.class, int.class).intercept();
@@ -66,7 +66,7 @@ public class TroopHook extends BaseHook {
     @MethodHook(desc = "隐藏魅力等级")
     @VersionSupport(min = QQ_805)
     public void hideGlamourLevel() {
-        String bb = QQConfigUtils.getMethod("troop_glamour_bb");
+        String bb = QQConfigUtils.getMethod("troop_glamour_bb", mQQVersionCode < QQ_805 ? "g" : "f");
         String ci = QQConfigUtils.getMethod("troop_glamour_ci");
         XMethodHook.create($(BaseBubbleBuilder)).method(bb).params(ChatMessage, BaseChatItemLayout).intercept();
         XMethodHook.create($(BaseChatItemLayout)).method(ci).params(QQAppInterface, boolean.class,

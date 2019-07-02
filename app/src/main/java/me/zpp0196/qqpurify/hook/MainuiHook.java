@@ -119,6 +119,15 @@ public class MainuiHook extends BaseHook {
     // endregion
 
     // region 联系人
+    @MethodHook(desc = "隐藏CT入口")
+    @VersionSupport(min = QQ_795)
+    public void hideCTEntry() {
+        XMethodHook.create($(CTEntryController)).method("a").params(View.class).afterHooked(param -> {
+            FrameLayout frameLayout = XField.create(param).exact(FrameLayout.class, "a").get();
+            hideView(frameLayout);
+        }).hook();
+    }
+
     @MethodHook(key = KEY_HIDE_NEW_FRIEND, desc = "隐藏新朋友")
     public void hideNewFriend() {
         mHideTabNum.add("33");
