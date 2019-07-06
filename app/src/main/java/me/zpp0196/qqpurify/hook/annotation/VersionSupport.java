@@ -23,6 +23,7 @@ public @interface VersionSupport {
         int QQ_760 = 832;
         int QQ_776 = 899;
         int QQ_795 = 980;
+        int QQ_798 = 998;
         int QQ_799 = 1010;
         int QQ_800 = 1024;
         int QQ_805 = 1186;
@@ -32,6 +33,7 @@ public @interface VersionSupport {
             QQVersions.QQ_760,
             QQVersions.QQ_776,
             QQVersions.QQ_795,
+            QQVersions.QQ_798,
             QQVersions.QQ_799,
             QQVersions.QQ_800,
             QQVersions.QQ_805

@@ -264,6 +264,13 @@ public class ExtensionHook extends BaseHook {
                 .afterHooked(param -> hideView(param.getResult())).hook();
     }
 
+    @MethodHook(desc = "隐藏资料卡浮屏")
+    @VersionSupport(min = QQ_798)
+    public void hideColorScreen() {
+        String lcc = QQConfigUtils.getMethod("ext_lcc", "l");
+        XMethodHook.create($(FriendProfileCardActivity)).method(lcc).intercept();
+    }
+
     @Override
     public String getSettingGroup() {
         return SETTING_EXTENSION;

@@ -145,6 +145,12 @@ public class EarlierSupport extends BaseHook {
     }
     // endregion
 
+    @MethodHook(desc = "隐藏资料卡浮屏")
+    @VersionSupport(max = QQ_798)
+    public void hideColorScreen() {
+        XMethodHook.create($(FriendProfileCardActivity)).method("k").intercept();
+    }
+
     @Override
     public String getSettingGroup() {
         return SETTING_EARLIER;

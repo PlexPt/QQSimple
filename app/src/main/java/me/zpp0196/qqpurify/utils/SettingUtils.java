@@ -83,6 +83,7 @@ public class SettingUtils implements Constants {
             extension.put(KEY_RENAME_BASE_FORMAT, "%l_%n.apk");
             extension.put(KEY_REDIRECT_FILE_REC_PATH, "/Tencent/QQfile_recv/");
             extension.put("hideReadTouch", false);
+            extension.put("hideColorScreen", false);
 
             JSONObject setting = new JSONObject();
             setting.put(KEY_DISABLE_MODULE, false);

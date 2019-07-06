@@ -39,6 +39,7 @@ public interface QQClasses {
     String FormSimpleItem = "com.tencent.mobileqq.widget.FormSimpleItem";
     String FrameFragment = "com.tencent.mobileqq.app.FrameFragment";
     String FrameHelperActivity = "com.tencent.mobileqq.app.FrameHelperActivity";
+    String FriendProfileCardActivity = "com.tencent.mobileqq.activity.FriendProfileCardActivity";
     String GatherContactsTips = "com.tencent.mobileqq.activity.aio.tips.GatherContactsTips";
     String GrayTipsItemBuilder = "com.tencent.mobileqq.activity.aio.item.GrayTipsItemBuilder";
     String ItemBuilderFactory = "com.tencent.mobileqq.activity.aio.item.ItemBuilderFactory";
