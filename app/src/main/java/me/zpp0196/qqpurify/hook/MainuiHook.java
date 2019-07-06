@@ -59,10 +59,10 @@ public class MainuiHook extends BaseHook {
         }).hook();
     }
 
-    @MethodHook(desc = "隐藏SVIP铭牌")
+    @MethodHook(desc = "隐藏会员铭牌")
     @VersionSupport(min = QQ_800)
-    public void hideSvipNameplate() {
-        // SVIP铭牌
+    public void hideVipNameplate() {
+        // VIP铭牌
         XMethodHook.create($(VipUtils)).method(short.class, "a").params(AppRuntime,
                 String.class).replace((short) 0);
         // 会员红名

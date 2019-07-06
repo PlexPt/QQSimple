@@ -5,8 +5,8 @@
             android:key="hideOnlineStatus"
             android:title="隐藏在线状态" />
         <SwitchPreference
-            android:key="hideSvipNameplate"
-            android:title="隐藏SVIP铭牌" />
+            android:key="hideVipNameplate"
+            android:title="隐藏会员铭牌" />
         <SwitchPreference
             android:key="hideMiniAppEntry"
             android:title="隐藏小程序入口" />
