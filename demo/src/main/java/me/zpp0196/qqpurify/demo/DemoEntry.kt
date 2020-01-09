@@ -17,6 +17,7 @@ import proxy.com.tencent.mobileqq.app.IQQAppInterface
 import proxy.com.tencent.mobileqq.troop.honor.ITroopHonorConfig
 import proxy.com.tencent.mobileqq.troop.honor.ITroopHonorManager
 import proxy.mqq.app.IAppRuntime
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * @author zpp0196
@@ -24,9 +25,10 @@ import proxy.mqq.app.IAppRuntime
 class DemoEntry : IXposedHookLoadPackage {
 
     private lateinit var mAppInterface: IQQAppInterface
+    private var mTroopHonorConfigFlag: AtomicBoolean = AtomicBoolean(false)
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
-        if (lpparam.packageName != "com.tencent.mobileqq") return
+        if (lpparam.processName != "com.tencent.mobileqq") return
 
         hookBefore(proxy<IApplication>().attach()) attach@{
             val context = it.arg<Context>() ?: return@attach
@@ -52,8 +54,10 @@ class DemoEntry : IXposedHookLoadPackage {
         val honorManager: ITroopHonorManager = proxy(manager.get())
         val config = honorManager.config() ?: return
         resetConfig(config)
-        hookAfter(config.parseConfig() ?: return) parseConfig@{ param ->
-            resetConfig(proxy(param.result ?: return@parseConfig))
+        if (mTroopHonorConfigFlag.compareAndSet(false, true)) {
+            hookAfter(config.parseConfig() ?: return) parseConfig@{ param ->
+                resetConfig(proxy(param.result ?: return@parseConfig))
+            }
         }
     }
 
