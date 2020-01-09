@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
@@ -37,5 +38,5 @@ dependencies {
 
     compileOnly 'de.robv.android.xposed:api:82'
     implementation "me.zpp0196.reflectx:xposed:${reflectx_version}"
-    annotationProcessor "me.zpp0196.reflectx:compiler:${reflectx_version}"
+    kapt "me.zpp0196.reflectx:compiler:${reflectx_version}"
 }

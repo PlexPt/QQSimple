@@ -1,22 +1,32 @@
 package proxy.com.tencent.mobileqq.troop.honor;
 
+import android.util.SparseArray;
+
+import androidx.annotation.Nullable;
+
 import java.lang.reflect.Method;
 
-import me.zpp0196.reflectx.proxy.MethodGetter;
-import me.zpp0196.reflectx.proxy.ProxyFactory;
+import me.zpp0196.reflectx.proxy.IProxyClass;
+import me.zpp0196.reflectx.proxy.ProxySetter;
 import me.zpp0196.reflectx.proxy.Source;
 
-@Source(ITroopHonorConfig.CLASS_NAME)
-public interface ITroopHonorConfig {
+@Source
+public interface ITroopHonorConfig extends IProxyClass {
 
-    String CLASS_NAME = "com.tencent.mobileqq.troop.honor.TroopHonorConfig";
-
-    String METHOD_PARSE_CONFIG = "parseConfig";
-
-    static ITroopHonorConfig proxy() {
-        return ProxyFactory.proxyClass(ITroopHonorConfig.class);
+    @Nullable
+    default Method parseConfig() {
+        Class<?> sourceClass = getSourceClass();
+        for (Method method : sourceClass.getMethods()) {
+            if (method.getReturnType() == sourceClass) {
+                return method;
+            }
+        }
+        return null;
     }
 
-    @MethodGetter(value = METHOD_PARSE_CONFIG, parameterTypes = String.class)
-    Method parseConfig();
+    @ProxySetter
+    ITroopHonorConfig setHonorMap(SparseArray a);
+
+    @ProxySetter
+    ITroopHonorConfig setSupport(boolean a);
 }
