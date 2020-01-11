@@ -5,11 +5,12 @@ import android.content.Context;
 
 import java.lang.reflect.Method;
 
-import me.zpp0196.reflectx.proxy.MethodGetter;
-import me.zpp0196.reflectx.proxy.SourceClass;
+import reflectx.IProxyClass;
+import reflectx.annotations.FindMethod;
+import reflectx.annotations.SourceClass;
 
 @SourceClass(Application.class)
-public interface IApplication {
-    @MethodGetter(parameterTypes = Context.class)
+public interface IApplication extends IProxyClass {
+    @FindMethod(parameterTypes = Context.class)
     Method attach();
 }

@@ -2,12 +2,12 @@ package proxy.com.tencent.mobileqq.app;
 
 import androidx.annotation.Nullable;
 
-import me.zpp0196.reflectx.proxy.RunWithCatch;
-import me.zpp0196.reflectx.proxy.Source;
 import proxy.mqq.IManager;
 import proxy.mqq.app.IAppRuntime;
+import reflectx.annotations.RunWithCatch;
+import reflectx.annotations.Source;
 
-@Source(value = "com.tencent.mobileqq.app.QQAppInterface", initialize = false)
+@Source("com.tencent.mobileqq.app.QQAppInterface")
 public interface IQQAppInterface extends IAppRuntime {
     String getCurrentAccountUin();
 

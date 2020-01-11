@@ -1,7 +1,8 @@
 package proxy.mqq.app;
 
-import me.zpp0196.reflectx.proxy.Source;
+import reflectx.IProxyClass;
+import reflectx.annotations.Source;
 
 @Source("mqq.app.MainService")
-public interface IMainService {
+public interface IMainService extends IProxyClass {
 }

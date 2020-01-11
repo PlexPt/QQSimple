@@ -1,7 +1,8 @@
 package proxy.com.tencent.qphone.base.remote;
 
-import me.zpp0196.reflectx.proxy.Source;
+import reflectx.IProxyClass;
+import reflectx.annotations.Source;
 
 @Source("com.tencent.qphone.base.remote.SimpleAccount")
-public interface ISimpleAccount {
+public interface ISimpleAccount extends IProxyClass {
 }

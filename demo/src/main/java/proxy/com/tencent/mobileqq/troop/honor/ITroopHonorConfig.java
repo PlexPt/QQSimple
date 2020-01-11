@@ -6,16 +6,16 @@ import androidx.annotation.Nullable;
 
 import java.lang.reflect.Method;
 
-import me.zpp0196.reflectx.proxy.IProxyClass;
-import me.zpp0196.reflectx.proxy.ProxySetter;
-import me.zpp0196.reflectx.proxy.Source;
+import reflectx.IProxyClass;
+import reflectx.annotations.SetField;
+import reflectx.annotations.Source;
 
 @Source
 public interface ITroopHonorConfig extends IProxyClass {
 
     @Nullable
     default Method parseConfig() {
-        Class<?> sourceClass = getSourceClass();
+        Class<?> sourceClass = requireSourceClass();
         for (Method method : sourceClass.getMethods()) {
             if (method.getReturnType() == sourceClass) {
                 return method;
@@ -24,9 +24,9 @@ public interface ITroopHonorConfig extends IProxyClass {
         return null;
     }
 
-    @ProxySetter
+    @SetField
     ITroopHonorConfig setHonorMap(SparseArray a);
 
-    @ProxySetter
+    @SetField
     ITroopHonorConfig setSupport(boolean a);
 }

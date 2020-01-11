@@ -4,15 +4,17 @@ import androidx.annotation.Nullable;
 
 import java.lang.reflect.Field;
 
-import me.zpp0196.reflectx.proxy.IProxyClass;
-import me.zpp0196.reflectx.proxy.ProxyFactory;
-import me.zpp0196.reflectx.proxy.Source;
+import reflectx.IProxyClass;
+import reflectx.ProxyFactory;
+import reflectx.Reflectx;
+import reflectx.annotations.Source;
 
-@Source
+@Source(value = "azay", version = 1296)
+@Source(value = "azcd", version = 1320)
 public interface ITroopHonorManager extends IProxyClass {
     @Nullable
     default ITroopHonorConfig config() {
-        Class<?> sourceClass = getSourceClass();
+        Class<?> sourceClass = requireSourceClass();
         for (Field field : sourceClass.getDeclaredFields()) {
             try {
                 field.setAccessible(true);
@@ -21,7 +23,8 @@ public interface ITroopHonorManager extends IProxyClass {
                 if (config == null) {
                     continue;
                 }
-                return ProxyFactory.proxyObject(ITroopHonorConfig.class, config);
+                Reflectx.putSourceClass(ITroopHonorConfig.class, config.getClass());
+                return ProxyFactory.proxy(ITroopHonorConfig.class, config);
             } catch (Exception ignored) {
             }
         }

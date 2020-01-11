@@ -7,8 +7,6 @@ import android.util.SparseArray
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
-import me.zpp0196.reflectx.proxy.ProxyClass
-
 import org.json.JSONObject
 
 import proxy.android.app.IApplication
@@ -17,27 +15,31 @@ import proxy.com.tencent.mobileqq.app.IQQAppInterface
 import proxy.com.tencent.mobileqq.troop.honor.ITroopHonorConfig
 import proxy.com.tencent.mobileqq.troop.honor.ITroopHonorManager
 import proxy.mqq.app.IAppRuntime
+
+import reflectx.Reflectx
+import reflectx.mapping.ProxyClassMapping
+
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * @author zpp0196
  */
-class DemoEntry : IXposedHookLoadPackage {
+class DemoEntryKt : IXposedHookLoadPackage {
 
     private lateinit var mAppInterface: IQQAppInterface
     private var mTroopHonorConfigFlag: AtomicBoolean = AtomicBoolean(false)
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
         if (lpparam.processName != "com.tencent.mobileqq") return
-
+        ProxyClassMapping.init()
         hookBefore(proxy<IApplication>().attach()) attach@{
             val context = it.arg<Context>() ?: return@attach
             val classLoader = context.classLoader
-            // ProguardMappingFactory.init(context) // 暂时不需要
-            ProxyClass.setDefaultClassLoader(classLoader)
+            Reflectx.setProxyClassLoader(classLoader)
 
             hookAfter(proxy<IAppRuntime>().init()) init@{ param ->
-                mAppInterface = checkAndProxy(param.thisObject) ?: return@init
+                mAppInterface = proxy<IAppRuntime>(param.thisObject)
+                        .cast(IQQAppInterface::class.java) ?: return@init
                 closeMiniAppSwitch(context)
                 closeTroopHonor()
             }
@@ -51,7 +53,7 @@ class DemoEntry : IXposedHookLoadPackage {
         }
 
         val manager = mAppInterface.getManager(346) ?: return
-        val honorManager: ITroopHonorManager = proxy(manager.get())
+        val honorManager: ITroopHonorManager = proxy(manager.requireOriginal())
         val config = honorManager.config() ?: return
         resetConfig(config)
         if (mTroopHonorConfigFlag.compareAndSet(false, true)) {

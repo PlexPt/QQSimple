@@ -5,26 +5,22 @@ import androidx.annotation.IntRange
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.callbacks.XC_LoadPackage
-import me.zpp0196.reflectx.proxy.ProxyClass
-import me.zpp0196.reflectx.proxy.ProxyFactory
+import reflectx.IProxy
+import reflectx.ProxyFactory
 
 import java.lang.NullPointerException
 import java.lang.reflect.Member
 import java.lang.reflect.Method
 
-inline fun <reified T> proxy(obj: Any? = null): T {
+inline fun <reified P : IProxy> proxy(obj: Any? = null): P {
     return when (obj) {
-        null -> ProxyFactory.proxyClass(T::class.java)
+        null -> ProxyFactory.proxy(P::class.java)
         is Class<*> -> {
-            ProxyFactory.proxyClass(obj) as T
+            @Suppress("UNCHECKED_CAST")
+            ProxyFactory.proxy(obj as Class<P>)
         }
-        else -> ProxyFactory.proxyObject(T::class.java, obj)
+        else -> ProxyFactory.proxy(P::class.java, obj)
     }
-}
-
-inline fun <reified T> checkAndProxy(obj: Any): T? {
-    val assignable = obj.javaClass.isAssignableFrom(ProxyClass.findClass(T::class.java))
-    return if (assignable) ProxyFactory.proxyObject(T::class.java, obj) else null
 }
 
 val XC_LoadPackage.LoadPackageParam.isMainProcess: Boolean
