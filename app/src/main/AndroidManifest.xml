@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.zpp0196.qqsimple">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="me.zpp0196.qqpurify">
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.Def"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
-            android:name=".activity.SettingActivity"
-            android:label="@string/app_name">
+            android:name=".activity.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
             </intent-filter>
         </activity>
 
         <activity-alias
-            android:name=".activity.SettingActivityAlias"
+            android:name=".activity.MainActivityAlias"
             android:label="@string/app_name"
-            android:targetActivity=".activity.SettingActivity">
+            android:targetActivity=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -33,10 +36,13 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="精简QQ" />
+            android:value="@string/xposed_description" />
         <meta-data
             android:name="xposedminversion"
-            android:value="54" />
+            android:value="82" />
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1" />
     </application>
 
 </manifest>
